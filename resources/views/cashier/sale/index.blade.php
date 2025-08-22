@@ -1,37 +1,100 @@
 @extends('layouts.app')
 
-@section('title', 'Nueva Venta - Sistema POS')
+@section('title', 'Nueva Venta - TOCHIS')
 @section('page-title', 'Punto de Venta')
+
+@push('styles')
+<style>
+    .tochis-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(249, 115, 22, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .tochis-card:hover {
+        box-shadow: 0 8px 30px rgba(249, 115, 22, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        overflow: hidden;
+    }
+    
+    .product-card:hover {
+        border-color: #f97316;
+        box-shadow: 0 10px 25px rgba(249, 115, 22, 0.2);
+        transform: translateY(-4px) scale(1.02);
+    }
+    
+    .category-btn {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+    
+    .category-btn.active {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+    }
+    
+    .tochis-gradient {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    }
+    
+    .tochis-gradient-light {
+        background: linear-gradient(135deg, #fed7aa 0%, #fb923c 100%);
+    }
+    
+    .cart-item {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .cart-item:hover {
+        border-color: #f97316;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+    }
+</style>
+@endpush
 
 @section('content')
 <div class="fade-in" id="pos-app">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-screen">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 h-screen">
         <!-- Products Section -->
         <div class="lg:col-span-2">
             <!-- Categories -->
-            <div class="bg-white rounded-lg shadow mb-4">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">
-                        <i class="fas fa-tags mr-2 text-blue-600"></i>
-                        Categorías
+            <div class="tochis-card mb-6">
+                <div class="px-6 py-4 tochis-gradient rounded-t-2xl">
+                    <h3 class="text-lg font-bold text-white flex items-center">
+                        <i class="fas fa-tags mr-3"></i>
+                        Categorías de Productos
                     </h3>
                 </div>
-                <div class="p-4">
-                    <div class="flex flex-wrap gap-2">
+                <div class="p-6">
+                    <div class="flex flex-wrap gap-3">
                         <button onclick="filterByCategory('all')" 
-                                class="category-btn active px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition duration-200"
+                                class="category-btn active px-6 py-3 bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
                                 data-category="all">
                             <i class="fas fa-th-large mr-2"></i>
-                            Todos
+                            Todos los Productos
                         </button>
                         @foreach($categories as $category)
                             @if($category->activeProducts->count() > 0)
                                 <button onclick="filterByCategory({{ $category->id }})" 
-                                        class="category-btn px-4 py-2 text-white rounded-lg hover:opacity-80 transition duration-200"
-                                        style="background-color: {{ $category->color }}"
+                                        class="category-btn px-6 py-3 text-white hover:opacity-90 transition duration-200"
+                                        style="background: linear-gradient(135deg, {{ $category->color }}, {{ $category->color }}dd)"
                                         data-category="{{ $category->id }}">
+                                    <i class="fas fa-utensils mr-2"></i>
                                     {{ $category->name }}
-                                    <span class="ml-2 bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs">
+                                    <span class="ml-2 bg-white bg-opacity-25 px-2 py-1 rounded-full text-xs font-bold">
                                         {{ $category->activeProducts->count() }}
                                     </span>
                                 </button>
@@ -42,30 +105,30 @@
             </div>
 
             <!-- Products Grid -->
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-200">
+            <div class="tochis-card overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-orange-50 border-b border-orange-100">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium text-gray-900">
-                            <i class="fas fa-box mr-2 text-green-600"></i>
-                            Productos
+                        <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-hamburger mr-3 text-orange-500"></i>
+                            Menú de Productos
                         </h3>
                         <div class="relative">
                             <input type="text" 
                                    id="search-product" 
-                                   placeholder="Buscar producto o código..."
-                                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
+                                   placeholder="Buscar deliciosos platillos..."
+                                   class="pl-12 pr-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-300 w-80">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-orange-400"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="p-6 h-96 overflow-y-auto">
+                <div class="p-6 h-96 overflow-y-auto bg-gradient-to-br from-gray-50 to-orange-50">
                     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                         @foreach($categories as $category)
                             @foreach($category->activeProducts as $product)
-                                <div class="product-card bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg hover:border-blue-300 transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+                                <div class="product-card bg-white border-2 border-transparent rounded-xl p-4 hover:shadow-xl cursor-pointer transform hover:-translate-y-2"
                                      data-category="{{ $category->id }}"
                                      data-product-id="{{ $product->id }}"
                                      data-product-name="{{ strtolower($product->name) }}"
@@ -78,13 +141,13 @@
                                         @if($product->image)
                                             <img src="{{ Storage::url($product->image) }}" 
                                                  alt="{{ $product->name }}"
-                                                 class="w-full h-28 object-cover rounded-lg shadow-sm">
+                                                 class="w-full h-28 object-cover rounded-lg shadow-md">
                                         @else
-                                            <div class="w-full h-28 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center shadow-sm">
+                                            <div class="w-full h-28 tochis-gradient-light rounded-lg flex items-center justify-center shadow-md">
                                                 @if($product->is_food)
-                                                    <i class="fas fa-utensils text-gray-400 text-3xl"></i>
+                                                    <i class="fas fa-utensils text-white text-3xl"></i>
                                                 @else
-                                                    <i class="fas fa-box text-gray-400 text-3xl"></i>
+                                                    <i class="fas fa-box text-white text-3xl"></i>
                                                 @endif
                                             </div>
                                         @endif
@@ -92,7 +155,7 @@
                                         <!-- Badge de tipo de producto -->
                                         @if($product->is_food)
                                             <div class="absolute top-2 right-2">
-                                                <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded-full shadow-sm flex items-center">
+                                                <span class="tochis-gradient text-white text-xs px-3 py-1 rounded-full shadow-lg flex items-center font-bold">
                                                     <i class="fas fa-utensils mr-1"></i>Comida
                                                 </span>
                                             </div>
@@ -144,51 +207,53 @@
 
         <!-- Cart Section -->
         <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow h-full flex flex-col">
+            <div class="tochis-card h-full flex flex-col">
                 <!-- Cart Header -->
-                <div class="px-6 py-4 border-b border-gray-200">
+                <div class="px-6 py-4 tochis-gradient rounded-t-2xl">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium text-gray-900">
-                            <i class="fas fa-shopping-cart mr-2 text-purple-600"></i>
-                            Carrito
+                        <h3 class="text-lg font-bold text-white flex items-center">
+                            <i class="fas fa-shopping-basket mr-3"></i>
+                            Orden de Compra
                         </h3>
                         <button onclick="clearCart()" 
-                                class="text-red-600 hover:text-red-800 text-sm"
+                                class="text-white hover:text-orange-200 text-sm font-semibold transition-colors duration-200"
                                 id="clear-cart-btn" style="display: none;">
-                            <i class="fas fa-trash mr-1"></i>
+                            <i class="fas fa-trash-alt mr-1"></i>
                             Limpiar
                         </button>
                     </div>
                 </div>
 
                 <!-- Cart Items -->
-                <div class="flex-1 overflow-y-auto p-4">
-                    <div id="cart-items" class="space-y-3">
-                        <div id="empty-cart" class="text-center py-8">
-                            <i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500">El carrito está vacío</p>
-                            <p class="text-sm text-gray-400">Selecciona productos para agregar</p>
+                <div class="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-orange-50 to-white">
+                    <div id="cart-items" class="space-y-4">
+                        <div id="empty-cart" class="text-center py-12">
+                            <div class="tochis-gradient-light rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-shopping-basket text-white text-2xl"></i>
+                            </div>
+                            <p class="text-gray-600 font-semibold">Tu orden está vacía</p>
+                            <p class="text-sm text-gray-500 mt-1">Selecciona deliciosos platillos para agregar</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Cart Summary -->
-                <div class="border-t border-gray-200 p-4 space-y-4">
+                <div class="border-t-2 border-orange-100 p-6 bg-white space-y-4">
                     <!-- Totals -->
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span>Subtotal:</span>
-                            <span id="subtotal">$0.00</span>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-base font-medium">
+                            <span class="text-gray-700">Subtotal:</span>
+                            <span id="subtotal" class="text-gray-800">$0.00</span>
                         </div>
                         
                         <!-- Promociones disponibles -->
                         <div id="available-promotions" class="hidden">
-                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-2">
-                                <div class="flex items-center mb-2">
-                                    <i class="fas fa-tag text-yellow-600 mr-2"></i>
-                                    <span class="text-sm font-medium text-yellow-800">Promociones Disponibles</span>
+                            <div class="bg-orange-50 border-2 border-orange-200 rounded-lg p-4 mb-3">
+                                <div class="flex items-center mb-3">
+                                    <i class="fas fa-fire text-orange-500 mr-2"></i>
+                                    <h4 class="font-bold text-orange-800">¡Ofertas Especiales!</h4>
                                 </div>
-                                <div id="promotions-list" class="space-y-1 text-xs text-yellow-700">
+                                <div id="promotions-list" class="space-y-2 text-sm text-orange-700">
                                     <!-- Las promociones se cargarán aquí -->
                                 </div>
                             </div>
@@ -196,22 +261,22 @@
                         
                         <!-- Descuentos aplicados -->
                         <div id="applied-discounts" class="hidden">
-                            <div class="flex justify-between text-sm text-green-600">
-                                <span><i class="fas fa-percent mr-1"></i>Descuentos:</span>
+                            <div class="flex justify-between text-base font-medium text-green-600">
+                                <span><i class="fas fa-percentage mr-2"></i>Descuentos:</span>
                                 <span id="discount-amount">-$0.00</span>
                             </div>
-                            <div id="discount-details" class="text-xs text-green-500 space-y-1 ml-4">
+                            <div id="discount-details" class="text-sm text-green-600 space-y-1 ml-6 mt-1">
                                 <!-- Los detalles de descuentos se mostrarán aquí -->
                             </div>
                         </div>
                         
-                        <div class="flex justify-between text-sm">
-                            <span>Impuesto:</span>
-                            <span id="tax">$0.00</span>
+                        <div class="flex justify-between text-base font-medium">
+                            <span class="text-gray-700">Impuesto:</span>
+                            <span id="tax" class="text-gray-800">$0.00</span>
                         </div>
-                        <div class="flex justify-between text-lg font-bold border-t pt-2">
-                            <span>Total:</span>
-                            <span id="total">$0.00</span>
+                        <div class="flex justify-between text-xl font-bold border-t-2 border-orange-100 pt-3">
+                            <span class="text-gray-800">Total a Pagar:</span>
+                            <span id="total" class="text-orange-600">$0.00</span>
                         </div>
                     </div>
 
@@ -232,42 +297,56 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-comment mr-1"></i>Observaciones de la orden
+                    <!-- Notas de la venta -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fas fa-sticky-note mr-2 text-orange-500"></i>
+                            Notas Especiales
                         </label>
                         <textarea id="sale-notes" 
                                   rows="3"
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                  placeholder="Observaciones generales para toda la orden..."></textarea>
+                                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-300"
+                                  placeholder="Observaciones especiales para esta orden..."></textarea>
                     </div>
 
                     <!-- Payment Method -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
-                        <select id="payment-method" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="cash">Efectivo</option>
-                            <option value="card">Tarjeta</option>
-                            <option value="transfer">Transferencia</option>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fas fa-credit-card mr-2 text-orange-500"></i>
+                            Método de Pago
+                        </label>
+                        <select id="payment-method" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-300 font-medium">
+                            <option value="cash">💵 Efectivo</option>
+                            <option value="card">💳 Tarjeta</option>
+                            <option value="transfer">🏦 Transferencia</option>
                         </select>
                     </div>
 
                     <!-- Payment Amount -->
                     <div id="payment-section" style="display: none;">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Monto Pagado</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fas fa-dollar-sign mr-2 text-orange-500"></i>
+                            Monto Pagado
+                        </label>
                         <input type="number" 
                                id="paid-amount" 
                                step="0.01" 
                                min="0"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-300 text-lg font-bold"
                                placeholder="0.00">
-                        <div id="change-display" class="mt-2 text-sm text-green-600" style="display: none;">
-                            <strong>Cambio: $<span id="change-amount">0.00</span></strong>
+                        <div id="change-display" class="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded-lg" style="display: none;">
+                            <p class="text-green-800 font-bold flex items-center">
+                                <i class="fas fa-hand-holding-usd mr-2"></i>
+                                Cambio: $<span id="change-amount">0.00</span>
+                            </p>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="space-y-2">
+                    <div class="space-y-3">
                         <button onclick="processSale()" 
                                 id="process-sale-btn"
-                                class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                class="w-full tochis-gradient hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105 shadow-lg hover:shadow-xl"
                                 disabled>
                             <i class="fas fa-cash-register mr-2"></i>
                             Procesar Venta
@@ -595,7 +674,7 @@ function updateCartDisplay() {
         }
         
         if (cart.length === 0) {
-            cartItems.innerHTML = '<div id="empty-cart" class="text-center py-8"><i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i><p class="text-gray-500">El carrito está vacío</p><p class="text-sm text-gray-400">Selecciona productos para agregar</p></div>';
+            cartItems.innerHTML = '<div id="empty-cart" class="text-center py-12"><div class="tochis-gradient-light rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4"><i class="fas fa-shopping-basket text-white text-2xl"></i></div><p class="text-gray-600 font-semibold">Tu orden está vacía</p><p class="text-sm text-gray-500 mt-1">Selecciona deliciosos platillos para agregar</p></div>';
             if (clearBtn) clearBtn.style.display = 'none';
         } else {
             if (clearBtn) clearBtn.style.display = 'block';
@@ -745,7 +824,7 @@ function processSale() {
     console.log('💰 Total actual:', total);
     
     if (cart.length === 0) {
-        alert('El carrito está vacío');
+        alert('Tu orden está vacía. ¡Agrega algunos deliciosos platillos!');
         return;
     }
     
