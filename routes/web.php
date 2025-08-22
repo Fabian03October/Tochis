@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\CustomizationOptionsController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
 use App\Http\Controllers\Cashier\SaleController;
 use App\Http\Controllers\Cashier\CashCutController;
@@ -34,6 +35,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('customization-options', CustomizationOptionsController::class);
         Route::resource('promotions', PromotionController::class);
         Route::patch('/promotions/{promotion}/toggle-status', [PromotionController::class, 'toggleStatus'])->name('promotions.toggle-status');
+        Route::resource('combos', ComboController::class);
+        Route::patch('/combos/{combo}/toggle-status', [ComboController::class, 'toggleStatus'])->name('combos.toggle-status');
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
         Route::get('/reports/cash-cuts', [ReportController::class, 'cashCuts'])->name('reports.cash-cuts');
@@ -46,6 +49,35 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/sale', [SaleController::class, 'store'])->name('sale.store');
         Route::get('/sales/history', [SaleController::class, 'history'])->name('sale.history');
         Route::get('/api/promotions', [SaleController::class, 'getAvailablePromotions'])->name('sale.promotions');
+        Route::post('/api/combos/suggest', [SaleController::class, 'getSuggestedCombos'])->name('sale.combos.suggest');
+        Route::post('/api/combos/apply', [SaleController::class, 'applyCombo'])->name('sale.combos.apply');
+        
+        // RUTA DE PRUEBA TEMPORAL - REMOVER EN PRODUCCIÓN
+        Route::get('/api/test-combos', function() {
+            try {
+                $combos = \App\Models\Combo::active()->where('auto_suggest', true)->with('products')->get();
+                return response()->json([
+                    'success' => true,
+                    'combos_count' => $combos->count(),
+                    'combos' => $combos->map(function($combo) {
+                        return [
+                            'id' => $combo->id,
+                            'name' => $combo->name,
+                            'products_count' => $combo->products->count(),
+                            'is_active' => $combo->is_active,
+                            'auto_suggest' => $combo->auto_suggest
+                        ];
+                    })
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]);
+            }
+        })->name('test.combos');
         Route::get('/cash-cut', [CashCutController::class, 'index'])->name('cash-cut.index');
         Route::post('/cash-cut/open', [CashCutController::class, 'open'])->name('cash-cut.open');
         Route::post('/cash-cut/close', [CashCutController::class, 'close'])->name('cash-cut.close');

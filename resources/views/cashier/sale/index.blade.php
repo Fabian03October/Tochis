@@ -61,42 +61,56 @@
                     </div>
                 </div>
                 
-                <div class="p-4 h-96 overflow-y-auto">
-                    <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="p-6 h-96 overflow-y-auto">
+                    <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                         @foreach($categories as $category)
                             @foreach($category->activeProducts as $product)
-                                <div class="product-card border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200 cursor-pointer"
+                                <div class="product-card bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg hover:border-blue-300 transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
                                      data-category="{{ $category->id }}"
                                      data-product-id="{{ $product->id }}"
                                      data-product-name="{{ strtolower($product->name) }}"
                                      data-product-code="{{ $product->barcode }}"
                                      data-has-options="{{ $product->category->is_customizable ? 'true' : 'false' }}"
                                      onclick="handleProductClick({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, {{ $product->stock }}, {{ $product->is_food ? 'true' : 'false' }})">
-                                    @if($product->image)
-                                        <img src="{{ Storage::url($product->image) }}" 
-                                             alt="{{ $product->name }}"
-                                             class="w-full h-20 object-cover rounded-lg mb-2">
-                                    @else
-                                        <div class="w-full h-20 bg-gray-100 rounded-lg mb-2 flex items-center justify-center">
-                                            @if($product->is_food)
-                                                <i class="fas fa-utensils text-gray-400 text-2xl"></i>
-                                            @else
-                                                <i class="fas fa-box text-gray-400 text-2xl"></i>
-                                            @endif
-                                        </div>
-                                    @endif
                                     
-                                    <div class="relative">
+                                    <!-- Imagen del producto -->
+                                    <div class="relative mb-4">
+                                        @if($product->image)
+                                            <img src="{{ Storage::url($product->image) }}" 
+                                                 alt="{{ $product->name }}"
+                                                 class="w-full h-28 object-cover rounded-lg shadow-sm">
+                                        @else
+                                            <div class="w-full h-28 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center shadow-sm">
+                                                @if($product->is_food)
+                                                    <i class="fas fa-utensils text-gray-400 text-3xl"></i>
+                                                @else
+                                                    <i class="fas fa-box text-gray-400 text-3xl"></i>
+                                                @endif
+                                            </div>
+                                        @endif
+                                        
+                                        <!-- Badge de tipo de producto -->
                                         @if($product->is_food)
-                                            <span class="absolute -top-1 -right-1 bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
-                                                <i class="fas fa-utensils mr-1"></i>Comida
-                                            </span>
+                                            <div class="absolute top-2 right-2">
+                                                <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded-full shadow-sm flex items-center">
+                                                    <i class="fas fa-utensils mr-1"></i>Comida
+                                                </span>
+                                            </div>
                                         @endif
                                     </div>
                                     
-                                    <h4 class="font-medium text-gray-900 text-sm mb-1 line-clamp-2">{{ $product->name }}</h4>
-                                    <p class="text-lg font-bold text-green-600">${{ number_format($product->price, 2) }}</p>
-                                    <p class="text-xs text-gray-500">Stock: {{ $product->stock }}</p>
+                                    <!-- Información del producto -->
+                                    <div class="space-y-2">
+                                        <h4 class="font-semibold text-gray-900 text-sm leading-tight line-clamp-2 min-h-[2.5rem]">
+                                            {{ $product->name }}
+                                        </h4>
+                                        
+                                        <div class="text-center">
+                                            <p class="text-xl font-bold text-green-600">
+                                                ${{ number_format($product->price, 2) }}
+                                            </p>
+                                        </div>
+                                    </div>
                                     
                                     @if($product->options->count() > 0)
                                         <span class="inline-block mt-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
@@ -201,6 +215,19 @@
                         </div>
                     </div>
 
+                    <!-- Sugerencias de Combos -->
+                    <div id="combo-suggestions" class="hidden">
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-lightbulb text-yellow-600 mr-2"></i>
+                                <span class="text-sm font-medium text-yellow-800">¡Sugerencia de Combo!</span>
+                            </div>
+                            <div id="combo-suggestions-list" class="space-y-2">
+                                <!-- Las sugerencias se cargarán aquí -->
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Observaciones generales -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -263,6 +290,11 @@ let total = 0;
 let availablePromotions = [];
 let appliedPromotions = [];
 let totalDiscount = 0;
+
+// Variables para combos
+let availableCombos = [];
+let suggestedCombos = [];
+let comboCheckTimeout = null;
 
 // Add product to cart - Function called when clicking a product
 function handleProductClick(productId, productName, price, stock, isFood = false) {
@@ -512,12 +544,33 @@ function clearCart() {
 
 // Remove cart item by index
 function removeCartItem(index) {
+    const itemToRemove = cart[index];
+    
+    // Si se elimina un descuento de combo, solo removerlo
+    if (itemToRemove && itemToRemove.isComboDiscount) {
+        cart.splice(index, 1);
+        updateCartDisplay();
+        showSuccessMessage('💰 Descuento de combo removido');
+        return;
+    }
+    
+    // Si se elimina un producto normal, verificar si invalidamos algún combo
     cart.splice(index, 1);
+    
+    // Remover descuentos de combo que ya no sean válidos
+    // (esto es opcional - podrías mantener el descuento hasta que el usuario lo quite manualmente)
+    
     updateCartDisplay();
 }
 
 // Update cart item quantity by index
 function updateCartItemQuantity(index, quantity) {
+    // No permitir modificar descuentos de combo
+    if (cart[index] && cart[index].isComboDiscount) {
+        console.log('⚠️ No se puede modificar cantidad de descuento de combo');
+        return;
+    }
+    
     if (quantity <= 0) {
         removeCartItem(index);
     } else {
@@ -565,25 +618,39 @@ function updateCartDisplay() {
                 </div>`;
             }
             
+            // Determinar si es un descuento de combo
+            const isComboDiscount = item.isComboDiscount || false;
+            const itemPrice = parseFloat(item.price);
+            const priceText = isComboDiscount ? 
+                (itemPrice < 0 ? `-$${Math.abs(itemPrice).toFixed(2)}` : `$${itemPrice.toFixed(2)}`) : 
+                `$${itemPrice.toFixed(2)} c/u`;
+            
+            // Clase CSS especial para descuentos
+            const itemClass = isComboDiscount ? 'bg-green-50 border-green-200' : 'border-gray-200';
+            
             cartHTML += `
-                <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <div class="flex items-center justify-between p-3 border ${itemClass} rounded-lg">
                     <div class="flex-1">
-                        <h4 class="font-medium text-gray-900 text-sm">${item.originalName || item.name}</h4>
-                        <p class="text-sm text-gray-600">$${item.price.toFixed(2)} c/u</p>
+                        <h4 class="font-medium ${isComboDiscount ? 'text-green-700' : 'text-gray-900'} text-sm">${item.originalName || item.name}</h4>
+                        <p class="text-sm ${isComboDiscount ? 'text-green-600 font-medium' : 'text-gray-600'}">${priceText}</p>
                         ${customizations}
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button onclick="updateCartItemQuantity(${index}, ${item.quantity - 1})" 
-                                class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center">
-                            <i class="fas fa-minus text-xs"></i>
-                        </button>
-                        <span class="w-8 text-center font-medium">${item.quantity}</span>
-                        <button onclick="updateCartItemQuantity(${index}, ${item.quantity + 1})" 
-                                class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center">
-                            <i class="fas fa-plus text-xs"></i>
-                        </button>
+                        ${!isComboDiscount ? `
+                            <button onclick="updateCartItemQuantity(${index}, ${item.quantity - 1})" 
+                                    class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center">
+                                <i class="fas fa-minus text-xs"></i>
+                            </button>
+                            <span class="w-8 text-center font-medium">${item.quantity}</span>
+                            <button onclick="updateCartItemQuantity(${index}, ${item.quantity + 1})" 
+                                    class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
+                        ` : `
+                            <span class="text-sm text-green-600 font-medium px-2">DESCUENTO</span>
+                        `}
                         <button onclick="removeCartItem(${index})" 
-                                class="w-6 h-6 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center ml-2">
+                                class="w-6 h-6 ${isComboDiscount ? 'bg-green-100 hover:bg-green-200 text-green-600' : 'bg-red-100 hover:bg-red-200 text-red-600'} rounded-full flex items-center justify-center ml-2">
                             <i class="fas fa-trash text-xs"></i>
                         </button>
                     </div>
@@ -595,12 +662,23 @@ function updateCartDisplay() {
     }
     
     calculateTotals();
+    
+    // Verificar combos después de actualizar el carrito
+    checkForComboSuggestions();
+    
     console.log('Cart display updated successfully');
     
     } catch (error) {
         console.error('ERROR in updateCartDisplay:', error);
         alert('Error actualizando carrito: ' + error.message);
     }
+}
+
+// Update cart totals (función requerida por algunas funciones de combo)
+function updateCartTotals() {
+    console.log('🧮 Actualizando totales del carrito...');
+    calculateTotals();
+    updateCartDisplay();
 }
 
 // Calculate totals
@@ -630,9 +708,11 @@ function calculateTotals() {
         if (cart.length > 0) {
             processSaleBtn.disabled = false;
             paymentSection.style.display = 'block';
+            console.log('✅ Botón de procesar venta habilitado - Carrito tiene', cart.length, 'elementos');
         } else {
             processSaleBtn.disabled = true;
             paymentSection.style.display = 'none';
+            console.log('❌ Botón de procesar venta deshabilitado - Carrito vacío');
         }
     } catch (error) {
         console.error('Error en calculateTotals:', error);
@@ -660,6 +740,10 @@ document.getElementById('paid-amount').addEventListener('input', function(e) {
 
 // Process sale
 function processSale() {
+    console.log('🚀 Función processSale() iniciada');
+    console.log('📦 Carrito actual:', cart);
+    console.log('💰 Total actual:', total);
+    
     if (cart.length === 0) {
         alert('El carrito está vacío');
         return;
@@ -683,6 +767,7 @@ function processSale() {
         products: cart.map(item => ({
             id: item.id,
             quantity: item.quantity,
+            price: item.price, // Incluir precio para cálculo de descuentos
             observations: item.observations || [],
             specialties: item.specialties || []
         })),
@@ -691,9 +776,23 @@ function processSale() {
         notes: saleNotes
     };
     
+    console.log('Datos de venta a enviar:', saleData);
+    
     // Show loading
     const processSaleBtn = document.getElementById('process-sale-btn');
     const originalText = processSaleBtn.innerHTML;
+    
+    // Verificar CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfToken) {
+        alert('Error: Token CSRF no encontrado. Recarga la página.');
+        processSaleBtn.innerHTML = originalText;
+        processSaleBtn.disabled = false;
+        return;
+    }
+    
+    console.log('CSRF Token encontrado:', csrfToken.getAttribute('content').substring(0, 10) + '...');
+    
     processSaleBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Procesando...';
     processSaleBtn.disabled = true;
     
@@ -705,21 +804,54 @@ function processSale() {
         },
         body: JSON.stringify(saleData)
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Respuesta del servidor - Status:', response.status);
+        console.log('Respuesta del servidor - OK:', response.ok);
+        console.log('Content-Type:', response.headers.get('Content-Type'));
+        
+        if (!response.ok) {
+            // Intentar leer el error como JSON o como texto
+            return response.text().then(text => {
+                console.log('Error del servidor (HTML/texto):', text);
+                try {
+                    const jsonError = JSON.parse(text);
+                    throw new Error(jsonError.message || `HTTP error! status: ${response.status}`);
+                } catch {
+                    throw new Error(`Error del servidor: ${response.status} - ${text.substring(0, 200)}...`);
+                }
+            });
+        }
+        
+        // Verificar si la respuesta es JSON
+        const contentType = response.headers.get('Content-Type');
+        if (!contentType || !contentType.includes('application/json')) {
+            return response.text().then(text => {
+                console.log('Respuesta no es JSON. Content-Type:', contentType);
+                console.log('Contenido recibido:', text.substring(0, 500) + '...');
+                throw new Error('El servidor no devolvió JSON válido. Posible error interno.');
+            });
+        }
+        
+        return response.json();
+    })
     .then(data => {
+        console.log('Datos recibidos:', data);
         if (data.success) {
             alert(`Venta realizada exitosamente!\nTotal: $${total.toFixed(2)}\nCambio: $${(data.change || 0).toFixed(2)}`);
             cart = [];
             updateCartDisplay();
             document.getElementById('paid-amount').value = '';
             document.getElementById('change-display').style.display = 'none';
+            document.getElementById('sale-notes').value = '';
         } else {
-            alert('Error: ' + data.message);
+            alert('Error: ' + (data.message || 'Error desconocido'));
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Error al procesar la venta');
+        console.error('Error completo:', error);
+        console.error('Tipo de error:', typeof error);
+        console.error('Stack trace:', error.stack);
+        alert('Error al procesar la venta: ' + (error.message || 'Error de conexión'));
     })
     .finally(() => {
         processSaleBtn.innerHTML = originalText;
@@ -752,6 +884,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Trigger initial state
     paymentMethodSelect.dispatchEvent(new Event('change'));
+    
+    // Agregar event listener alternativo al botón de procesar venta
+    const processSaleBtn = document.getElementById('process-sale-btn');
+    if (processSaleBtn) {
+        processSaleBtn.addEventListener('click', function(e) {
+            console.log('🔘 Click detectado en botón de procesar venta');
+            if (!this.disabled) {
+                // No prevenir default aquí porque queremos que funcione el onclick también
+                console.log('✅ Botón habilitado, ejecutando processSale()');
+            } else {
+                console.log('⚠️ Botón está deshabilitado');
+                e.preventDefault();
+            }
+        });
+        console.log('📌 Event listener agregado al botón de procesar venta');
+    } else {
+        console.error('❌ No se encontró el botón process-sale-btn');
+    }
 });
 
 function calculateChange() {
@@ -1149,6 +1299,519 @@ function updatePromotionsDisplay() {
 document.addEventListener('DOMContentLoaded', function() {
     loadAvailablePromotions();
 });
+
+// ============================================
+// FUNCIONES PARA DETECCIÓN DE COMBOS
+// ============================================
+
+/**
+ * Verificar si hay combos sugeridos basados en el carrito actual
+ */
+function checkForComboSuggestions() {
+    console.log('🔍 INICIANDO VERIFICACIÓN DE COMBOS');
+    console.log('📦 Cart length:', cart.length);
+    console.log('📦 Cart contents:', cart);
+    
+    // Limpiar timeout anterior para evitar múltiples llamadas
+    if (comboCheckTimeout) {
+        clearTimeout(comboCheckTimeout);
+    }
+    
+    // Solo verificar si hay al menos 2 productos en el carrito
+    if (cart.length < 2) {
+        console.log('❌ No hay suficientes productos (mínimo 2). Ocultando combos.');
+        hideCombos();
+        return;
+    }
+    
+    console.log('✅ Carrito tiene suficientes productos. Configurando timeout...');
+    
+    // Debounce para evitar muchas llamadas a la API
+    comboCheckTimeout = setTimeout(() => {
+        console.log('� EJECUTANDO VERIFICACIÓN DE COMBOS');
+        
+        const cartData = cart.map(item => ({
+            id: parseInt(item.id),
+            quantity: item.quantity,
+            name: item.name,
+            price: item.price
+        }));
+        
+        console.log('📤 Enviando datos al servidor:', cartData);
+        
+        // Verificar token CSRF
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        console.log('🔐 CSRF Token:', csrfToken ? 'Presente' : 'AUSENTE');
+        console.log('🔐 Token completo:', csrfToken);
+        
+        fetch('{{ route("cashier.sale.combos.suggest") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                cart_products: cartData
+            })
+        })
+        .then(response => {
+            console.log('📨 Respuesta recibida. Status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('📊 RESPUESTA COMPLETA DEL SERVIDOR:', data);
+            
+            if (data.has_suggestions && data.suggestions.length > 0) {
+                console.log('✅ Se encontraron sugerencias:', data.suggestions.length);
+                showComboSuggestions(data.suggestions);
+            } else {
+                console.log('❌ No hay sugerencias disponibles');
+                hideCombos();
+            }
+        })
+        .catch(error => {
+            console.error('❌ ERROR EN LA VERIFICACIÓN DE COMBOS:', error);
+            hideCombos();
+        });
+    }, 1000); // Esperar 1 segundo después del último cambio
+}
+
+/**
+ * Mostrar sugerencias de combos al cajero
+ */
+function showComboSuggestions(suggestions) {
+    console.log('🎯 MOSTRANDO SUGERENCIAS DE COMBOS');
+    console.log('📋 Sugerencias recibidas:', suggestions);
+    
+    const comboSuggestionsDiv = document.getElementById('combo-suggestions');
+    const comboListDiv = document.getElementById('combo-suggestions-list');
+    
+    if (!comboSuggestionsDiv || !comboListDiv) {
+        console.error('❌ Elementos de combos no encontrados en el DOM');
+        console.log('🔍 combo-suggestions div:', comboSuggestionsDiv);
+        console.log('🔍 combo-suggestions-list div:', comboListDiv);
+        return;
+    }
+    
+    console.log('✅ Elementos DOM encontrados. Limpiando contenido anterior...');
+    
+    // Limpiar sugerencias anteriores
+    comboListDiv.innerHTML = '';
+    
+    console.log('🔄 Procesando', suggestions.length, 'sugerencias...');
+    
+    suggestions.forEach((suggestion, index) => {
+        const combo = suggestion.combo;
+        const matchLevel = suggestion.match_level;
+        const missingProducts = suggestion.missing_products;
+        
+        const comboHtml = `
+            <div class="bg-white border border-yellow-300 rounded-md p-3 mb-2">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-gray-900">${combo.name}</h4>
+                        <p class="text-sm text-gray-600 mb-2">${combo.description}</p>
+                        
+                        <div class="flex items-center space-x-4 text-sm">
+                            <span class="text-green-600 font-semibold">
+                                $${parseFloat(combo.price).toFixed(2)}
+                            </span>
+                            <span class="text-gray-500 line-through">
+                                $${parseFloat(combo.original_price).toFixed(2)}
+                            </span>
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                                Ahorra $${parseFloat(combo.savings).toFixed(2)}
+                            </span>
+                        </div>
+                        
+                        <div class="mt-2 text-xs text-gray-500">
+                            Coincidencia: ${parseFloat(matchLevel.percentage).toFixed(0)}% 
+                            (${matchLevel.matched_products}/${matchLevel.total_products} productos)
+                        </div>
+                        
+                        ${missingProducts.length > 0 ? `
+                            <div class="mt-2">
+                                <span class="text-xs text-orange-600">
+                                    Falta agregar: ${missingProducts.map(p => p.name).join(', ')}
+                                </span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="ml-4 flex flex-col space-y-1">
+                        ${missingProducts.length === 0 ? `
+                            <button onclick="applyCombo(${combo.id})" 
+                                    class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded">
+                                <i class="fas fa-check mr-1"></i>Aplicar Combo
+                            </button>
+                        ` : `
+                            <button onclick="addMissingProducts(${JSON.stringify(missingProducts).replace(/"/g, '&quot;')}, ${combo.id})" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded">
+                                <i class="fas fa-plus mr-1"></i>Agregar Faltantes
+                            </button>
+                        `}
+                        
+                        <button onclick="dismissCombo(${index})" 
+                                class="bg-gray-400 hover:bg-gray-500 text-white text-xs px-3 py-1 rounded">
+                            <i class="fas fa-times mr-1"></i>Descartar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        comboListDiv.innerHTML += comboHtml;
+    });
+    
+    console.log('✅ HTML de combos generado. Mostrando panel...');
+    
+    // Mostrar el panel de sugerencias
+    comboSuggestionsDiv.classList.remove('hidden');
+    
+    console.log('🎉 PANEL DE COMBOS VISIBLE');
+    
+    // Notificación sonora suave (opcional)
+    playComboNotification();
+}
+
+/**
+ * Ocultar sugerencias de combos
+ */
+function hideCombos() {
+    console.log('🫥 OCULTANDO SUGERENCIAS DE COMBOS');
+    const comboSuggestionsDiv = document.getElementById('combo-suggestions');
+    if (comboSuggestionsDiv) {
+        comboSuggestionsDiv.classList.add('hidden');
+        console.log('✅ Panel de combos ocultado');
+    } else {
+        console.error('❌ No se encontró el elemento combo-suggestions para ocultar');
+    }
+}
+
+/**
+ * Aplicar combo al carrito
+ */
+function applyCombo(comboId) {
+    console.log('🎯 Aplicando combo:', comboId);
+    
+    const cartData = cart.map(item => ({
+        id: parseInt(item.id),
+        quantity: item.quantity
+    }));
+    
+    fetch('{{ route("cashier.sale.combos.apply") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            combo_id: comboId,
+            cart_products: cartData
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('✅ Combo aplicado:', data);
+            
+            // Aplicar descuento del combo
+            const comboData = data.combo;
+            const savings = parseFloat(comboData.savings) || 0;
+            
+            if (savings > 0) {
+                // Agregar descuento como item especial en el carrito
+                const discountItem = {
+                    id: 'combo-discount-' + comboId,
+                    name: `🎉 Descuento ${comboData.name}`,
+                    price: -savings, // Precio negativo para descuento
+                    quantity: 1,
+                    isComboDiscount: true,
+                    comboId: comboId,
+                    originalName: `Descuento ${comboData.name}`,
+                    specialties: [],
+                    observations: []
+                };
+                
+                // Verificar si ya existe un descuento para este combo
+                const existingDiscountIndex = cart.findIndex(item => 
+                    item.isComboDiscount && item.comboId === comboId
+                );
+                
+                if (existingDiscountIndex !== -1) {
+                    // Reemplazar descuento existente
+                    cart[existingDiscountIndex] = discountItem;
+                    console.log('🔄 Descuento de combo actualizado');
+                } else {
+                    // Agregar nuevo descuento
+                    cart.push(discountItem);
+                    console.log('✅ Descuento de combo agregado');
+                }
+                
+                // Actualizar visualización
+                updateCartDisplay();
+                updateCartTotals();
+                
+                // Mostrar mensaje de éxito con ahorro
+                showSuccessMessage(`🎉 ${data.message}`);
+            } else {
+                showSuccessMessage('✅ Combo aplicado exitosamente');
+            }
+            
+            // Ocultar sugerencias
+            hideCombos();
+            
+        } else {
+            console.error('❌ Error en respuesta:', data);
+            console.log('Response data:', data);
+        }
+    })
+    .catch(error => {
+        console.error('❌ Error aplicando combo:', error);
+        console.log('Catch error details:', error.message);
+    });
+}
+
+/**
+ * Mostrar productos faltantes para completar combo
+ */
+function showMissingProducts(missingProducts) {
+    const productNames = missingProducts.map(p => p.name).join('\n- ');
+    
+    if (confirm(`Para completar este combo, agrega:\n\n- ${productNames}\n\n¿Quieres que te ayude a encontrarlos?`)) {
+        // Aquí podrías highlighting los productos en la lista
+        highlightMissingProducts(missingProducts);
+    }
+}
+
+/**
+ * Resaltar productos faltantes en la interfaz
+ */
+function highlightMissingProducts(missingProducts) {
+    // Limpiar highlights anteriores
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.classList.remove('ring-2', 'ring-orange-400', 'bg-orange-50');
+    });
+    
+    // Resaltar productos faltantes
+    missingProducts.forEach(product => {
+        const productCard = document.querySelector(`[data-product-id="${product.id}"]`);
+        if (productCard) {
+            productCard.classList.add('ring-2', 'ring-orange-400', 'bg-orange-50');
+            
+            // Scroll hacia el primer producto
+            if (missingProducts.indexOf(product) === 0) {
+                productCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+    
+    // Remover highlights después de 10 segundos
+    setTimeout(() => {
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.classList.remove('ring-2', 'ring-orange-400', 'bg-orange-50');
+        });
+    }, 10000);
+}
+
+/**
+ * Descartar sugerencia de combo
+ */
+function dismissCombo(index) {
+    const comboElements = document.querySelectorAll('#combo-suggestions-list > div');
+    if (comboElements[index]) {
+        comboElements[index].remove();
+    }
+    
+    // Si no quedan sugerencias, ocultar panel
+    const remainingSuggestions = document.querySelectorAll('#combo-suggestions-list > div');
+    if (remainingSuggestions.length === 0) {
+        hideCombos();
+    }
+}
+
+/**
+ * Agregar productos faltantes al carrito
+ */
+async function addMissingProducts(missingProducts, comboId) {
+    console.log('🛒 AGREGANDO PRODUCTOS FALTANTES AL CARRITO');
+    console.log('📦 Productos faltantes (raw):', missingProducts);
+    console.log('🎯 Combo ID:', comboId);
+    
+    // Si missingProducts es una cadena, parsearla
+    if (typeof missingProducts === 'string') {
+        try {
+            // Reemplazar las entidades HTML de vuelta a comillas
+            missingProducts = missingProducts.replace(/&quot;/g, '"');
+            missingProducts = JSON.parse(missingProducts);
+            console.log('✅ Productos parseados:', missingProducts);
+        } catch (error) {
+            console.error('❌ Error parseando productos:', error);
+            showSuccessMessage('❌ Error procesando productos faltantes');
+            return;
+        }
+    }
+    
+    // Verificar que tenemos un array válido
+    if (!Array.isArray(missingProducts) || missingProducts.length === 0) {
+        console.error('❌ No hay productos válidos para agregar');
+        showSuccessMessage('❌ No hay productos para agregar');
+        return;
+    }
+    
+    console.log('📦 Productos procesados:', missingProducts);
+    
+    try {
+        // Agregar cada producto faltante al carrito
+        for (const product of missingProducts) {
+            console.log(`➕ Agregando ${product.name} al carrito`);
+            
+            // Crear un item de carrito simple con la información disponible
+            const cartItem = {
+                id: product.id,
+                name: product.name,
+                price: parseFloat(product.price),
+                quantity: 1,
+                specialties: [],
+                observations: [],
+                originalName: product.name
+            };
+            
+            // Verificar si el producto ya existe en el carrito
+            const existingIndex = cart.findIndex(item => 
+                item.id === product.id && 
+                JSON.stringify(item.specialties || []) === JSON.stringify([]) &&
+                JSON.stringify(item.observations || []) === JSON.stringify([])
+            );
+            
+            if (existingIndex !== -1) {
+                // Si existe, aumentar cantidad
+                cart[existingIndex].quantity += 1;
+                console.log(`🔄 Aumentada cantidad de ${product.name} a ${cart[existingIndex].quantity}`);
+            } else {
+                // Si no existe, agregar nuevo item
+                cart.push(cartItem);
+                console.log(`✅ ${product.name} agregado al carrito`);
+            }
+        }
+        
+        // Actualizar display del carrito
+        updateCartDisplay();
+        updateCartTotals();
+        
+        // Mostrar mensaje de éxito
+        setTimeout(() => {
+            showSuccessMessage(`✅ Se agregaron ${missingProducts.length} productos faltantes al carrito`);
+            console.log('🔄 Verificando combos nuevamente...');
+            checkForComboSuggestions();
+        }, 500);
+        
+    } catch (error) {
+        console.error('❌ Error al agregar productos faltantes:', error);
+        // Solo mostrar error si realmente hay un problema, no el mensaje genérico
+        console.error('Error details:', error.message);
+    }
+}
+
+
+
+/**
+ * Mostrar mensaje de éxito
+ */
+function showSuccessMessage(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg z-50';
+    alertDiv.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Remover después de 5 segundos
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+        }
+    }, 5000);
+}
+
+/**
+ * Reproducir notificación sonora suave
+ */
+function playComboNotification() {
+    // Audio context para sonido suave
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (error) {
+        console.log('Audio no disponible:', error);
+    }
+}
+
+// ============================================
+// FUNCIONES DE PRUEBA Y DEBUG - REMOVER EN PRODUCCIÓN
+// ============================================
+
+/**
+ * Función de prueba para forzar detección de combos
+ */
+function testComboDetection() {
+    console.log('🧪 INICIANDO PRUEBA DE DETECCIÓN DE COMBOS');
+    
+    if (cart.length === 0) {
+        alert('❌ Agrega algunos productos al carrito primero para probar la detección de combos');
+        return;
+    }
+    
+    console.log('📦 Forzando verificación con carrito actual:', cart);
+    checkForComboSuggestions();
+}
+
+/**
+ * Función de prueba para mostrar panel de combos con datos ficticios
+ */
+function showTestCombos() {
+    console.log('🧪 MOSTRANDO COMBOS DE PRUEBA');
+    
+    const testSuggestions = [
+        {
+            combo: {
+                id: 1,
+                name: "Combo de Prueba",
+                description: "Este es un combo de prueba para verificar la interfaz",
+                price: 150.00,
+                original_price: 200.00,
+                savings: 50.00
+            },
+            match_level: {
+                percentage: 85,
+                matched_products: 2,
+                total_products: 3
+            },
+            missing_products: [
+                { id: 999, name: "Producto Faltante de Prueba" }
+            ]
+        }
+    ];
+    
+    showComboSuggestions(testSuggestions);
+}
 </script>
 
 <!-- Modal para personalizar productos -->
@@ -1238,3 +1901,80 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 @endpush
+
+<style>
+/* Estilos personalizados para los cards de productos */
+.product-card {
+    min-height: 200px;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.product-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Mejoras para el grid responsivo */
+@media (max-width: 640px) {
+    #products-grid {
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+    #products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    #products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+    #products-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1281px) {
+    #products-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/* Animaciones suaves */
+.product-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Mejora visual para los badges */
+.product-card .bg-orange-500 {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    backdrop-filter: blur(10px);
+}
+
+/* Efectos de hover mejorados */
+.product-card:hover .text-green-600 {
+    color: #16a34a;
+    font-weight: 700;
+}
+</style>
