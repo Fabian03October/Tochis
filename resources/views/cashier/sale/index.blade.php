@@ -62,6 +62,33 @@
         border-color: #f97316;
         box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
     }
+    
+    .combo-suggestion-panel {
+        background: linear-gradient(135deg, #fef7e0 0%, #fed7aa 100%);
+        border: 2px solid #f59e0b;
+        animation: slideInFromTop 0.4s ease-out;
+    }
+    
+    @keyframes slideInFromTop {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .discount-item {
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        border-left: 4px solid #22c55e;
+    }
+    
+    .promotion-badge {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 1px solid #f87171;
+    }
 </style>
 @endpush
 
@@ -281,22 +308,23 @@
                     </div>
 
                     <!-- Sugerencias de Combos -->
-                    <div id="combo-suggestions" class="hidden">
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-lightbulb text-yellow-600 mr-2"></i>
-                                <span class="text-sm font-medium text-yellow-800">¡Sugerencia de Combo!</span>
+                    <div id="combo-suggestions" class="hidden mb-4">
+                        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl p-5 shadow-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-lightbulb text-white text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-yellow-800">¡Sugerencia de Combo!</h4>
+                                    <p class="text-sm text-yellow-700">Ahorra dinero con estas combinaciones</p>
+                                </div>
                             </div>
-                            <div id="combo-suggestions-list" class="space-y-2">
+                            <div id="combo-suggestions-list" class="space-y-3">
                                 <!-- Las sugerencias se cargarán aquí -->
                             </div>
                         </div>
                     </div>
 
-                    <!-- Observaciones generales -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-comment mr-1"></i>Observaciones de la orden
                     <!-- Notas de la venta -->
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">
@@ -594,19 +622,33 @@ function closeCustomizeModal() {
 
 // Remove product from cart
 function removeFromCart(productId) {
+    console.log('🗑️ Removiendo producto del carrito:', productId);
     cart = cart.filter(item => item.id !== productId);
+    
+    // Limpiar promociones aplicadas al remover productos
+    appliedPromotions = [];
+    totalDiscount = 0;
+    
     updateCartDisplay();
+    console.log('✅ Producto removido y promociones recalculadas');
 }
 
 // Update quantity
 function updateQuantity(productId, quantity) {
+    console.log('🔢 Actualizando cantidad:', productId, 'nueva cantidad:', quantity);
     const item = cart.find(item => item.id === productId);
     if (item) {
         if (quantity <= 0) {
             removeFromCart(productId);
         } else if (quantity <= item.stock) {
             item.quantity = quantity;
+            
+            // Limpiar y recalcular promociones al cambiar cantidades
+            appliedPromotions = [];
+            totalDiscount = 0;
+            
             updateCartDisplay();
+            console.log('✅ Cantidad actualizada y promociones recalculadas');
         } else {
             alert('No hay suficiente stock disponible');
         }
@@ -616,34 +658,53 @@ function updateQuantity(productId, quantity) {
 // Clear cart
 function clearCart() {
     if (confirm('¿Estás seguro de que deseas limpiar el carrito?')) {
+        console.log('🧹 Limpiando carrito completo');
         cart = [];
+        
+        // Limpiar todas las promociones y descuentos
+        appliedPromotions = [];
+        totalDiscount = 0;
+        
         updateCartDisplay();
+        hideCombos(); // Ocultar sugerencias de combos
+        console.log('✅ Carrito limpiado completamente');
     }
 }
 
 // Remove cart item by index
 function removeCartItem(index) {
+    console.log('🗑️ Removiendo item del carrito por índice:', index);
     const itemToRemove = cart[index];
     
-    // Si se elimina un descuento de combo, solo removerlo
-    if (itemToRemove && itemToRemove.isComboDiscount) {
-        cart.splice(index, 1);
-        updateCartDisplay();
-        showSuccessMessage('💰 Descuento de combo removido');
+    if (!itemToRemove) {
+        console.warn('⚠️ No se encontró el item en el índice:', index);
         return;
     }
     
-    // Si se elimina un producto normal, verificar si invalidamos algún combo
+    // Si se elimina un descuento de combo, solo removerlo
+    if (itemToRemove.isComboDiscount) {
+        cart.splice(index, 1);
+        updateCartDisplay();
+        showSuccessMessage('💰 Descuento de combo removido');
+        console.log('✅ Descuento de combo removido');
+        return;
+    }
+    
+    // Si se elimina un producto normal, remover y recalcular promociones
     cart.splice(index, 1);
     
-    // Remover descuentos de combo que ya no sean válidos
-    // (esto es opcional - podrías mantener el descuento hasta que el usuario lo quite manualmente)
+    // Limpiar y recalcular promociones al remover items
+    appliedPromotions = [];
+    totalDiscount = 0;
     
     updateCartDisplay();
+    console.log('✅ Item removido y promociones recalculadas');
 }
 
 // Update cart item quantity by index
 function updateCartItemQuantity(index, quantity) {
+    console.log('🔢 Actualizando cantidad de item por índice:', index, 'nueva cantidad:', quantity);
+    
     // No permitir modificar descuentos de combo
     if (cart[index] && cart[index].isComboDiscount) {
         console.log('⚠️ No se puede modificar cantidad de descuento de combo');
@@ -652,9 +713,17 @@ function updateCartItemQuantity(index, quantity) {
     
     if (quantity <= 0) {
         removeCartItem(index);
-    } else {
+    } else if (cart[index] && quantity <= cart[index].stock) {
         cart[index].quantity = quantity;
+        
+        // Limpiar y recalcular promociones al cambiar cantidades
+        appliedPromotions = [];
+        totalDiscount = 0;
+        
         updateCartDisplay();
+        console.log('✅ Cantidad de item actualizada y promociones recalculadas');
+    } else {
+        alert('No hay suficiente stock disponible');
     }
 }
 
@@ -1485,56 +1554,80 @@ function showComboSuggestions(suggestions) {
         const missingProducts = suggestion.missing_products;
         
         const comboHtml = `
-            <div class="bg-white border border-yellow-300 rounded-md p-3 mb-2">
-                <div class="flex justify-between items-start">
+            <div class="bg-white border-2 border-orange-200 rounded-xl p-5 shadow-md hover:shadow-lg transition-all duration-300">
+                <!-- Header del Combo -->
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-box-open text-white text-lg"></i>
+                    </div>
                     <div class="flex-1">
-                        <h4 class="font-semibold text-gray-900">${combo.name}</h4>
-                        <p class="text-sm text-gray-600 mb-2">${combo.description}</p>
-                        
-                        <div class="flex items-center space-x-4 text-sm">
-                            <span class="text-green-600 font-semibold">
-                                $${parseFloat(combo.price).toFixed(2)}
-                            </span>
-                            <span class="text-gray-500 line-through">
-                                $${parseFloat(combo.original_price).toFixed(2)}
-                            </span>
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
-                                Ahorra $${parseFloat(combo.savings).toFixed(2)}
-                            </span>
-                        </div>
-                        
-                        <div class="mt-2 text-xs text-gray-500">
-                            Coincidencia: ${parseFloat(matchLevel.percentage).toFixed(0)}% 
-                            (${matchLevel.matched_products}/${matchLevel.total_products} productos)
-                        </div>
-                        
-                        ${missingProducts.length > 0 ? `
-                            <div class="mt-2">
-                                <span class="text-xs text-orange-600">
-                                    Falta agregar: ${missingProducts.map(p => p.name).join(', ')}
-                                </span>
-                            </div>
-                        ` : ''}
+                        <h4 class="font-bold text-gray-900 text-lg">${combo.name}</h4>
+                        <p class="text-sm text-gray-600">${combo.description}</p>
                     </div>
-                    
-                    <div class="ml-4 flex flex-col space-y-1">
-                        ${missingProducts.length === 0 ? `
-                            <button onclick="applyCombo(${combo.id})" 
-                                    class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded">
-                                <i class="fas fa-check mr-1"></i>Aplicar Combo
-                            </button>
-                        ` : `
-                            <button onclick="addMissingProducts(${JSON.stringify(missingProducts).replace(/"/g, '&quot;')}, ${combo.id})" 
-                                    class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded">
-                                <i class="fas fa-plus mr-1"></i>Agregar Faltantes
-                            </button>
-                        `}
-                        
-                        <button onclick="dismissCombo(${index})" 
-                                class="bg-gray-400 hover:bg-gray-500 text-white text-xs px-3 py-1 rounded">
-                            <i class="fas fa-times mr-1"></i>Descartar
+                </div>
+                
+                <!-- Precios y Ahorro -->
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl font-bold text-green-700">$${parseFloat(combo.price).toFixed(2)}</span>
+                        <span class="text-lg text-gray-500 line-through">$${parseFloat(combo.original_price).toFixed(2)}</span>
+                    </div>
+                    <div class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-bold text-sm">
+                        <i class="fas fa-piggy-bank mr-1"></i>
+                        Ahorra $${parseFloat(combo.savings).toFixed(2)}
+                    </div>
+                </div>
+                
+                <!-- Información de Coincidencia -->
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-blue-50 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-blue-600">${parseFloat(matchLevel.percentage).toFixed(0)}%</div>
+                        <div class="text-xs text-blue-700 font-medium">Coincidencia</div>
+                    </div>
+                    <div class="bg-purple-50 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-purple-600">${matchLevel.matched_products}/${matchLevel.total_products}</div>
+                        <div class="text-xs text-purple-700 font-medium">Productos</div>
+                    </div>
+                </div>
+                
+                ${missingProducts.length > 0 ? `
+                    <!-- Productos por Agregar -->
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-center mb-3">
+                            <i class="fas fa-plus-circle text-orange-600 mr-2 text-lg"></i>
+                            <span class="font-bold text-orange-700">Productos por agregar:</span>
+                        </div>
+                        <div class="grid grid-cols-1 gap-2">
+                            ${missingProducts.map(p => `
+                                <div class="bg-white border border-orange-200 rounded-lg px-3 py-2 text-sm text-orange-700 font-medium">
+                                    <i class="fas fa-utensils mr-2"></i>${p.name}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <!-- Botones de Acción -->
+                <div class="flex flex-col gap-2">
+                    ${missingProducts.length === 0 ? `
+                        <button onclick="applyCombo(${combo.id})" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center">
+                            <i class="fas fa-check mr-2"></i>
+                            Aplicar Combo Completo
                         </button>
-                    </div>
+                    ` : `
+                        <button onclick="addMissingProducts(${JSON.stringify(missingProducts).replace(/"/g, '&quot;')}, ${combo.id})" 
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center">
+                            <i class="fas fa-plus mr-2"></i>
+                            Agregar Productos Faltantes
+                        </button>
+                    `}
+                    
+                    <button onclick="dismissCombo(${index})" 
+                            class="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center">
+                        <i class="fas fa-times mr-2"></i>
+                        Descartar Esta Sugerencia
+                    </button>
                 </div>
             </div>
         `;
