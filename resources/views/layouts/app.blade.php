@@ -17,15 +17,6 @@
     
     <!-- Custom CSS -->
     <style>
-        :root {
-            --tochis-orange: #f97316;
-            --tochis-orange-dark: #ea580c;
-            --tochis-orange-light: #fb923c;
-            --tochis-black: #1a1a1a;
-            --tochis-gray: #f8fafc;
-            --tochis-gray-dark: #64748b;
-        }
-        
         * {
             font-family: 'Inter', sans-serif;
         }
@@ -59,32 +50,90 @@
             @apply bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg;
         }
         
-        .tochis-gradient {
-            background: linear-gradient(135deg, var(--tochis-orange) 0%, var(--tochis-orange-dark) 100%);
+        /* Sidebar moderno estilo FoodMeal con colores TOCHIS */
+        .modern-sidebar {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            width: 280px;
+            border-radius: 0 24px 24px 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 1000;
+            overflow: hidden;
+            box-shadow: 4px 0 24px rgba(249, 115, 22, 0.15);
         }
         
-        .sidebar-item {
-            @apply flex items-center px-4 py-4 text-gray-300 hover:bg-gray-800 hover:text-orange-400 transition-all duration-300 group relative;
-            border-left: 4px solid transparent;
-            text-decoration: none;
+        .sidebar-content {
+            padding: 32px 24px;
+            height: 100%;
             display: flex;
-            width: 100%;
-            min-height: 56px;
-            margin-bottom: 2px;
-            border-radius: 0 12px 12px 0;
-            margin-right: 8px;
+            flex-direction: column;
         }
         
-        .sidebar-item.active {
-            @apply bg-gray-800 text-orange-400;
-            border-left: 4px solid #f97316;
-            background: linear-gradient(90deg, rgba(249, 115, 22, 0.2) 0%, rgba(249, 115, 22, 0.1) 50%, transparent 100%);
-            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        .logo-section {
+            margin-bottom: 40px;
         }
         
-        .sidebar-item i {
-            @apply text-center transition-all duration-300 flex-shrink-0;
-            min-width: 24px;
+        .logo-section h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            letter-spacing: 1px;
+        }
+        
+        .logo-section h1 i {
+            margin-right: 12px;
+            font-size: 32px;
+        }
+        
+        .logo-section p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-section {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateX(4px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.95);
+            color: #ea580c;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        .nav-item i {
             width: 24px;
             height: 24px;
             margin-right: 16px;
@@ -92,50 +141,99 @@
             align-items: center;
             justify-content: center;
             font-size: 18px;
+            flex-shrink: 0;
         }
         
-        .sidebar-item:hover i {
-            @apply transform scale-110 text-orange-400;
-        }
-        
-        .sidebar-item span {
-            @apply font-semibold text-sm flex-1;
+        .nav-item span {
+            flex: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            line-height: 1.4;
         }
         
-        .sidebar-item:hover {
-            background: linear-gradient(90deg, rgba(249, 115, 22, 0.15) 0%, rgba(249, 115, 22, 0.05) 50%, transparent 100%);
-            transform: translateX(4px);
+        .user-section {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
         }
         
-        .sidebar-section-title {
-            @apply px-4 py-4 border-b border-gray-700 mb-3;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         
-        .sidebar-section-title h3 {
-            @apply text-xs font-bold text-orange-400 uppercase tracking-wider flex items-center;
-            letter-spacing: 1px;
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
-        .sidebar-menu-group {
-            @apply space-y-1 px-2 mb-6;
+        .user-details h4 {
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
         }
         
-        /* Asegurar que el sidebar esté siempre fijo */
-        .sidebar-fixed {
-            position: fixed !important;
-            left: 0 !important;
-            top: 0 !important;
-            height: 100vh !important;
-            z-index: 1000 !important;
+        .user-details p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            font-weight: 500;
         }
         
-        /* Asegurar que el contenido principal tenga el margen correcto */
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* Contenido principal */
         .main-content {
-            margin-left: 256px !important; /* 64 * 4 = 256px (w-64) */
+            margin-left: 280px;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+        
+        /* Scrollbar personalizado */
+        .nav-section::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .nav-section::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .nav-section::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        
+        .nav-section::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
     </style>
     
@@ -144,127 +242,108 @@
 <body class="bg-gray-50 font-sans antialiased">
     <div class="min-h-screen flex">
         @auth
-        <!-- Sidebar -->
-        <div class="sidebar-fixed w-64 bg-gray-900 shadow-2xl flex flex-col">
-            <!-- Logo y Título -->
-            <div class="h-20 tochis-gradient flex items-center justify-center flex-shrink-0 shadow-lg">
-                <div class="text-center">
-                    <h1 class="text-white text-2xl font-bold tracking-wider flex items-center justify-center">
-                        <i class="fas fa-utensils mr-3 text-2xl"></i>
+        <!-- Sidebar Moderno -->
+        <div class="modern-sidebar">
+            <div class="sidebar-content">
+                <!-- Logo Section -->
+                <div class="logo-section">
+                    <h1>
+                        <i class="fas fa-utensils"></i>
                         TOCHIS
                     </h1>
-                    <p class="text-orange-100 text-xs font-medium mt-1">Sistema de Punto de Venta</p>
+                    <p>Sistema de Punto de Venta</p>
                 </div>
-            </div>
-            
-            <nav class="flex-1 mt-6 overflow-y-auto">
-                @if(auth()->user()->isAdmin())
-                    <!-- Menú Administrador -->
-                    <div class="sidebar-section-title">
-                        <h3>
-                            <i class="fas fa-crown mr-3"></i>
-                            Administración
-                        </h3>
-                    </div>
-                    
-                    <div class="sidebar-menu-group">
+                
+                <!-- Navigation -->
+                <div class="nav-section">
+                    @if(auth()->user()->isAdmin())
+                        <!-- Menú Administrador -->
                         <a href="{{ route('admin.dashboard') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                             <i class="fas fa-chart-line"></i>
                             <span>Dashboard</span>
                         </a>
                         
                         <a href="{{ route('admin.categories.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                             <i class="fas fa-tags"></i>
                             <span>Categorías</span>
                         </a>
                         
                         <a href="{{ route('admin.products.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
                             <i class="fas fa-hamburger"></i>
                             <span>Productos</span>
                         </a>
                         
                         <a href="{{ route('admin.customization-options.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.customization-options.*') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('admin.customization-options.*') ? 'active' : '' }}">
                             <i class="fas fa-cogs"></i>
                             <span>Personalización</span>
                         </a>
                         
                         <a href="{{ route('admin.promotions.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.promotions.*') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('admin.promotions.*') ? 'active' : '' }}">
                             <i class="fas fa-fire"></i>
                             <span>Promociones</span>
                         </a>
                         
                         <a href="{{ route('admin.combos.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.combos.*') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('admin.combos.*') ? 'active' : '' }}">
                             <i class="fas fa-box-open"></i>
                             <span>Combos</span>
                         </a>
                         
                         <a href="{{ route('admin.reports.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                             <i class="fas fa-chart-bar"></i>
                             <span>Reportes</span>
                         </a>
-                    </div>
-                @else
-                    <!-- Menú Cajero -->
-                    <div class="sidebar-section-title">
-                        <h3>
-                            <i class="fas fa-cash-register mr-3"></i>
-                            Punto de Venta
-                        </h3>
-                    </div>
-                    
-                    <div class="sidebar-menu-group">
+                    @else
+                        <!-- Menú Cajero -->
                         <a href="{{ route('cashier.dashboard') }}" 
-                           class="sidebar-item {{ request()->routeIs('cashier.dashboard') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('cashier.dashboard') ? 'active' : '' }}">
                             <i class="fas fa-chart-line"></i>
                             <span>Dashboard</span>
                         </a>
                         
                         <a href="{{ route('cashier.sale.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('cashier.sale.index') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('cashier.sale.index') ? 'active' : '' }}">
                             <i class="fas fa-shopping-cart"></i>
                             <span>Nueva Venta</span>
                         </a>
                         
                         <a href="{{ route('cashier.sale.history') }}" 
-                           class="sidebar-item {{ request()->routeIs('cashier.sale.history') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('cashier.sale.history') ? 'active' : '' }}">
                             <i class="fas fa-receipt"></i>
                             <span>Historial de Ventas</span>
                         </a>
                         
                         <a href="{{ route('cashier.cash-cut.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('cashier.cash-cut.*') ? 'active' : '' }}">
+                           class="nav-item {{ request()->routeIs('cashier.cash-cut.*') ? 'active' : '' }}">
                             <i class="fas fa-calculator"></i>
                             <span>Corte de Caja</span>
                         </a>
-                    </div>
-                @endif
-            </nav>
-            
-            <!-- Usuario y Logout -->
-            <div class="flex-shrink-0 p-4 bg-gray-800 border-t border-gray-700">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center flex-1 min-w-0">
-                        <div class="w-12 h-12 tochis-gradient rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg flex-shrink-0">
+                    @endif
+                </div>
+                
+                <!-- User Section -->
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar">
                             {{ substr(auth()->user()->name, 0, 1) }}
                         </div>
-                        <div class="ml-3 min-w-0 flex-1">
-                            <p class="text-sm font-semibold text-white truncate">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-orange-400 font-medium">{{ ucfirst(auth()->user()->role) }}</p>
+                        <div class="user-details">
+                            <h4>{{ auth()->user()->name }}</h4>
+                            <p>{{ ucfirst(auth()->user()->role) }}</p>
                         </div>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="logout-btn" title="Cerrar Sesión">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
                     </div>
-                    <form method="POST" action="{{ route('logout') }}" class="inline flex-shrink-0 ml-3">
-                        @csrf
-                        <button type="submit" class="w-10 h-10 bg-gray-700 hover:bg-orange-500 text-gray-400 hover:text-white rounded-lg transition-all duration-200 transform hover:scale-105 flex items-center justify-center" title="Cerrar Sesión">
-                            <i class="fas fa-sign-out-alt text-lg"></i>
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -299,85 +378,58 @@
 
             <!-- Alerts -->
             @if(session('success'))
-                <div class="mx-8 mt-6">
-                    <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-lg shadow-sm fade-in" role="alert">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-check-circle text-green-400 text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-green-800 font-medium">{{ session('success') }}</p>
-                            </div>
+                <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg shadow-sm mx-8 mt-6 fade-in">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium">{{ session('success') }}</p>
                         </div>
                     </div>
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="mx-8 mt-6">
-                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg shadow-sm fade-in" role="alert">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-exclamation-circle text-red-400 text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-red-800 font-medium">{{ session('error') }}</p>
-                            </div>
+                <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg shadow-sm mx-8 mt-6 fade-in">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium">{{ session('error') }}</p>
                         </div>
                     </div>
                 </div>
             @endif
 
-            @if(session('warning'))
-                <div class="mx-8 mt-6">
-                    <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-lg shadow-sm fade-in" role="alert">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-exclamation-triangle text-orange-400 text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-orange-800 font-medium">{{ session('warning') }}</p>
-                            </div>
+            @if($errors->any())
+                <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg shadow-sm mx-8 mt-6 fade-in">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium">Se encontraron errores:</h3>
+                            <ul class="mt-2 text-sm list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>
             @endif
 
             <!-- Page Content -->
-            <main class="@auth p-8 @else p-0 min-h-screen flex items-center justify-center @endauth">
+            <main class="px-8 py-8">
                 @yield('content')
             </main>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <script>
-        // Auto-hide alerts after 5 seconds
-        setTimeout(function() {
-            $('[role="alert"]').fadeOut();
-        }, 5000);
-        
-        // CSRF token for AJAX requests
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        
-        // Smooth scroll for anchor links
-        $('a[href^="#"]').on('click', function(event) {
-            var target = $(this.getAttribute('href'));
-            if( target.length ) {
-                event.preventDefault();
-                $('html, body').stop().animate({
-                    scrollTop: target.offset().top - 80
-                }, 1000);
-            }
-        });
-    </script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.js" defer></script>
     @stack('scripts')
 </body>
 </html>
