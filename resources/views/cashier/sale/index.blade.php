@@ -33,15 +33,29 @@
     }
     
     .category-btn {
-        transition: all 0.3s ease;
-        border-radius: 12px;
-        font-weight: 600;
+        transition: all 0.2s ease;
+        border-radius: 8px;
+        font-weight: 500;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    
+    .category-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     
     .category-btn.active {
-        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: white !important;
+        box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        border-color: #f97316;
+    }
+    
+    .category-btn.active:hover {
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
     }
     
     .tochis-gradient {
@@ -98,30 +112,30 @@
         <!-- Products Section -->
         <div class="lg:col-span-2">
             <!-- Categories -->
-            <div class="tochis-card mb-6">
-                <div class="px-6 py-4 tochis-gradient rounded-t-2xl">
-                    <h3 class="text-lg font-bold text-white flex items-center">
-                        <i class="fas fa-tags mr-3"></i>
-                        Categorías de Productos
+            <div class="tochis-card mb-4">
+                <div class="px-4 py-2 tochis-gradient rounded-t-2xl">
+                    <h3 class="text-sm font-bold text-white flex items-center">
+                        <i class="fas fa-tags mr-2 text-sm"></i>
+                        Categorías
                     </h3>
                 </div>
-                <div class="p-6">
-                    <div class="flex flex-wrap gap-3">
+                <div class="px-4 py-3">
+                    <div class="flex flex-wrap gap-2">
                         <button onclick="filterByCategory('all')" 
-                                class="category-btn active px-6 py-3 bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
+                                class="category-btn active px-3 py-1.5 text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200 rounded-lg font-medium flex items-center"
                                 data-category="all">
-                            <i class="fas fa-th-large mr-2"></i>
-                            Todos los Productos
+                            <i class="fas fa-th-large mr-1.5 text-xs"></i>
+                            Todos
                         </button>
                         @foreach($categories as $category)
                             @if($category->activeProducts->count() > 0)
                                 <button onclick="filterByCategory({{ $category->id }})" 
-                                        class="category-btn px-6 py-3 text-white hover:opacity-90 transition duration-200"
+                                        class="category-btn px-3 py-1.5 text-xs text-white hover:opacity-90 transition duration-200 rounded-lg font-medium flex items-center"
                                         style="background: linear-gradient(135deg, {{ $category->color }}, {{ $category->color }}dd)"
                                         data-category="{{ $category->id }}">
-                                    <i class="fas fa-utensils mr-2"></i>
+                                    <i class="fas fa-utensils mr-1.5 text-xs"></i>
                                     {{ $category->name }}
-                                    <span class="ml-2 bg-white bg-opacity-25 px-2 py-1 rounded-full text-xs font-bold">
+                                    <span class="ml-2 bg-white bg-opacity-30 px-1.5 py-0.5 rounded-full text-xs font-bold">
                                         {{ $category->activeProducts->count() }}
                                     </span>
                                 </button>
@@ -428,15 +442,25 @@ function handleProductClick(productId, productName, price, stock, isFood = false
 
 // Filter products by category
 function filterByCategory(categoryId) {
-    // Update active button
+    // Update active button - Reset all buttons first
     document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('active', 'bg-blue-600', 'text-white');
-        btn.classList.add('bg-gray-100', 'text-gray-700');
+        btn.classList.remove('active');
+        // Reset all to default gray style for "Todos los Productos"
+        if (btn.dataset.category === 'all') {
+            btn.classList.add('bg-gray-100', 'text-gray-700');
+            btn.classList.remove('bg-blue-600', 'text-white');
+        }
     });
     
+    // Set active button
     const activeBtn = document.querySelector(`[data-category="${categoryId}"]`);
-    activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
-    activeBtn.classList.add('active', 'bg-blue-600', 'text-white');
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        // If it's the "all" button, make sure it has the correct active styling
+        if (categoryId === 'all') {
+            activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
+        }
+    }
 
     // Filter products
     const products = document.querySelectorAll('.product-card');
@@ -452,7 +476,12 @@ function filterByCategory(categoryId) {
     });
 
     // Show/hide no products message
-    document.getElementById('no-products').style.display = visibleCount === 0 ? 'block' : 'none';
+    const noProductsElement = document.getElementById('no-products');
+    if (noProductsElement) {
+        noProductsElement.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+    
+    console.log(`Filtered by category: ${categoryId}, visible products: ${visibleCount}`);
 }
 
 // Search products
