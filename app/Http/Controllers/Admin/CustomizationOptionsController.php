@@ -14,12 +14,10 @@ class CustomizationOptionsController extends Controller
     public function index()
     {
         $observations = ProductCustomizationOption::observations()
-            ->active()
             ->ordered()
             ->get();
             
         $specialties = ProductCustomizationOption::specialties()
-            ->active()
             ->ordered()
             ->get();
             
@@ -71,24 +69,49 @@ class CustomizationOptionsController extends Controller
      */
     public function update(Request $request, ProductCustomizationOption $customizationOption)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|in:observation,specialty',
-            'price' => 'required|numeric|min:0',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
-        ]);
+        try {
+            \Log::info('Update method called', [
+                'request_data' => $request->all(),
+                'customization_option_id' => $customizationOption->id
+            ]);
 
-        $customizationOption->update([
-            'name' => $request->name,
-            'type' => $request->type,
-            'price' => $request->price,
-            'sort_order' => $request->sort_order ?? $customizationOption->sort_order,
-            'is_active' => $request->has('is_active')
-        ]);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'type' => 'required|in:observation,specialty',
+                'price' => 'required|numeric|min:0',
+                'sort_order' => 'nullable|integer|min:0',
+                'is_active' => 'nullable'
+            ]);
 
-        return redirect()->route('admin.customization-options.index')
-            ->with('success', 'Opción de personalización actualizada exitosamente.');
+            \Log::info('Validation passed', ['validated_data' => $validated]);
+
+            $updateData = [
+                'name' => $request->name,
+                'type' => $request->type,
+                'price' => $request->price,
+                'sort_order' => $request->sort_order ?? $customizationOption->sort_order,
+                'is_active' => $request->has('is_active') && $request->is_active == '1'
+            ];
+
+            \Log::info('Update data prepared', ['update_data' => $updateData]);
+
+            $customizationOption->update($updateData);
+
+            \Log::info('Model updated successfully', [
+                'updated_option' => $customizationOption->fresh()
+            ]);
+
+            return redirect()->route('admin.customization-options.index')
+                ->with('success', 'Opción de personalización actualizada exitosamente.');
+
+        } catch (\Exception $e) {
+            \Log::error('Error in update method', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return back()->withInput()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
+        }
     }
 
     /**

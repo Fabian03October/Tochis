@@ -11,7 +11,7 @@
             <div>
                 <h2 class="text-xl font-semibold text-gray-900">{{ $product->name }}</h2>
                 <p class="mt-2 text-sm text-gray-600">
-                    Código: {{ $product->code }} • Categoría: {{ $product->category->name }}
+                    Categoría: {{ $product->category->name }}
                 </p>
             </div>
             <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none space-x-2">
@@ -44,11 +44,6 @@
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Nombre</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $product->name }}</dd>
-                        </div>
-                        
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Código</dt>
-                            <dd class="mt-1 text-sm text-gray-900 font-mono">{{ $product->code }}</dd>
                         </div>
                         
                         <div>
@@ -121,67 +116,12 @@
                 </div>
             </div>
 
-            <!-- Inventory Information -->
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">
-                        <i class="fas fa-boxes mr-2 text-purple-600"></i>
-                        Información de Inventario
-                    </h3>
-                </div>
-                
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="text-center p-4 {{ $product->stock <= $product->min_stock ? 'bg-red-50' : ($product->stock <= ($product->min_stock * 2) ? 'bg-yellow-50' : 'bg-green-50') }} rounded-lg">
-                            <p class="text-2xl font-bold {{ $product->stock <= $product->min_stock ? 'text-red-600' : ($product->stock <= ($product->min_stock * 2) ? 'text-yellow-600' : 'text-green-600') }}">
-                                {{ $product->stock }}
-                            </p>
-                            <p class="text-sm text-gray-600">Stock Actual</p>
-                            @if($product->stock <= $product->min_stock)
-                                <p class="text-xs text-red-600 mt-1">
-                                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    Stock bajo
-                                </p>
-                            @elseif($product->stock <= ($product->min_stock * 2))
-                                <p class="text-xs text-yellow-600 mt-1">
-                                    <i class="fas fa-warning mr-1"></i>
-                                    Poco stock
-                                </p>
-                            @endif
-                        </div>
-                        
-                        <div class="text-center p-4 bg-gray-50 rounded-lg">
-                            <p class="text-2xl font-bold text-gray-600">{{ $product->min_stock }}</p>
-                            <p class="text-sm text-gray-600">Stock Mínimo</p>
-                        </div>
-                    </div>
-                    
-                    @if($product->stock <= $product->min_stock)
-                        <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                            <div class="flex">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-exclamation-triangle text-red-400"></i>
-                                </div>
-                                <div class="ml-3">
-                                    <h3 class="text-sm font-medium text-red-800">
-                                        Stock Bajo
-                                    </h3>
-                                    <div class="mt-2 text-sm text-red-700">
-                                        <p>Este producto necesita reabastecimiento urgente. El stock actual está por debajo del mínimo establecido.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-
             <!-- Recent Sales -->
             @if($recentSales->count() > 0)
                 <div class="bg-white rounded-lg shadow overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-medium text-gray-900">
-                            <i class="fas fa-chart-line mr-2 text-orange-600"></i>
+                            <i class="fas fa-chart-line mr-2 text-gray-600"></i>
                             Ventas Recientes
                         </h3>
                     </div>
@@ -350,7 +290,6 @@
         @csrf
         @method('PUT')
         <input type="hidden" name="name" value="{{ $product->name }}">
-        <input type="hidden" name="code" value="{{ $product->code }}">
         <input type="hidden" name="description" value="{{ $product->description }}">
         <input type="hidden" name="category_id" value="{{ $product->category_id }}">
         <input type="hidden" name="cost" value="{{ $product->cost }}">

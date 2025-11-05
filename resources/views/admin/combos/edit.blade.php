@@ -291,18 +291,15 @@
                 <!-- Botones de Acción -->
                 <div class="bg-white shadow-sm rounded-lg overflow-hidden mt-6">
                     <div class="px-6 py-4 space-y-3">
-                        <button type="submit" 
-                                class="w-full flex items-center justify-center px-4 py-2 border border-transparent text-white bg-blue-600 hover:bg-blue-700 rounded-md text-sm font-medium">
+                        <button type="submit" class="w-full btn-primary">
                             <i class="fas fa-save mr-2"></i>Actualizar Combo
                         </button>
                         
-                        <a href="{{ route('admin.combos.show', $combo) }}" 
-                           class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-md text-sm font-medium">
+                        <a href="{{ route('admin.combos.show', $combo) }}" class="w-full btn-secondary text-center">
                             <i class="fas fa-eye mr-2"></i>Ver Combo
                         </a>
                         
-                        <a href="{{ route('admin.combos.index') }}" 
-                           class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-md text-sm font-medium">
+                        <a href="{{ route('admin.combos.index') }}" class="w-full btn-secondary text-center">
                             <i class="fas fa-times mr-2"></i>Cancelar
                         </a>
                     </div>

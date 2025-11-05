@@ -117,10 +117,18 @@ class PromotionController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
             'is_active' => 'boolean',
         ]);
 
-        $promotion->update($request->only(['name', 'description', 'is_active']));
+        $promotion->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'is_active' => $request->boolean('is_active')
+        ]);
 
         return redirect()->route('admin.promotions.index')
                         ->with('success', 'Promoción actualizada exitosamente.');

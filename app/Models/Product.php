@@ -15,10 +15,12 @@ class Product extends Model
         'description',
         'category_id',
         'price',
+        'compare_price',
         'cost',
+        'image',
         'stock',
         'min_stock',
-        'image',
+        'manage_stock',
         'is_active',
         'is_food',
         'preparation_time'
@@ -26,7 +28,11 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'compare_price' => 'decimal:2',
         'cost' => 'decimal:2',
+        'stock' => 'integer',
+        'min_stock' => 'integer',
+        'manage_stock' => 'boolean',
         'is_active' => 'boolean',
         'is_food' => 'boolean',
     ];
@@ -75,35 +81,11 @@ class Product extends Model
      */
     public function scopeLowStock($query)
     {
-        return $query->whereColumn('stock', '<=', 'min_stock');
-    }
-
-    /**
-     * Check if product has low stock
-     */
-    public function hasLowStock(): bool
-    {
-        return $this->stock <= $this->min_stock;
-    }
-
-    /**
-     * Decrease stock when sold
-     */
-    public function decreaseStock(int $quantity): bool
-    {
-        if ($this->stock >= $quantity) {
-            $this->stock -= $quantity;
-            return $this->save();
-        }
-        return false;
-    }
-
-    /**
-     * Increase stock when restocked
-     */
-    public function increaseStock(int $quantity): bool
-    {
-        $this->stock += $quantity;
-        return $this->save();
+        return $query->where('manage_stock', true)
+                    ->whereColumn('stock', '<=', 'min_stock')
+                    ->orWhere(function($q) {
+                        $q->where('manage_stock', true)
+                          ->where('stock', '<=', 10);
+                    });
     }
 }

@@ -11,6 +11,7 @@ class Sale extends Model
 
     protected $fillable = [
         'sale_number',
+        'order_number',
         'user_id',
         'subtotal',
         'tax',
@@ -36,7 +37,7 @@ class Sale extends Model
     }
 
     /**
-     * Generate sale number
+     * Generate sale number and order number
      */
     protected static function boot()
     {
@@ -45,6 +46,10 @@ class Sale extends Model
         static::creating(function ($sale) {
             if (empty($sale->sale_number)) {
                 $sale->sale_number = 'SALE-' . date('Ymd') . '-' . str_pad(static::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
+            }
+            
+            if (empty($sale->order_number)) {
+                $sale->order_number = 'ORD-' . date('Ymd') . '-' . str_pad(static::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
             }
         });
     }
