@@ -1,16 +1,21 @@
 @extends('layouts.app')
 
 @section('title', 'Categorías - Sistema POS')
-@section('page-title', 'Gestión de Categorías')
+@section('page-title')
+    <div>
+        <h1 class="text-2xl font-bold text-gray-9000">Categorías</h1>
+        <p class="text-gray-400 text-sm">Gestiona las categorías de productos</p>
+    </div>
+@endsection
 
 @section('content')
 <div class="fade-in">
     <!-- Header Section -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
+    <div class="flex justify-end items-center mb-6">
+        {{-- <div>
             <h1 class="text-2xl font-bold text-gray-900">Categorías</h1>
             <p class="text-gray-600">Gestiona las categorías de productos</p>
-        </div>
+        </div> --}}
         <a href="{{ route('admin.categories.create') }}" class="btn-primary">
             <i class="fas fa-plus mr-2"></i>
             Nueva Categoría
@@ -149,6 +154,12 @@
                                            title="Ver detalles">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        <button type="button" 
+                                                onclick="confirmDelete('{{ $category->id }}', '{{ $category->name }}', {{ $category->products->count() }})"
+                                                class="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition duration-200"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                         <a href="{{ route('admin.categories.edit', $category) }}" 
                                            class="text-yellow-600 hover:text-yellow-900 p-2 rounded-lg hover:bg-yellow-50 transition duration-200"
                                            title="Editar">
@@ -160,14 +171,6 @@
                                                title="Configurar opciones">
                                                 <i class="fas fa-cog"></i>
                                             </a>
-                                        @endif
-                                        @if($category->products->count() == 0)
-                                            <button type="button" 
-                                                    onclick="confirmDelete('{{ $category->id }}', '{{ $category->name }}')"
-                                                    class="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition duration-200"
-                                                    title="Eliminar">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
                                         @endif
                                     </div>
                                 </td>
@@ -201,8 +204,16 @@
 
 <!-- Delete Confirmation Modal Script -->
 <script>
-function confirmDelete(categoryId, categoryName) {
-    if (confirm(`¿Estás seguro de que deseas eliminar la categoría "${categoryName}"?`)) {
+function confirmDelete(categoryId, categoryName, productsCount) {
+    let message = '';
+    
+    if (productsCount > 0) {
+        message = `⚠️ La categoría "${categoryName}" tiene ${productsCount} producto(s) asociado(s).\n\n¿Estás seguro de que deseas eliminarla? Esto también eliminará todos los productos de esta categoría.`;
+    } else {
+        message = `¿Estás seguro de que deseas eliminar la categoría "${categoryName}"?`;
+    }
+    
+    if (confirm(message)) {
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = `/admin/categories/${categoryId}`;

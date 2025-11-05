@@ -1,6 +1,11 @@
 @extends('layouts.admin')
 
-@section('title', 'Crear Categoría')
+@section('title')
+<div>
+        <h1 class="text-2xl font-bold text-gray-9000">Crear Nueva Categoría</h1>
+        <p class="text-gray-400 text-sm">Organiza tus productos creando una nueva categoría</p>
+    </div>
+@endsection
 
 @section('styles')
 <style>
@@ -18,7 +23,7 @@
 @section('content')
 <div class="fade-in">
     <div class="max-w-6xl mx-auto">
-        <!-- Header Card -->
+        {{-- <!-- Header Card -->
         <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
             <div class="flex items-center">
                 <div class="bg-blue-50 rounded-lg p-3 mr-4">
@@ -29,7 +34,7 @@
                     <p class="text-gray-500 text-sm">Organiza tus productos creando una nueva categoría</p>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Main Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
