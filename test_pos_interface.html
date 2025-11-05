@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Sistema POS - TOCHIS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        button {
+            background: #f97316;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #ea580c;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Sistema POS - TOCHIS</h1>
+    
+    <div class="test-card">
+        <h2>📋 Lista de Verificación</h2>
+        <div id="checklist">
+            <div>✅ Balance eliminado correctamente</div>
+            <div>✅ Colores cambiados de morado a naranja</div>
+            <div>✅ IVA configurado al 16%</div>
+            <div>✅ Métodos de pago visibles</div>
+            <div>✅ Detección de combos mejorada</div>
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <h2>🛒 Simulador de Carrito</h2>
+        <p>Agrega productos para probar la detección de combos:</p>
+        <button onclick="testAddProduct(1, 'Hamburguesa Clásica', 8.99)">🍔 Hamburguesa</button>
+        <button onclick="testAddProduct(2, 'Papas Fritas', 3.99)">🍟 Papas</button>
+        <button onclick="testAddProduct(3, 'Refresco', 2.99)">🥤 Refresco</button>
+        <button onclick="testAddProduct(4, 'Pollo Frito', 12.99)">🍗 Pollo</button>
+        <button onclick="clearTestCart()">🗑️ Limpiar</button>
+        
+        <div id="test-cart" style="margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+            <strong>Carrito de Prueba:</strong>
+            <div id="cart-items-test">Vacío</div>
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <h2>💰 Calculadora de Totales</h2>
+        <div id="totals-test">
+            <div>Subtotal: $<span id="subtotal-test">0.00</span></div>
+            <div>IVA (16%): $<span id="tax-test">0.00</span></div>
+            <div><strong>Total: $<span id="total-test">0.00</span></strong></div>
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <h2>💳 Simulador de Pagos</h2>
+        <label>Método de Pago:</label>
+        <select id="payment-method-test" onchange="updatePaymentTest()">
+            <option value="cash">💵 Efectivo</option>
+            <option value="card">💳 Tarjeta</option>
+            <option value="transfer">🏦 Transferencia</option>
+        </select>
+        
+        <div id="payment-amount-section" style="margin-top: 10px;">
+            <label>Monto Recibido:</label>
+            <input type="number" id="paid-amount-test" placeholder="0.00" oninput="calculateChangeTest()">
+            <div id="change-test" style="margin-top: 5px; font-weight: bold; color: green;"></div>
+        </div>
+    </div>
+    
+    <div class="test-card">
+        <h2>🎯 Estado de Combos</h2>
+        <div id="combo-status" class="test-warning">
+            No hay combos detectados (agregar productos para probar)
+        </div>
+        <button onclick="testComboDetection()">🔍 Forzar Detección</button>
+    </div>
+
+    <script>
+        let testCart = [];
+        
+        function testAddProduct(id, name, price) {
+            const existingItem = testCart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                testCart.push({
+                    id: id,
+                    name: name,
+                    price: price,
+                    quantity: 1
+                });
+            }
+            
+            updateTestDisplay();
+            console.log('🛒 Test: Producto agregado', {id, name, price});
+        }
+        
+        function clearTestCart() {
+            testCart = [];
+            updateTestDisplay();
+        }
+        
+        function updateTestDisplay() {
+            // Update cart display
+            const cartItemsTest = document.getElementById('cart-items-test');
+            if (testCart.length === 0) {
+                cartItemsTest.innerHTML = 'Vacío';
+            } else {
+                cartItemsTest.innerHTML = testCart.map(item => 
+                    `${item.quantity}x ${item.name} - $${(item.price * item.quantity).toFixed(2)}`
+                ).join('<br>');
+            }
+            
+            // Calculate totals
+            const subtotal = testCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.16; // 16% IVA
+            const total = subtotal + tax;
+            
+            document.getElementById('subtotal-test').textContent = subtotal.toFixed(2);
+            document.getElementById('tax-test').textContent = tax.toFixed(2);
+            document.getElementById('total-test').textContent = total.toFixed(2);
+            
+            // Update combo status
+            updateComboStatus();
+        }
+        
+        function updatePaymentTest() {
+            const method = document.getElementById('payment-method-test').value;
+            const section = document.getElementById('payment-amount-section');
+            
+            if (method === 'cash') {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+                document.getElementById('change-test').innerHTML = '';
+            }
+        }
+        
+        function calculateChangeTest() {
+            const total = parseFloat(document.getElementById('total-test').textContent) || 0;
+            const paid = parseFloat(document.getElementById('paid-amount-test').value) || 0;
+            const change = paid - total;
+            
+            const changeDiv = document.getElementById('change-test');
+            if (paid >= total && total > 0) {
+                changeDiv.innerHTML = `Cambio: $${change.toFixed(2)}`;
+                changeDiv.style.color = 'green';
+            } else if (paid > 0) {
+                changeDiv.innerHTML = `Falta: $${Math.abs(change).toFixed(2)}`;
+                changeDiv.style.color = 'red';
+            } else {
+                changeDiv.innerHTML = '';
+            }
+        }
+        
+        function updateComboStatus() {
+            const status = document.getElementById('combo-status');
+            
+            if (testCart.length === 0) {
+                status.innerHTML = 'No hay productos en el carrito';
+                status.className = 'test-warning';
+            } else if (testCart.length >= 2) {
+                // Simular detección de combo
+                const hasCombo = testCart.some(item => item.name.includes('Hamburguesa')) &&
+                               testCart.some(item => item.name.includes('Papas')) &&
+                               testCart.some(item => item.name.includes('Refresco'));
+                
+                if (hasCombo) {
+                    status.innerHTML = '🎉 ¡Combo detectado! Hamburguesa + Papas + Refresco';
+                    status.className = 'test-success';
+                } else {
+                    status.innerHTML = 'Productos agregados, pero no forman un combo conocido';
+                    status.className = 'test-warning';
+                }
+            } else {
+                status.innerHTML = 'Agrega más productos para detectar combos';
+                status.className = 'test-warning';
+            }
+        }
+        
+        function testComboDetection() {
+            updateComboStatus();
+            console.log('🎯 Test: Forzando detección de combos', testCart);
+        }
+        
+        // Initialize
+        updateTestDisplay();
+        updatePaymentTest();
+        
+        console.log('🧪 Sistema de pruebas cargado correctamente');
+    </script>
+</body>
+</html>

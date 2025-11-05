@@ -152,32 +152,28 @@
     <div class="mt-8">
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                <i class="fas fa-bolt mr-2 text-orange-600"></i>
+                <i class="fas fa-bolt mr-2 text-gray-600"></i>
                 Acciones Rápidas
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <a href="{{ route('admin.products.create') }}" 
-                   class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition duration-200">
-                    <i class="fas fa-plus-circle text-blue-600 text-xl mr-3"></i>
-                    <span class="font-medium text-gray-700">Agregar Producto</span>
+                <a href="{{ route('admin.products.create') }}" class="btn-primary flex items-center justify-center">
+                    <i class="fas fa-plus-circle mr-3"></i>
+                    <span>Agregar Producto</span>
                 </a>
 
-                <a href="{{ route('admin.categories.create') }}" 
-                   class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-300 transition duration-200">
-                    <i class="fas fa-plus-circle text-green-600 text-xl mr-3"></i>
-                    <span class="font-medium text-gray-700">Nueva Categoría</span>
+                <a href="{{ route('admin.categories.create') }}" class="btn-success flex items-center justify-center">
+                    <i class="fas fa-plus-circle mr-3"></i>
+                    <span>Nueva Categoría</span>
                 </a>
 
-                <a href="{{ route('admin.reports.sales') }}" 
-                   class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition duration-200">
-                    <i class="fas fa-chart-bar text-purple-600 text-xl mr-3"></i>
-                    <span class="font-medium text-gray-700">Ver Reportes</span>
+                <a href="{{ route('admin.reports.sales') }}" class="btn-secondary flex items-center justify-center">
+                    <i class="fas fa-chart-bar mr-3"></i>
+                    <span>Ver Reportes</span>
                 </a>
 
-                <a href="{{ route('admin.products.index') }}?filter=low_stock" 
-                   class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition duration-200">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-xl mr-3"></i>
-                    <span class="font-medium text-gray-700">Stock Bajo</span>
+                <a href="{{ route('admin.products.index') }}?filter=low_stock" class="btn-warning flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle mr-3"></i>
+                    <span>Stock Bajo</span>
                 </a>
             </div>
         </div>

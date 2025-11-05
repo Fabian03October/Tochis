@@ -72,10 +72,24 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'description' => 'nullable|string|max:500',
             'color' => 'required|string|regex:/^#[a-fA-F0-9]{6}$/',
-            'is_active' => 'boolean',
+            'is_active' => 'sometimes|boolean',
+            'is_customizable' => 'sometimes|boolean',
+        ]);
+
+        // Log para debugging (remover en producción)
+        \Log::info('Actualizando categoría', [
+            'category_id' => $category->id,
+            'request_data' => $request->all(),
+            'is_active_before' => $category->is_active,
         ]);
 
         $category->update($request->all());
+
+        // Log después de actualizar
+        \Log::info('Categoría actualizada', [
+            'category_id' => $category->id,
+            'is_active_after' => $category->fresh()->is_active,
+        ]);
 
         return redirect()->route('admin.categories.index')
                         ->with('success', 'Categoría actualizada exitosamente.');

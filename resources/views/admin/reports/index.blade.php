@@ -117,8 +117,8 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-orange-100 rounded-md flex items-center justify-center">
-                        <i class="fas fa-chart-line text-orange-600"></i>
+                    <div class="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
+                        <i class="fas fa-chart-line text-gray-600"></i>
                     </div>
                 </div>
                 <div class="ml-5 w-0 flex-1">

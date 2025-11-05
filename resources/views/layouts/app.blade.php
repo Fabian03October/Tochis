@@ -227,7 +227,7 @@
             background: rgba(255, 255, 255, 0.5);
         }
         
-        /* Botones generales */
+        /* Sistema de botones uniforme */
         .btn-primary {
             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
             color: white;
@@ -237,19 +237,138 @@
             border: none;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+            color: white;
+            text-decoration: none;
         }
         
-        .btn-secondary, .btn-success, .btn-danger, .btn-warning {
+        .btn-secondary {
+            background: white;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: #4b5563;
+            text-decoration: none;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
             font-weight: 600;
             padding: 12px 24px;
             border-radius: 12px;
             border: none;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Tamaños de botones */
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+        
+        .btn-lg {
+            padding: 16px 32px;
+            font-size: 16px;
+            border-radius: 16px;
+        }
+        
+        /* Botones disabled */
+        .btn-primary:disabled, .btn-secondary:disabled, .btn-success:disabled, .btn-danger:disabled, .btn-warning:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
         }
     </style>
     
@@ -467,13 +586,13 @@
 
             @if(session('warning'))
                 <div class="mx-8 mt-6">
-                    <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-lg shadow-sm fade-in" role="alert">
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg shadow-sm fade-in" role="alert">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-exclamation-triangle text-orange-400 text-xl"></i>
+                                <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-orange-800 font-medium">{{ session('warning') }}</p>
+                                <p class="text-yellow-800 font-medium">{{ session('warning') }}</p>
                             </div>
                         </div>
                     </div>

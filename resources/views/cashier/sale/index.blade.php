@@ -147,25 +147,25 @@
 
             <!-- Products Grid -->
             <div class="tochis-card overflow-hidden">
-                <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-orange-50 border-b border-orange-100">
+                <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                            <i class="fas fa-hamburger mr-3 text-orange-500"></i>
+                            <i class="fas fa-hamburger mr-3 text-gray-500"></i>
                             Menú de Productos
                         </h3>
                         <div class="relative">
                             <input type="text" 
                                    id="search-product" 
                                    placeholder="Buscar deliciosos platillos..."
-                                   class="pl-12 pr-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-300 w-80">
+                                   class="pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-400 transition-all duration-300 w-80">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-orange-400"></i>
+                                <i class="fas fa-search text-gray-400"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="p-6 h-96 overflow-y-auto bg-gradient-to-br from-gray-50 to-orange-50">
+                <div class="p-6 h-96 overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100">
                     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                         @foreach($categories as $category)
                             @foreach($category->activeProducts as $product)
@@ -173,9 +173,8 @@
                                      data-category="{{ $category->id }}"
                                      data-product-id="{{ $product->id }}"
                                      data-product-name="{{ strtolower($product->name) }}"
-                                     data-product-code="{{ $product->barcode }}"
                                      data-has-options="{{ $product->category->is_customizable ? 'true' : 'false' }}"
-                                     onclick="handleProductClick({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, {{ $product->stock }}, {{ $product->is_food ? 'true' : 'false' }})">
+                                     onclick="handleProductClick({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, {{ $product->is_food ? 'true' : 'false' }})">
                                     
                                     <!-- Imagen del producto -->
                                     <div class="relative mb-4">
@@ -219,12 +218,6 @@
                                     @if($product->options->count() > 0)
                                         <span class="inline-block mt-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                                             <i class="fas fa-cog mr-1"></i>Personalizable
-                                        </span>
-                                    @endif
-                                    
-                                    @if($product->stock <= $product->min_stock)
-                                        <span class="inline-block mt-1 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">
-                                            Stock Bajo
                                         </span>
                                     @endif
                                     
@@ -279,7 +272,7 @@
                 </div>
 
                 <!-- Cart Summary -->
-                <div class="border-t-2 border-orange-100 p-6 bg-white space-y-4">
+                <div class="border-t-2 border-gray-200 p-6 bg-white space-y-4">
                     <!-- Totals -->
                     <div class="space-y-3">
                         <div class="flex justify-between text-base font-medium">
@@ -315,9 +308,9 @@
                             <span class="text-gray-700">Impuesto:</span>
                             <span id="tax" class="text-gray-800">$0.00</span>
                         </div>
-                        <div class="flex justify-between text-xl font-bold border-t-2 border-orange-100 pt-3">
+                        <div class="flex justify-between text-xl font-bold border-t-2 border-gray-200 pt-3">
                             <span class="text-gray-800">Total a Pagar:</span>
-                            <span id="total" class="text-orange-600">$0.00</span>
+                            <span id="total" class="text-gray-700">$0.00</span>
                         </div>
                     </div>
 
@@ -342,22 +335,22 @@
                     <!-- Notas de la venta -->
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">
-                            <i class="fas fa-sticky-note mr-2 text-orange-500"></i>
+                            <i class="fas fa-sticky-note mr-2 text-gray-500"></i>
                             Notas Especiales
                         </label>
                         <textarea id="sale-notes" 
                                   rows="3"
-                                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-300"
+                                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 transition-all duration-300"
                                   placeholder="Observaciones especiales para esta orden..."></textarea>
                     </div>
 
                     <!-- Payment Method -->
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">
-                            <i class="fas fa-credit-card mr-2 text-orange-500"></i>
+                            <i class="fas fa-credit-card mr-2 text-gray-500"></i>
                             Método de Pago
                         </label>
-                        <select id="payment-method" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-300 font-medium">
+                        <select id="payment-method" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 transition-all duration-300 font-medium">
                             <option value="cash">💵 Efectivo</option>
                             <option value="card">💳 Tarjeta</option>
                             <option value="transfer">🏦 Transferencia</option>
@@ -367,14 +360,14 @@
                     <!-- Payment Amount -->
                     <div id="payment-section" style="display: none;">
                         <label class="block text-sm font-bold text-gray-700 mb-2">
-                            <i class="fas fa-dollar-sign mr-2 text-orange-500"></i>
+                            <i class="fas fa-dollar-sign mr-2 text-gray-500"></i>
                             Monto Pagado
                         </label>
                         <input type="number" 
                                id="paid-amount" 
                                step="0.01" 
                                min="0"
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-300 text-lg font-bold"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 transition-all duration-300 text-lg font-bold"
                                placeholder="0.00">
                         <div id="change-display" class="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded-lg" style="display: none;">
                             <p class="text-green-800 font-bold flex items-center">
@@ -418,8 +411,8 @@ let suggestedCombos = [];
 let comboCheckTimeout = null;
 
 // Add product to cart - Function called when clicking a product
-function handleProductClick(productId, productName, price, stock, isFood = false) {
-    console.log('Product clicked:', {productId, productName, price, stock, isFood});
+function handleProductClick(productId, productName, price, isFood = false) {
+    console.log('Product clicked:', {productId, productName, price, isFood});
     
     // Obtener información adicional del producto
     const productCard = document.querySelector(`[data-product-id="${productId}"]`);
@@ -431,13 +424,13 @@ function handleProductClick(productId, productName, price, stock, isFood = false
         const hasOptions = productCard.dataset.hasOptions === 'true';
         
         if (hasOptions) {
-            openCustomizationModal(productId, productName, price, stock, categoryId);
+            openCustomizationModal(productId, productName, price, categoryId);
             return;
         }
     }
     
     // Add directly to cart without customization
-    addToCart(productId, productName, price, stock, isFood, categoryId);
+    addToCart(productId, productName, price, isFood, categoryId);
 }
 
 // Filter products by category
@@ -492,9 +485,8 @@ document.getElementById('search-product').addEventListener('input', function(e) 
 
     products.forEach(product => {
         const productName = product.dataset.productName;
-        const productBarcode = product.dataset.productBarcode;
         
-        if (productName.includes(searchTerm) || (productBarcode && productBarcode.includes(searchTerm))) {
+        if (productName.includes(searchTerm)) {
             product.style.display = 'block';
             visibleCount++;
         } else {
@@ -506,8 +498,8 @@ document.getElementById('search-product').addEventListener('input', function(e) 
 });
 
 // Add product to cart
-function addToCart(productId, productName, price, stock, isFood = false, categoryId = null) {
-    console.log('Adding to cart:', {productId, productName, price, stock, categoryId});
+function addToCart(productId, productName, price, isFood = false, categoryId = null) {
+    console.log('Adding to cart:', {productId, productName, price, categoryId});
     
     // Agregar directamente al carrito (sin personalización)
     const existingItem = cart.find(item => item.id === productId && 
@@ -523,7 +515,6 @@ function addToCart(productId, productName, price, stock, isFood = false, categor
             name: productName,
             price: price,
             quantity: 1,
-            stock: stock,
             categoryId: categoryId,
             observations: [],
             specialties: []
@@ -537,7 +528,7 @@ function addToCart(productId, productName, price, stock, isFood = false, categor
 }
 
 // Abrir modal de personalización
-function openCustomizationModal(productId, productName, price, stock, categoryId = null) {
+function openCustomizationModal(productId, productName, price, categoryId = null) {
     const modal = document.getElementById('customizeModal');
     const modalProductName = document.getElementById('product-name');
     const modalProductPrice = document.getElementById('product-price');
@@ -562,7 +553,6 @@ function openCustomizationModal(productId, productName, price, stock, categoryId
         id: productId,
         name: productName,
         price: price,
-        stock: stock,
         categoryId: categoryId
     };
     selectedOptions = [];
@@ -669,7 +659,7 @@ function updateQuantity(productId, quantity) {
     if (item) {
         if (quantity <= 0) {
             removeFromCart(productId);
-        } else if (quantity <= item.stock) {
+        } else {
             item.quantity = quantity;
             
             // Limpiar y recalcular promociones al cambiar cantidades
@@ -678,8 +668,6 @@ function updateQuantity(productId, quantity) {
             
             updateCartDisplay();
             console.log('✅ Cantidad actualizada y promociones recalculadas');
-        } else {
-            alert('No hay suficiente stock disponible');
         }
     }
 }
@@ -742,7 +730,7 @@ function updateCartItemQuantity(index, quantity) {
     
     if (quantity <= 0) {
         removeCartItem(index);
-    } else if (cart[index] && quantity <= cart[index].stock) {
+    } else if (cart[index]) {
         cart[index].quantity = quantity;
         
         // Limpiar y recalcular promociones al cambiar cantidades
@@ -751,8 +739,6 @@ function updateCartItemQuantity(index, quantity) {
         
         updateCartDisplay();
         console.log('✅ Cantidad de item actualizada y promociones recalculadas');
-    } else {
-        alert('No hay suficiente stock disponible');
     }
 }
 
@@ -1099,7 +1085,7 @@ function calculateChange() {
 let currentProduct = null;
 let selectedOptions = [];
 
-function addDirectlyToCart(productId, productName, price, stock) {
+function addDirectlyToCart(productId, productName, price) {
     try {
         console.log('Adding to cart:', productName);
         
@@ -1119,7 +1105,6 @@ function addDirectlyToCart(productId, productName, price, stock) {
                 name: productName,
                 price: parseFloat(price),
                 quantity: 1,
-                stock: stock,
                 observations: [],
                 specialties: []
             });
@@ -1186,7 +1171,6 @@ function addCustomizedToCart() {
         price: finalPrice,
         basePrice: parseFloat(currentProduct.price),
         quantity: quantity,
-        stock: currentProduct.stock,
         categoryId: currentProduct.categoryId,
         observations: observations,
         specialties: specialties,
@@ -1583,10 +1567,10 @@ function showComboSuggestions(suggestions) {
         const missingProducts = suggestion.missing_products;
         
         const comboHtml = `
-            <div class="bg-white border-2 border-orange-200 rounded-xl p-5 shadow-md hover:shadow-lg transition-all duration-300">
+            <div class="bg-white border-2 border-gray-200 rounded-xl p-5 shadow-md hover:shadow-lg transition-all duration-300">
                 <!-- Header del Combo -->
                 <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                    <div class="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center mr-3">
                         <i class="fas fa-box-open text-white text-lg"></i>
                     </div>
                     <div class="flex-1">

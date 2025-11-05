@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('products', function (Blueprint $table) {
+            $table->integer('stock')->default(0)->after('cost');
+            $table->integer('min_stock')->default(0)->after('stock');
+            $table->boolean('manage_stock')->default(true)->after('min_stock');
+            $table->string('code')->nullable()->after('manage_stock');
+            $table->decimal('compare_price', 10, 2)->nullable()->after('code');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn(['stock', 'min_stock', 'manage_stock', 'code', 'compare_price']);
+        });
+    }
+};

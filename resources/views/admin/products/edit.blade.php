@@ -57,26 +57,6 @@
                         @error('name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
-                    </div>
-
-                    <!-- Product Code -->
-                    <div>
-                        <label for="code" class="block text-sm font-medium text-gray-700 mb-2">
-                            Código de Barras (Opcional)
-                        </label>
-                        <input type="text" 
-                               id="code" 
-                               name="code" 
-                               value="{{ old('code', $product->barcode) }}"
-                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('code') border-red-500 @enderror"
-                               placeholder="Ej: CC600ML o código de barras">
-                        @error('code')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                        <p class="mt-1 text-sm text-gray-500">
-                            Código único para identificar el producto. Útil para escaneo de código de barras.
-                        </p>
-                    </div>
                 </div>
 
                 <!-- Description -->
@@ -122,12 +102,12 @@
             </div>
         </div>
 
-        <!-- Pricing and Inventory -->
+        <!-- Pricing -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-medium text-gray-900">
                     <i class="fas fa-dollar-sign mr-2 text-green-600"></i>
-                    Precios e Inventario
+                    Precios
                 </h3>
             </div>
             
@@ -193,51 +173,6 @@
                                 <div class="text-gray-600">Cargando...</div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Stock -->
-                    <div>
-                        <label for="stock" class="block text-sm font-medium text-gray-700 mb-2">
-                            Stock Actual *
-                        </label>
-                        <input type="number" 
-                               id="stock" 
-                               name="stock" 
-                               min="0"
-                               value="{{ old('stock', $product->stock) }}"
-                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('stock') border-red-500 @enderror"
-                               required>
-                        @error('stock')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                        @if($product->stock <= $product->min_stock)
-                            <p class="mt-1 text-sm text-red-600">
-                                <i class="fas fa-exclamation-triangle mr-1"></i>
-                                Stock bajo. Considera reabastecer pronto.
-                            </p>
-                        @endif
-                    </div>
-
-                    <!-- Minimum Stock -->
-                    <div>
-                        <label for="min_stock" class="block text-sm font-medium text-gray-700 mb-2">
-                            Stock Mínimo *
-                        </label>
-                        <input type="number" 
-                               id="min_stock" 
-                               name="min_stock" 
-                               min="0"
-                               value="{{ old('min_stock', $product->min_stock) }}"
-                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('min_stock') border-red-500 @enderror"
-                               required>
-                        @error('min_stock')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                        <p class="mt-1 text-sm text-gray-500">
-                            Cantidad mínima antes de recibir alertas de reposición.
-                        </p>
                     </div>
                 </div>
             </div>

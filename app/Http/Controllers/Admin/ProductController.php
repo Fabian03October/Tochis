@@ -22,10 +22,7 @@ class ProductController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('barcode', 'like', '%' . $request->search . '%');
-            });
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         $products = $query->orderBy('name')->paginate(15);
@@ -50,12 +47,9 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:255|unique:products,barcode',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0.01',
             'cost' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'min_stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean',
@@ -66,12 +60,6 @@ class ProductController extends Controller
         $data = $request->except('image');
         $data['is_active'] = $request->has('is_active');
         $data['is_food'] = $request->has('is_food') ? $request->is_food : true;
-        
-        // Mapear 'code' a 'barcode'
-        if ($request->has('code')) {
-            $data['barcode'] = $request->code;
-            unset($data['code']);
-        }
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
@@ -149,12 +137,9 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:255|unique:products,barcode,' . $product->id,
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0.01',
             'cost' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'min_stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean',
@@ -165,12 +150,6 @@ class ProductController extends Controller
         $data = $request->except('image');
         $data['is_active'] = $request->has('is_active');
         $data['is_food'] = $request->has('is_food') ? $request->is_food : true;
-        
-        // Mapear 'code' a 'barcode'
-        if ($request->has('code')) {
-            $data['barcode'] = $request->code;
-            unset($data['code']);
-        }
 
         if ($request->hasFile('image')) {
             // Eliminar imagen anterior si existe
@@ -193,11 +172,14 @@ class ProductController extends Controller
     {
         // Verificar si el producto tiene ventas asociadas
         if ($product->saleDetails()->count() > 0) {
+            // En lugar de eliminar, desactivar el producto
+            $product->update(['is_active' => false]);
+            
             return redirect()->route('admin.products.index')
-                            ->with('error', 'No se puede eliminar el producto porque tiene ventas asociadas.');
+                            ->with('warning', 'El producto tiene ventas asociadas, por lo que se ha desactivado en lugar de eliminarse. Los productos desactivados no aparecen en el punto de venta pero mantienen el historial de ventas.');
         }
 
-        // Eliminar imagen si existe
+        // Solo eliminar si no tiene ventas (productos nuevos sin historial)
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
