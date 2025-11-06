@@ -1,31 +1,36 @@
 @extends('layouts.app')
 
+{{-- 1. Título de la pestaña del navegador --}}
 @section('title', 'Crear Opción de Personalización - Sistema POS')
-@section('page-title', 'Nueva Opción de Personalización')
+
+{{-- 2. Título principal de la página (Layout consistente) --}}
+@section('page-title')
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Nueva Opción de Personalización</h1>
+        <p class="text-gray-400 text-sm">Crea una nueva opción de personalización para productos</p>
+    </div>
+@endsection
+
+{{-- 3. Animación (Layout consistente) --}}
+@section('styles')
+<style>
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+@endsection
 
 @section('content')
 <div class="fade-in">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="sm:flex sm:items-center sm:justify-between">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-900">Crear Nueva Opción</h2>
-                <p class="mt-2 text-sm text-gray-600">
-                    Agrega opciones de personalización para que los clientes puedan personalizar sus productos.
-                </p>
-            </div>
-            <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                <a href="{{ route('admin.customization-options.index') }}" class="btn-secondary">
-                    <i class="fas fa-arrow-left mr-2"></i>
-                    Volver a Opciones
-                </a>
-            </div>
-        </div>
-    </div>
-
+    {{-- 4. Grid de 2/3 y 1/3 --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Formulario -->
-        <div class="lg:col-span-2">
+        
+        <div class="lg:col-span-2 space-y-6">
+            
             <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                 <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
                     <div class="flex items-center">
@@ -39,19 +44,18 @@
                 <form action="{{ route('admin.customization-options.store') }}" method="POST" class="p-6 space-y-6">
                     @csrf
                     
-                    <!-- Nombre -->
                     <div>
                         <label for="name" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-tag mr-2 text-blue-500"></i>
                             Nombre de la Opción *
                         </label>
                         <input type="text" 
-                               name="name" 
-                               id="name"
-                               value="{{ old('name') }}"
-                               class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 @error('name') border-red-500 @enderror"
-                               placeholder="Ej: Sin tomate, Extra queso, Sin cebolla..."
-                               required>
+                                name="name" 
+                                id="name"
+                                value="{{ old('name') }}"
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 @error('name') border-red-500 @enderror"
+                                placeholder="Ej: Sin tomate, Extra queso, Sin cebolla..."
+                                required>
                         @error('name')
                             <p class="flex items-center mt-1 text-sm text-red-600">
                                 <i class="fas fa-exclamation-circle mr-1"></i>
@@ -60,7 +64,6 @@
                         @enderror
                     </div>
 
-                    <!-- Tipo -->
                     <div>
                         <label for="type" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-list mr-2 text-green-500"></i>
@@ -89,7 +92,6 @@
                         </p>
                     </div>
 
-                    <!-- Precio -->
                     <div id="price-field">
                         <label for="price" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-dollar-sign mr-2 text-purple-500"></i>
@@ -100,13 +102,13 @@
                                 <span class="text-gray-500 sm:text-sm">$</span>
                             </div>
                             <input type="number" 
-                                   name="price" 
-                                   id="price"
-                                   value="{{ old('price', '0.00') }}"
-                                   step="0.01"
-                                   min="0"
-                                   class="block w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 @error('price') border-red-500 @enderror"
-                                   placeholder="0.00">
+                                    name="price" 
+                                    id="price"
+                                    value="{{ old('price', '0.00') }}"
+                                    step="0.01"
+                                    min="0"
+                                    class="block w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 @error('price') border-red-500 @enderror"
+                                    placeholder="0.00">
                         </div>
                         @error('price')
                             <p class="flex items-center mt-1 text-sm text-red-600">
@@ -119,19 +121,18 @@
                         </p>
                     </div>
 
-                    <!-- Orden -->
                     <div>
                         <label for="sort_order" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-sort-numeric-down mr-2 text-orange-500"></i>
                             Orden de Aparición
                         </label>
                         <input type="number" 
-                               name="sort_order" 
-                               id="sort_order"
-                               value="{{ old('sort_order', '0') }}"
-                               min="0"
-                               class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 @error('sort_order') border-red-500 @enderror"
-                               placeholder="0">
+                                name="sort_order" 
+                                id="sort_order"
+                                value="{{ old('sort_order', '0') }}"
+                                min="0"
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 @error('sort_order') border-red-500 @enderror"
+                                placeholder="0">
                         @error('sort_order')
                             <p class="flex items-center mt-1 text-sm text-red-600">
                                 <i class="fas fa-exclamation-circle mr-1"></i>
@@ -143,7 +144,6 @@
                         </p>
                     </div>
 
-                    <!-- Botones -->
                     <div class="flex space-x-4 pt-4 border-t border-gray-200">
                         <a href="{{ route('admin.customization-options.index') }}" class="btn-secondary flex-1 text-center">
                             <i class="fas fa-times mr-2"></i>Cancelar
@@ -156,9 +156,8 @@
             </div>
         </div>
 
-        <!-- Vista Previa y Ayuda -->
-        <div class="space-y-6">
-            <!-- Vista Previa -->
+        <div class="lg:col-span-1 space-y-6">
+
             <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                 <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
                     <div class="flex items-center">
@@ -188,7 +187,6 @@
                 </div>
             </div>
 
-            <!-- Ayuda -->
             <div class="bg-blue-50 rounded-xl border border-blue-200 p-6">
                 <h4 class="flex items-center text-lg font-semibold text-blue-900 mb-4">
                     <i class="fas fa-lightbulb mr-2"></i>
@@ -214,41 +212,7 @@
                 </ul>
             </div>
 
-            <!-- Ejemplos -->
-            <div class="bg-gray-50 rounded-xl border border-gray-200 p-6">
-                <h4 class="flex items-center text-lg font-semibold text-gray-900 mb-4">
-                    <i class="fas fa-lightbulb mr-2"></i>
-                    Ejemplos
-                </h4>
-                <div class="space-y-3">
-                    <div class="bg-white rounded-lg p-3 border border-gray-200">
-                        <div class="flex items-center">
-                            <div class="w-6 h-6 bg-red-100 rounded flex items-center justify-center mr-2">
-                                <i class="fas fa-minus text-red-600 text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-900">Sin tomate</p>
-                                <p class="text-xs text-gray-500">Observación - $0.00</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg p-3 border border-gray-200">
-                        <div class="flex items-center">
-                            <div class="w-6 h-6 bg-green-100 rounded flex items-center justify-center mr-2">
-                                <i class="fas fa-plus text-green-600 text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-900">Extra queso</p>
-                                <p class="text-xs text-gray-500">Especialidad - $15.00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+            </div> </div> </div> {{-- 5. Script (sin cambios, ya era correcto) --}}
 <script>
 function updatePreview() {
     const name = document.getElementById('name').value || 'Nombre de la opción';
@@ -305,68 +269,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('sort_order').addEventListener('input', updatePreview);
     
     // Actualización inicial
+    handleTypeChange();
     updatePreview();
-});
-</script>
-@endsection
-                    <span class="absolute left-3 top-2 text-gray-500">$</span>
-                    <input type="number" 
-                           name="price" 
-                           id="price"
-                           value="{{ old('price', '0.00') }}"
-                           step="0.01"
-                           min="0"
-                           class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           required>
-                </div>
-                <p class="mt-1 text-sm text-gray-500">Solo las especialidades pueden tener precio adicional</p>
-                @error('price')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-6">
-                <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-2">
-                    Orden de Aparición
-                </label>
-                <input type="number" 
-                       name="sort_order" 
-                       id="sort_order"
-                       value="{{ old('sort_order', '0') }}"
-                       min="0"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       placeholder="0">
-                <p class="mt-1 text-sm text-gray-500">Menor número aparece primero</p>
-                @error('sort_order')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="flex space-x-4">
-                <button type="submit" class="btn-primary flex-1">
-                    <i class="fas fa-save mr-2"></i>Guardar
-                </button>
-                <a href="{{ route('admin.customization-options.index') }}" class="btn-secondary flex-1 text-center">
-                    <i class="fas fa-times mr-2"></i>Cancelar
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-document.getElementById('type').addEventListener('change', function() {
-    const priceField = document.getElementById('price');
-    const priceInput = document.getElementById('price');
-    
-    if (this.value === 'observation') {
-        priceInput.value = '0.00';
-        priceInput.readOnly = true;
-        priceInput.classList.add('bg-gray-100');
-    } else {
-        priceInput.readOnly = false;
-        priceInput.classList.remove('bg-gray-100');
-    }
 });
 </script>
 @endsection

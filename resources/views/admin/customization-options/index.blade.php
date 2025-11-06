@@ -1,16 +1,21 @@
 @extends('layouts.app')
 
 @section('title', 'Opciones de Personalización - Sistema POS')
-@section('page-title', 'Opciones de Personalización')
+@section('page-title')
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Opciones de Personalización</h1>
+        <p class="text-gray-400 text-sm">Gestiona las opciones de personalización para productos</p>
+    </div>
+@endsection
 
 @section('content')
 <div class="fade-in">
     <!-- Header Section -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
+    <div class="flex justify-end items-center mb-6">
+        {{-- <div>
             <h1 class="text-2xl font-bold text-gray-900">Opciones de Personalización</h1>
             <p class="text-gray-600">Gestiona las opciones de personalización para productos</p>
-        </div>
+        </div> --}}
         <a href="{{ route('admin.customization-options.create') }}" class="btn-primary">
             <i class="fas fa-plus mr-2"></i>
             Nueva Opción
