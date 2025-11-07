@@ -15,6 +15,7 @@ use App\Http\Controllers\Cashier\DashboardController as CashierDashboardControll
 use App\Http\Controllers\Cashier\SaleController;
 use App\Http\Controllers\Cashier\CashCutController;
 use App\Http\Controllers\Cashier\MercadoPagoPaymentController;
+use App\Http\Controllers\Cashier\PrintController;
 
 // Rutas públicas
 Route::get('/', function () {
@@ -81,6 +82,15 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/process-card-payment', [MercadoPagoPaymentController::class, 'processCardPayment'])->name('process-card-payment');
             Route::post('/check-payment-status', [MercadoPagoPaymentController::class, 'checkPaymentStatus'])->name('check-payment-status');
             Route::post('/cancel-payment', [MercadoPagoPaymentController::class, 'cancelPayment'])->name('cancel-payment');
+        });
+        
+        // Rutas de impresión térmica
+        Route::prefix('print')->name('print.')->group(function () {
+            Route::post('/sale-ticket', [PrintController::class, 'printSaleTicket'])->name('sale-ticket');
+            Route::post('/reprint-ticket', [PrintController::class, 'reprintSaleTicket'])->name('reprint-ticket');
+            Route::post('/test-printer', [PrintController::class, 'testPrinter'])->name('test-printer');
+            Route::get('/printer-status', [PrintController::class, 'getPrinterStatus'])->name('printer-status');
+            Route::post('/cash-open-ticket', [PrintController::class, 'printCashOpenTicket'])->name('cash-open-ticket');
         });
         
         // RUTA DE PRUEBA TEMPORAL - REMOVER EN PRODUCCIÓN

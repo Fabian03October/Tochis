@@ -317,11 +317,24 @@ class SaleController extends Controller
 
                 \Log::info('Sale completed successfully', ['sale_id' => $sale->id, 'total' => $total]);
 
+                // Intentar imprimir ticket automáticamente
+                try {
+                    $printService = new \App\Services\ThermalPrintService();
+                    $printService->printSaleTicket($sale->load(['saleDetails.options', 'user']));
+                    \Log::info('Ticket printed automatically', ['sale_id' => $sale->id]);
+                } catch (\Exception $printError) {
+                    \Log::warning('Auto-print failed, but sale completed successfully', [
+                        'sale_id' => $sale->id,
+                        'print_error' => $printError->getMessage()
+                    ]);
+                }
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Venta realizada exitosamente',
                     'sale' => $sale->load('saleDetails'),
                     'change' => $change,
+                    'sale_id' => $sale->id // Agregar ID para posible reimpresión
                 ]);
 
             } catch (\Exception $e) {

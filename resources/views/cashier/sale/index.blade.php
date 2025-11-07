@@ -283,6 +283,12 @@
                             Orden de Compra
                         </h3>
                         <div class="flex items-center space-x-2">
+                            <button onclick="testPrinter()" 
+                                    class="text-white hover:text-orange-200 text-xs font-medium transition-colors duration-200"
+                                    title="Probar impresora térmica">
+                                <i class="fas fa-print mr-1"></i>
+                                Test
+                            </button>
                             <button onclick="resetAppliedCombos()" 
                                     class="text-white hover:text-orange-200 text-xs font-medium transition-colors duration-200"
                                     title="Resetear sugerencias de combos">
@@ -646,6 +652,10 @@ let comboCheckTimeout = null;
 let mercadoPagoConfig = null;
 let currentPaymentIntentId = null;
 let paymentStatusInterval = null;
+let currentSaleId = null; // ID de la venta temporal para pagos con tarjeta
+
+// Variable para impresión
+let lastSaleId = null;
 
 // --- Mover 'onclick' a 'addEventListener' ---
 document.addEventListener('DOMContentLoaded', function() {
@@ -1560,6 +1570,7 @@ function processSale() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            lastSaleId = data.sale_id; // Guardar ID para reimpresión
             alert(`Venta realizada exitosamente!\nTotal: $${total.toFixed(2)}\nCambio: $${(data.change || 0).toFixed(2)}`);
             cart = [];
             appliedPromotions = [];
@@ -1778,6 +1789,9 @@ async function initiateCardPayment() {
             throw new Error(saleData.message || 'Error creando venta temporal');
         }
         
+        // Guardar ID de la venta para referencia
+        currentSaleId = saleData.sale.id;
+        
         // Procesar pago con tarjeta
         const paymentResponse = await fetch('{{ route("cashier.mercadopago.process-card-payment") }}', {
             method: 'POST',
@@ -1893,6 +1907,12 @@ async function cancelCardPayment() {
  * Completar pago con tarjeta exitoso
  */
 function completeCardPayment() {
+    // Guardar ID de la venta para reimpresión
+    if (currentSaleId) {
+        lastSaleId = currentSaleId;
+        currentSaleId = null; // Limpiar después de usar
+    }
+    
     // Limpiar carrito y resetear interfaz
     cart = [];
     appliedCombos = [];
@@ -1921,6 +1941,115 @@ function retryCardPayment() {
 // Cargar configuración de MercadoPago al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     loadMercadoPagoConfig();
+});
+
+// Funciones de impresión térmica
+async function testThermalPrinter() {
+    try {
+        showNotification('Enviando comando de prueba a la impresora...', 'info');
+        
+        const response = await fetch('/cashier/print/test', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification(result.message, 'success');
+        } else {
+            showNotification(result.message || 'Error al probar la impresora', 'error');
+        }
+    } catch (error) {
+        console.error('Error testing printer:', error);
+        showNotification('Error de conexión al probar la impresora', 'error');
+    }
+}
+
+async function reprintLastSale() {
+    if (!lastSaleId) {
+        showNotification('No hay venta reciente para reimprimir', 'warning');
+        return;
+    }
+
+    try {
+        showNotification('Reimprimiendo ticket...', 'info');
+        
+        const response = await fetch(`/cashier/print/reprint/${lastSaleId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification(result.message, 'success');
+        } else {
+            showNotification(result.message || 'Error al reimprimir el ticket', 'error');
+        }
+    } catch (error) {
+        console.error('Error reprinting ticket:', error);
+        showNotification('Error de conexión al reimprimir', 'error');
+    }
+}
+
+async function getPrinterStatus() {
+    try {
+        const response = await fetch('/cashier/print/status', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        });
+
+        const result = await response.json();
+        
+        const statusElement = document.getElementById('printer-status');
+        if (statusElement) {
+            if (result.success) {
+                statusElement.innerHTML = `
+                    <span class="text-success">
+                        <i class="fas fa-check-circle"></i> Impresora conectada
+                    </span>
+                `;
+            } else {
+                statusElement.innerHTML = `
+                    <span class="text-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Sin conexión
+                    </span>
+                `;
+            }
+        }
+        
+        return result.success;
+    } catch (error) {
+        console.error('Error checking printer status:', error);
+        const statusElement = document.getElementById('printer-status');
+        if (statusElement) {
+            statusElement.innerHTML = `
+                <span class="text-danger">
+                    <i class="fas fa-times-circle"></i> Error de conexión
+                </span>
+            `;
+        }
+        return false;
+    }
+}
+
+// Verificar estado de la impresora al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar estado después de un breve delay
+    setTimeout(getPrinterStatus, 1000);
+    
+    // Verificar estado cada 30 segundos
+    setInterval(getPrinterStatus, 30000);
 });
 
 </script>
