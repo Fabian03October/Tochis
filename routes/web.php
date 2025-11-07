@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\MercadoPagoController;
 use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
 use App\Http\Controllers\Cashier\SaleController;
 use App\Http\Controllers\Cashier\CashCutController;
+use App\Http\Controllers\Cashier\MercadoPagoPaymentController;
 
 // Rutas públicas
 Route::get('/', function () {
@@ -72,6 +73,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/api/promotions', [SaleController::class, 'getAvailablePromotions'])->name('sale.promotions');
         Route::post('/api/combos/suggest', [SaleController::class, 'getSuggestedCombos'])->name('sale.combos.suggest');
         Route::post('/api/combos/apply', [SaleController::class, 'applyCombo'])->name('sale.combos.apply');
+        
+        // Rutas de MercadoPago para pagos con tarjeta
+        Route::prefix('mercadopago')->name('mercadopago.')->group(function () {
+            Route::get('/config', [MercadoPagoPaymentController::class, 'getConfig'])->name('config');
+            Route::get('/point-devices', [MercadoPagoPaymentController::class, 'getPointDevices'])->name('point-devices');
+            Route::post('/process-card-payment', [MercadoPagoPaymentController::class, 'processCardPayment'])->name('process-card-payment');
+            Route::post('/check-payment-status', [MercadoPagoPaymentController::class, 'checkPaymentStatus'])->name('check-payment-status');
+            Route::post('/cancel-payment', [MercadoPagoPaymentController::class, 'cancelPayment'])->name('cancel-payment');
+        });
         
         // RUTA DE PRUEBA TEMPORAL - REMOVER EN PRODUCCIÓN
         Route::get('/api/test-combos', function() {

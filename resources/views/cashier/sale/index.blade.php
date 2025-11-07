@@ -506,6 +506,122 @@ MODAL DE PERSONALIZACIÓN
     </div>
 </div>
 
+{{-- 
+============================================================
+MODAL DE PAGO CON TARJETA
+============================================================
+--}}
+<div id="cardPaymentModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="text-center">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-4">
+                        <i class="fas fa-credit-card text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                        Pago con Tarjeta
+                    </h3>
+                    
+                    <div id="card-payment-content">
+                        <!-- Configuración inicial -->
+                        <div id="card-setup-step" class="space-y-4">
+                            <div class="bg-blue-50 rounded-lg p-4">
+                                <div class="text-lg font-bold text-blue-900 mb-2">
+                                    Total a cobrar: $<span id="card-total-amount">0.00</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="card-installments" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Número de cuotas
+                                </label>
+                                <select id="card-installments" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="1">1 cuota (sin interés)</option>
+                                    <option value="3">3 cuotas</option>
+                                    <option value="6">6 cuotas</option>
+                                    <option value="9">9 cuotas</option>
+                                    <option value="12">12 cuotas</option>
+                                </select>
+                            </div>
+                            
+                            <div class="text-center space-y-3">
+                                <button onclick="initiateCardPayment()" 
+                                        id="start-card-payment-btn"
+                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200">
+                                    <i class="fas fa-credit-card mr-2"></i>
+                                    Enviar a Terminal
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Procesando pago -->
+                        <div id="card-processing-step" class="hidden text-center space-y-4">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                            <div class="text-lg font-medium text-gray-900">Procesando pago...</div>
+                            <div class="text-sm text-gray-600">
+                                Pase o inserte la tarjeta en el terminal MercadoPago
+                            </div>
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                <div class="text-sm text-yellow-800">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Por favor, siga las instrucciones en el terminal
+                                </div>
+                            </div>
+                            
+                            <button onclick="cancelCardPayment()" 
+                                    id="cancel-card-payment-btn"
+                                    class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg">
+                                <i class="fas fa-times mr-1"></i>
+                                Cancelar Pago
+                            </button>
+                        </div>
+                        
+                        <!-- Pago exitoso -->
+                        <div id="card-success-step" class="hidden text-center space-y-4">
+                            <div class="text-green-600">
+                                <i class="fas fa-check-circle text-4xl mb-3"></i>
+                            </div>
+                            <div class="text-lg font-medium text-green-900">¡Pago Aprobado!</div>
+                            <div class="text-sm text-gray-600">
+                                El pago con tarjeta ha sido procesado exitosamente
+                            </div>
+                        </div>
+                        
+                        <!-- Pago fallido -->
+                        <div id="card-error-step" class="hidden text-center space-y-4">
+                            <div class="text-red-600">
+                                <i class="fas fa-times-circle text-4xl mb-3"></i>
+                            </div>
+                            <div class="text-lg font-medium text-red-900">Pago Rechazado</div>
+                            <div id="card-error-message" class="text-sm text-gray-600">
+                                Hubo un problema procesando el pago
+                            </div>
+                            
+                            <button onclick="retryCardPayment()" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">
+                                <i class="fas fa-redo mr-1"></i>
+                                Intentar Nuevamente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 text-center">
+                <button type="button" onclick="closeCardPaymentModal()" 
+                        id="close-card-modal-btn"
+                        class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg">
+                    <i class="fas fa-times mr-1"></i>Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -525,6 +641,11 @@ let suggestedCombos = [];
 let appliedCombos = []; 
 let hasActiveCombo = false; 
 let comboCheckTimeout = null;
+
+// Variables para pagos con tarjeta
+let mercadoPagoConfig = null;
+let currentPaymentIntentId = null;
+let paymentStatusInterval = null;
 
 // --- Mover 'onclick' a 'addEventListener' ---
 document.addEventListener('DOMContentLoaded', function() {
@@ -1464,5 +1585,343 @@ function processSale() {
          updateCartDisplay(); // Esto lo pondrá en 'disabled'
     });
 }
+
+// ============================================
+// FUNCIONES DE PAGO CON TARJETA - MERCADOPAGO
+// ============================================
+
+/**
+ * Cargar configuración de MercadoPago
+ */
+async function loadMercadoPagoConfig() {
+    try {
+        const response = await fetch('{{ route("cashier.mercadopago.config") }}', {
+            method: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            mercadoPagoConfig = data.config;
+            console.log('✅ Configuración MercadoPago cargada:', mercadoPagoConfig);
+            return true;
+        } else {
+            console.error('❌ Error cargando configuración MercadoPago:', data.message);
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Error de red cargando configuración MercadoPago:', error);
+        return false;
+    }
+}
+
+/**
+ * Verificar si el pago con tarjeta está disponible
+ */
+async function checkCardPaymentAvailable() {
+    if (!mercadoPagoConfig) {
+        await loadMercadoPagoConfig();
+    }
+    
+    return mercadoPagoConfig && mercadoPagoConfig.has_point_device;
+}
+
+/**
+ * Modificar la función processSale para manejar pagos con tarjeta
+ */
+async function processSale() {
+    const processSaleBtn = document.getElementById('process-sale-btn');
+    const originalText = processSaleBtn.innerHTML;
+    
+    if (cart.length === 0) {
+        alert('El carrito está vacío');
+        return;
+    }
+
+    const paymentMethod = document.getElementById('payment-method').value;
+    const paidAmount = parseFloat(document.getElementById('paid-amount').value) || 0;
+    const notes = document.getElementById('sale-notes').value || '';
+
+    // Para pagos con tarjeta, abrir modal de pago
+    if (paymentMethod === 'card') {
+        const available = await checkCardPaymentAvailable();
+        if (!available) {
+            alert('El pago con tarjeta no está disponible. Configure MercadoPago en el sistema.');
+            return;
+        }
+        
+        openCardPaymentModal();
+        return;
+    }
+
+    // Para pagos en efectivo o transferencia, continuar con el flujo normal
+    if (paymentMethod === 'cash' && paidAmount < total) {
+        alert('El monto recibido es insuficiente');
+        return;
+    }
+
+    // Resto de la lógica de processSale...
+    processSaleBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Procesando...';
+    processSaleBtn.disabled = true;
+
+    const saleData = {
+        products: cart,
+        payment_method: paymentMethod,
+        paid_amount: paidAmount,
+        notes: notes
+    };
+
+    try {
+        const response = await fetch('{{ route("cashier.sale.store") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(saleData)
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            alert(`Venta realizada exitosamente!\nTotal: $${total.toFixed(2)}\nCambio: $${(data.change || 0).toFixed(2)}`);
+            cart = [];
+            
+            // Resetear lista de combos aplicados para la siguiente venta
+            appliedCombos = [];
+            hasActiveCombo = false;
+            
+            updateCartDisplay();
+            document.getElementById('paid-amount').value = '';
+            document.getElementById('change-display').style.display = 'none';
+            document.getElementById('sale-notes').value = '';
+        } else {
+            alert('Error: ' + (data.message || 'Error desconocido'));
+        }
+    } catch (error) {
+        console.error('Error al procesar la venta:', error);
+        alert('Error al procesar la venta: ' + error.message);
+    } finally {
+        processSaleBtn.innerHTML = originalText;
+        updateCartDisplay();
+    }
+}
+
+/**
+ * Abrir modal de pago con tarjeta
+ */
+function openCardPaymentModal() {
+    document.getElementById('card-total-amount').textContent = total.toFixed(2);
+    document.getElementById('cardPaymentModal').classList.remove('hidden');
+    
+    // Resetear modal al estado inicial
+    showCardStep('card-setup-step');
+}
+
+/**
+ * Cerrar modal de pago con tarjeta
+ */
+function closeCardPaymentModal() {
+    document.getElementById('cardPaymentModal').classList.add('hidden');
+    
+    // Cancelar pago si está en progreso
+    if (currentPaymentIntentId && paymentStatusInterval) {
+        cancelCardPayment();
+    }
+}
+
+/**
+ * Mostrar paso específico en el modal de tarjeta
+ */
+function showCardStep(stepId) {
+    const steps = ['card-setup-step', 'card-processing-step', 'card-success-step', 'card-error-step'];
+    
+    steps.forEach(step => {
+        document.getElementById(step).classList.add('hidden');
+    });
+    
+    document.getElementById(stepId).classList.remove('hidden');
+}
+
+/**
+ * Iniciar pago con tarjeta
+ */
+async function initiateCardPayment() {
+    const installments = parseInt(document.getElementById('card-installments').value) || 1;
+    
+    showCardStep('card-processing-step');
+    
+    try {
+        // Crear una venta temporal
+        const tempSaleData = {
+            products: cart,
+            payment_method: 'cash', // Temporal para crear la venta
+            paid_amount: total,
+            notes: document.getElementById('sale-notes').value || 'Pago con tarjeta en proceso'
+        };
+        
+        const saleResponse = await fetch('{{ route("cashier.sale.store") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(tempSaleData)
+        });
+        
+        const saleData = await saleResponse.json();
+        
+        if (!saleData.success) {
+            throw new Error(saleData.message || 'Error creando venta temporal');
+        }
+        
+        // Procesar pago con tarjeta
+        const paymentResponse = await fetch('{{ route("cashier.mercadopago.process-card-payment") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                amount: total,
+                sale_id: saleData.sale.id,
+                installments: installments
+            })
+        });
+        
+        const paymentData = await paymentResponse.json();
+        
+        if (paymentData.success) {
+            currentPaymentIntentId = paymentData.payment_intent_id;
+            
+            // Verificar estado del pago cada 3 segundos
+            paymentStatusInterval = setInterval(() => {
+                checkCardPaymentStatus();
+            }, 3000);
+            
+        } else {
+            throw new Error(paymentData.message || 'Error iniciando pago con tarjeta');
+        }
+        
+    } catch (error) {
+        console.error('Error iniciando pago con tarjeta:', error);
+        document.getElementById('card-error-message').textContent = error.message;
+        showCardStep('card-error-step');
+    }
+}
+
+/**
+ * Verificar estado del pago con tarjeta
+ */
+async function checkCardPaymentStatus() {
+    if (!currentPaymentIntentId) return;
+    
+    try {
+        const response = await fetch('{{ route("cashier.mercadopago.check-payment-status") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                payment_intent_id: currentPaymentIntentId
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            switch (data.status) {
+                case 'approved':
+                    // Pago aprobado
+                    clearInterval(paymentStatusInterval);
+                    showCardStep('card-success-step');
+                    
+                    setTimeout(() => {
+                        completeCardPayment();
+                    }, 2000);
+                    break;
+                    
+                case 'rejected':
+                case 'cancelled':
+                    // Pago rechazado o cancelado
+                    clearInterval(paymentStatusInterval);
+                    document.getElementById('card-error-message').textContent = 'El pago fue rechazado o cancelado';
+                    showCardStep('card-error-step');
+                    break;
+                    
+                // 'pending' - continuar verificando
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error verificando estado del pago:', error);
+    }
+}
+
+/**
+ * Cancelar pago con tarjeta
+ */
+async function cancelCardPayment() {
+    if (!currentPaymentIntentId) return;
+    
+    try {
+        await fetch('{{ route("cashier.mercadopago.cancel-payment") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                payment_intent_id: currentPaymentIntentId
+            })
+        });
+        
+    } catch (error) {
+        console.error('Error cancelando pago:', error);
+    } finally {
+        clearInterval(paymentStatusInterval);
+        currentPaymentIntentId = null;
+        closeCardPaymentModal();
+    }
+}
+
+/**
+ * Completar pago con tarjeta exitoso
+ */
+function completeCardPayment() {
+    // Limpiar carrito y resetear interfaz
+    cart = [];
+    appliedCombos = [];
+    hasActiveCombo = false;
+    
+    updateCartDisplay();
+    document.getElementById('paid-amount').value = '';
+    document.getElementById('change-display').style.display = 'none';
+    document.getElementById('sale-notes').value = '';
+    
+    // Cerrar modal
+    closeCardPaymentModal();
+    
+    alert('¡Pago con tarjeta procesado exitosamente!');
+}
+
+/**
+ * Reintentar pago con tarjeta
+ */
+function retryCardPayment() {
+    currentPaymentIntentId = null;
+    clearInterval(paymentStatusInterval);
+    showCardStep('card-setup-step');
+}
+
+// Cargar configuración de MercadoPago al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    loadMercadoPagoConfig();
+});
+
 </script>
 @endpush

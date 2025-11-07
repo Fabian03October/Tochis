@@ -124,6 +124,10 @@ class SaleController extends Controller
                 'payment_method' => 'required|in:cash,card,transfer',
                 'paid_amount' => 'required|numeric|min:0',
                 'notes' => 'nullable|string|max:500',
+                // Campos adicionales para pagos con tarjeta
+                'card_payment_data' => 'nullable|array',
+                'card_payment_data.payment_intent_id' => 'required_if:payment_method,card|string',
+                'card_payment_data.installments' => 'nullable|integer|min:1|max:24',
             ]);
             
             if ($validator->fails()) {
@@ -205,24 +209,55 @@ class SaleController extends Controller
                     'final_total' => $total
                 ]);
 
-                if ($request->paid_amount < $total) {
-                    throw new \Exception("El monto pagado es insuficiente");
+                // Validar pago según el método
+                if ($request->payment_method === 'card') {
+                    // Para pagos con tarjeta, verificar que se haya procesado correctamente
+                    if (!isset($request->card_payment_data['payment_intent_id'])) {
+                        throw new \Exception("Datos de pago con tarjeta incompletos");
+                    }
+                    
+                    // Verificar el estado del pago en MercadoPago
+                    $paymentIntent = DB::table('mercadopago_payment_intents')
+                                      ->where('intent_id', $request->card_payment_data['payment_intent_id'])
+                                      ->first();
+                    
+                    if (!$paymentIntent || $paymentIntent->status !== 'approved') {
+                        throw new \Exception("El pago con tarjeta no ha sido aprobado");
+                    }
+                    
+                    if (abs($paymentIntent->amount - $total) > 0.01) {
+                        throw new \Exception("El monto del pago no coincide con el total de la venta");
+                    }
+                    
+                    $change = 0; // No hay cambio en pagos con tarjeta
+                } else {
+                    // Para pagos en efectivo o transferencia
+                    if ($request->paid_amount < $total) {
+                        throw new \Exception("El monto pagado es insuficiente");
+                    }
+                    $change = $request->paid_amount - $total;
                 }
 
-                $change = $request->paid_amount - $total;
-
                 // Crear la venta
-                $sale = Sale::create([
+                $saleData = [
                     'user_id' => auth()->id(),
                     'subtotal' => $subtotal,
                     'tax' => $tax,
                     'discount' => $totalDiscount,
                     'total' => $total,
-                    'paid_amount' => $request->paid_amount,
+                    'paid_amount' => $request->payment_method === 'card' ? $total : $request->paid_amount,
                     'change_amount' => $change,
                     'payment_method' => $request->payment_method,
                     'notes' => $request->notes,
-                ]);
+                ];
+                
+                // Agregar información adicional para pagos con tarjeta
+                if ($request->payment_method === 'card' && isset($request->card_payment_data)) {
+                    $saleData['card_payment_reference'] = $request->card_payment_data['payment_intent_id'];
+                    $saleData['card_installments'] = $request->card_payment_data['installments'] ?? 1;
+                }
+                
+                $sale = Sale::create($saleData);
 
                 \Log::info('Sale created', ['sale_id' => $sale->id]);
 

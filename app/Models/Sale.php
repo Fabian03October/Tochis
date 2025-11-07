@@ -20,6 +20,9 @@ class Sale extends Model
         'paid_amount',
         'change_amount',
         'payment_method',
+        'card_payment_reference',
+        'card_installments',
+        'card_payment_details',
         'status',
         'notes',
     ];
@@ -33,6 +36,7 @@ class Sale extends Model
             'total' => 'decimal:2',
             'paid_amount' => 'decimal:2',
             'change_amount' => 'decimal:2',
+            'card_payment_details' => 'array',
         ];
     }
 
