@@ -1,223 +1,247 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
-@section('title', 'Combos')
+@section('title', 'Gestión de Combos - TOCHIS')
+{{-- 1. Título de página corregido --}}
+@section('page-title')
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Gestión de Combos</h1>
+        <p class="text-gray-400 text-sm">Crea, edita y gestiona los combos de productos</p>
+    </div>
+@endsection
+
+{{-- @section('breadcrumb')
+    <a href="{{ route('admin.dashboard') }}" class="hover:text-orange-500">Dashboard</a>
+    <span class="mx-2">/</span>
+    <span class="text-orange-500">Combos</span>
+@endsection --}}
+
+{{-- @section('header-actions')
+    <a href="{{ route('admin.combos.create') }}" 
+       class="btn-primary">
+        <i class="fas fa-plus mr-2"></i>Crear Combo
+    </a>
+@endsection --}}
+
+@push('styles')
+<style>
+    /* Estilos de tarjeta personalizados (¡Se ven bien!) */
+    .combo-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(249, 115, 22, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .combo-card:hover {
+        box-shadow: 0 8px 30px rgba(249, 115, 22, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .combo-header {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        border-radius: 16px 16px 0 0;
+    }
+    
+    .product-badge {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 20px;
+        padding: 4px 12px;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin: 2px;
+        display: inline-block;
+    }
+    
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .status-active {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+    
+    .status-inactive {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+    }
+    
+    .auto-suggest-badge {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.65rem;
+        font-weight: 600;
+    }
+    
+    /* 2. CSS de .action-btn eliminado (ahora usaremos clases de Tailwind) */
+
+</style>
+@endpush
 
 @section('content')
-<div class="container mx-auto p-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-orange-100 p-6 rounded-lg">
-        <div>
-            <h1 class="text-3xl font-bold text-orange-800">Combos</h1>
-            <p class="text-orange-600 mt-1">Gestiona los combos y paquetes especiales</p>
-        </div>
-        <a href="{{ route('admin.combos.create') }}" class="mt-4 sm:mt-0 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center">
-            <i class="fas fa-plus mr-2"></i>
-            Nuevo Combo
+<div class="fade-in">
+    
+    {{-- ESTE ES EL DIV QUE FALTABA --}}
+    <div class="flex justify-end items-center mb-6">
+        <a href="{{ route('admin.combos.create') }}" 
+           class="btn-primary">
+            <i class="fas fa-plus mr-2"></i>Crear Combo
         </a>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white p-6 rounded-lg shadow">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-2xl font-bold text-orange-600">{{ $combos->count() }}</p>
-                    <p class="text-gray-600">Total Combos</p>
-                </div>
-                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-layer-group text-orange-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-        
-        <div class="bg-white p-6 rounded-lg shadow">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-2xl font-bold text-green-600">{{ $combos->where('is_active', true)->count() }}</p>
-                    <p class="text-gray-600">Activos</p>
-                </div>
-                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-        
-        <div class="bg-white p-6 rounded-lg shadow">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-2xl font-bold text-purple-600">{{ $combos->where('auto_suggest', true)->count() }}</p>
-                    <p class="text-gray-600">Auto-Sugeridos</p>
-                </div>
-                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-magic text-purple-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-        
-        <div class="bg-white p-6 rounded-lg shadow">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-2xl font-bold text-orange-600">${{ number_format($combos->sum('price'), 2) }}</p>
-                    <p class="text-gray-600">Valor Total</p>
-                </div>
-                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-dollar-sign text-orange-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Combos Grid -->
     @if($combos->count() > 0)
+        <!-- Grid de Combos -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             @foreach($combos as $combo)
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="combo-card">
                     <!-- Header del Combo -->
-                    <div class="bg-orange-600 p-4 text-white">
+                    <div class="combo-header p-4">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <i class="fas fa-layer-group text-2xl mr-3"></i>
+                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fas fa-box-open text-white text-xl"></i>
+                                </div>
                                 <div>
-                                    <h3 class="font-bold text-lg">{{ $combo->name }}</h3>
-                                    <p class="text-orange-100 text-sm">{{ $combo->description ?? 'Sin descripción' }}</p>
+                                    <h3 class="text-white font-bold text-lg">{{ $combo->name }}</h3>
+                                    <p class="text-orange-100 text-sm">{{ Str::limit($combo->description, 30) }}</p>
                                 </div>
                             </div>
-                            
-                            <div class="flex flex-col items-end space-y-1">
-                                @if($combo->is_active)
-                                    <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                                        Activo
-                                    </span>
-                                @else
-                                    <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                                        Inactivo
-                                    </span>
-                                @endif
-                                
+                            <div class="text-right flex-shrink-0 ml-2">
+                                <div class="status-badge {{ $combo->is_active ? 'status-active' : 'status-inactive' }}">
+                                    {{ $combo->is_active ? 'Activo' : 'Inactivo' }}
+                                </div>
                                 @if($combo->auto_suggest)
-                                    <span class="bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                    <div class="auto-suggest-badge mt-1">
                                         Auto-Sugerir
-                                    </span>
+                                    </div>
                                 @endif
                             </div>
                         </div>
                     </div>
-
-                    <!-- Platillos Incluidos -->
-                    <div class="p-4">
+                    
+                    <!-- Contenido del Combo -->
+                    <div class="p-6">
+                        <!-- Platillos del Combo -->
                         <div class="mb-4">
-                            <h4 class="font-semibold text-gray-800 mb-2 flex items-center">
-                                <i class="fas fa-box text-orange-600 mr-2"></i>
+                            <h4 class="text-sm font-bold text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-utensils mr-2 text-orange-500"></i>
                                 Platillos Incluidos
                             </h4>
-                            <div class="flex flex-wrap gap-1">
+                            <div class="flex flex-wrap">
                                 @foreach($combo->products as $product)
-                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                                        {{ $product->pivot->quantity }}x {{ $product->name }}
+                                    <span class="product-badge">
+                                        {{ $product->pivot->quantity }}x {{ Str::limit($product->name, 15) }}
                                     </span>
                                 @endforeach
                             </div>
                         </div>
-
-                        <!-- Precios -->
-                        <div class="border-t pt-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <div>
-                                    <p class="text-2xl font-bold text-green-600">${{ number_format($combo->price, 2) }}</p>
-                                    <p class="text-sm text-gray-500">Precio Combo</p>
-                                </div>
-                                <div class="text-right">
-                                    @php
-                                        $totalIndividual = $combo->products->sum(function($product) {
-                                            return $product->price * $product->pivot->quantity;
-                                        });
-                                        $savings = $totalIndividual - $combo->price;
-                                        $savingsPercent = $totalIndividual > 0 ? ($savings / $totalIndividual) * 100 : 0;
-                                    @endphp
-                                    <p class="text-lg font-semibold text-orange-600">${{ number_format($savings, 2) }}</p>
-                                    <p class="text-sm text-gray-500">Ahorro ({{ number_format($savingsPercent, 1) }}%)</p>
-                                </div>
+                        
+                        <!-- Precios y Ahorro -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="bg-green-50 rounded-lg p-3 text-center">
+                                <div class="text-2xl font-bold text-green-600">${{ number_format($combo->price, 2) }}</div>
+                                <div class="text-xs text-green-700 font-medium">Precio Combo</div>
+                                <div class="text-xs text-gray-500 line-through">${{ number_format($combo->original_price, 2) }}</div>
                             </div>
-                            
-                            <div class="text-xs text-gray-400 text-center">
-                                <p>Precio individual: ${{ number_format($totalIndividual, 2) }}</p>
+                            <div class="bg-orange-50 rounded-lg p-3 text-center">
+                                <div class="text-2xl font-bold text-orange-600">${{ number_format($combo->savings, 2) }}</div>
+                                <div class="text-xs text-orange-700 font-medium">Ahorro Total</div>
+                                <div class="text-xs text-gray-600">({{ $combo->discount_percentage }}% descuento)</div>
                             </div>
                         </div>
-
-                        @if($combo->description)
-                            <div class="mt-4 p-3 bg-gray-50 rounded-lg">
-                                <p class="text-sm text-gray-600">{{ $combo->description }}</p>
+                        
+                        <!-- Descripción Completa -->
+                        @if(strlen($combo->description) > 30)
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                                    {{ $combo->description }}
+                                </p>
                             </div>
                         @endif
-                    </div>
-
-                    <!-- Acciones -->
-                    <div class="p-4 bg-gray-50 flex items-center justify-center space-x-2">
-                        <a href="{{ route('admin.combos.show', $combo) }}" 
-                           class="bg-orange-600 hover:bg-orange-700 text-white p-2 rounded-lg transition-colors" 
-                           title="Ver">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="{{ route('admin.combos.edit', $combo) }}" 
-                           class="bg-green-600 hover:bg-green-700 text-white p-2 rounded-lg transition-colors" 
-                           title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <button onclick="confirmDelete({{ $combo->id }}, '{{ $combo->name }}')" 
-                                class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors" 
-                                title="Eliminar">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        
+                        <!-- 4. Acciones (Botones actualizados) -->
+                        <div class="flex justify-center space-x-2 pt-4 border-t border-gray-100">
+                            
+                            <!-- Ver (Azul) -->
+                            <a href="{{ route('admin.combos.show', $combo) }}" 
+                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-700 transition duration-200 transform hover:scale-110" 
+                               title="Ver Detalles">
+                                <i class="fas fa-eye text-sm"></i>
+                            </a>
+                            
+                            <!-- Editar (Indigo) -->
+                            <a href="{{ route('admin.combos.edit', $combo) }}" 
+                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 transition duration-200 transform hover:scale-110" 
+                               title="Editar">
+                                <i class="fas fa-edit text-sm"></i>
+                            </a>
+                            
+                            <!-- Activar/Desactivar (Verde/Gris) -->
+                            <form action="{{ route('admin.combos.toggle-status', $combo) }}" 
+                                  method="POST" class="inline">
+                                @csrf
+                                @method('PATCH')
+                                @php
+                                    $btnClass = $combo->is_active 
+                                        ? 'bg-green-100 text-green-600 hover:bg-green-200' 
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200';
+                                @endphp
+                                <button type="submit" 
+                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg {{ $btnClass }} transition duration-200 transform hover:scale-110" 
+                                        title="{{ $combo->is_active ? 'Desactivar' : 'Activar' }}">
+                                    <i class="fas fa-toggle-{{ $combo->is_active ? 'on' : 'off' }} text-sm"></i>
+                                </button>
+                            </form>
+                            
+                            <!-- Eliminar (Rojo) -->
+                            <form action="{{ route('admin.combos.destroy', $combo) }}" 
+                                  method="POST" class="inline" 
+                                  onsubmit="return confirm('¿Estás seguro de eliminar este combo?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 transition duration-200 transform hover:scale-110" 
+                                        title="Eliminar">
+                                    <i class="fas fa-trash text-sm"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endforeach
         </div>
-
-        <!-- Pagination -->
+        
+        <!-- Paginación -->
         @if($combos->hasPages())
-            <div class="mt-6">
-                {{ $combos->links() }}
+            <div class="mt-8 flex justify-center">
+                {{-- Estandarizando paginación --}}
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-4">
+                    {{ $combos->links() }}
+                </div>
             </div>
         @endif
     @else
-        <!-- Empty State -->
-        <div class="bg-white rounded-lg shadow p-12 text-center">
-            <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <i class="fas fa-layer-group text-3xl text-gray-400"></i>
+        <!-- Estado Vacío (Estilo unificado) -->
+        <div class="text-center py-16">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-12 max-w-md mx-auto">
+                <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-box-open text-orange-500 text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">No hay combos creados</h3>
+                <p class="text-gray-600 mb-8">Crea tu primer combo para empezar a ofrecer promociones atractivas a tus clientes.</p>
+                <a href="{{ route('admin.combos.create') }}" 
+                   class="btn-primary">
+                    <i class="fas fa-plus mr-2"></i>Crear Primer Combo
+                </a>
             </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No hay combos registrados</h3>
-            <p class="text-gray-500 mb-6">Comienza creando tu primer combo para ofrecer paquetes especiales a tus clientes.</p>
-            <a href="{{ route('admin.combos.create') }}" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-                <i class="fas fa-plus mr-2"></i>
-                Crear mi primer combo
-            </a>
         </div>
     @endif
 </div>
-
-<!-- Delete Confirmation Modal Script -->
-<script>
-function confirmDelete(comboId, comboName) {
-    if (confirm(`¿Estás seguro de que deseas eliminar el combo "${comboName}"?`)) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/admin/combos/${comboId}`;
-        
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = '{{ csrf_token() }}';
-        
-        const methodInput = document.createElement('input');
-        methodInput.type = 'hidden';
-        methodInput.name = '_method';
-        methodInput.value = 'DELETE';
-        
-        form.appendChild(csrfToken);
-        form.appendChild(methodInput);
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-</script>
 @endsection

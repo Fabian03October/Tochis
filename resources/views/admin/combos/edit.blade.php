@@ -179,10 +179,15 @@
                             @foreach($products as $product)
                                 @php
                                     $isSelected = $combo->products->contains($product->id);
+                                    $pivotData = $combo->products->where('id', $product->id)->first();
+                                    $quantity = $pivotData ? $pivotData->pivot->quantity : 1;
                                 @endphp
                                 <div class="product-item border rounded-lg p-3 hover:bg-gray-50 transition-colors duration-200 {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200' }}" 
                                      data-product-name="{{ strtolower($product->name) }}"
-                                     data-category-name="{{ strtolower($product->category->name) }}">
+                                     data-category-name="{{ strtolower($product->category->name) }}"
+                                     data-product-id="{{ $product->id }}"
+                                     data-product-price="{{ $product->price }}"
+                                     data-selected-quantity="{{ $quantity }}">
                                     <div class="flex items-start space-x-3">
                                         <input type="checkbox" 
                                                name="products[]" 
@@ -275,8 +280,17 @@
                                 <div class="selected-product flex items-center justify-between p-2 bg-gray-50 rounded" data-product-id="{{ $product->id }}">
                                     <div class="flex items-center space-x-2">
                                         <span class="text-sm font-medium">{{ $product->name }}</span>
+                                        <div class="flex items-center space-x-1">
+                                            <label class="text-xs text-gray-500">Cantidad:</label>
+                                            <input type="number" 
+                                                   name="quantities[{{ $product->id }}]" 
+                                                   value="{{ $product->pivot->quantity ?? 1 }}" 
+                                                   min="1" 
+                                                   class="w-16 px-2 py-1 text-xs border border-gray-300 rounded quantity-input"
+                                                   onchange="updateCalculations()">
+                                        </div>
                                     </div>
-                                    <span class="text-sm text-green-600 font-semibold">${{ number_format($product->price, 2) }}</span>
+                                    <span class="text-sm text-green-600 font-semibold product-price">${{ number_format($product->price, 2) }}</span>
                                 </div>
                             @endforeach
                         </div>
@@ -341,27 +355,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Actualizar precio del combo cuando cambia
     priceInput.addEventListener('input', updateCalculations);
     
-    // Función para actualizar cálculos
-    function updateCalculations() {
-        const selectedProducts = document.querySelectorAll('.product-checkbox:checked');
-        let totalOriginalPrice = 0;
-        
-        selectedProducts.forEach(checkbox => {
-            const productItem = checkbox.closest('.product-item');
-            const priceText = productItem.querySelector('.text-green-600').textContent;
-            const price = parseFloat(priceText.replace('$', '').replace(',', ''));
-            totalOriginalPrice += price;
-        });
-        
-        const comboPriceValue = parseFloat(priceInput.value) || 0;
-        const savingsValue = totalOriginalPrice - comboPriceValue;
-        const savingsPercentageValue = totalOriginalPrice > 0 ? (savingsValue / totalOriginalPrice) * 100 : 0;
-        
-        originalPrice.textContent = '$' + totalOriginalPrice.toFixed(2);
-        comboPrice.textContent = '$' + comboPriceValue.toFixed(2);
-        savings.textContent = '$' + Math.max(0, savingsValue).toFixed(2);
-        savingsPercentage.textContent = '(' + Math.max(0, savingsPercentageValue).toFixed(1) + '% descuento)';
-    }
+    // Inicializar cálculos al cargar la página
+    updateCalculations();
 });
 
 function updateProductSelection(checkbox) {
@@ -381,8 +376,17 @@ function updateProductSelection(checkbox) {
         selectedProduct.innerHTML = `
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-medium">${productName}</span>
+                <div class="flex items-center space-x-1">
+                    <label class="text-xs text-gray-500">Cantidad:</label>
+                    <input type="number" 
+                           name="quantities[${productId}]" 
+                           value="1" 
+                           min="1" 
+                           class="w-16 px-2 py-1 text-xs border border-gray-300 rounded quantity-input"
+                           onchange="updateCalculations()">
+                </div>
             </div>
-            <span class="text-sm text-green-600 font-semibold">${productPrice}</span>
+            <span class="text-sm text-green-600 font-semibold product-price">${productPrice}</span>
         `;
         
         document.getElementById('selectedProductsList').appendChild(selectedProduct);
@@ -414,14 +418,16 @@ function updateProductSelection(checkbox) {
 }
 
 function updateCalculations() {
-    const selectedProducts = document.querySelectorAll('.product-checkbox:checked');
+    const selectedProducts = document.querySelectorAll('.selected-product');
     let totalOriginalPrice = 0;
     
-    selectedProducts.forEach(checkbox => {
-        const productItem = checkbox.closest('.product-item');
-        const priceText = productItem.querySelector('.text-green-600').textContent;
+    selectedProducts.forEach(productDiv => {
+        const priceText = productDiv.querySelector('.product-price').textContent;
         const price = parseFloat(priceText.replace('$', '').replace(',', ''));
-        totalOriginalPrice += price;
+        const quantityInput = productDiv.querySelector('.quantity-input');
+        const quantity = parseInt(quantityInput ? quantityInput.value : 1) || 1;
+        
+        totalOriginalPrice += (price * quantity);
     });
     
     const priceInput = document.getElementById('price');

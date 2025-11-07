@@ -32,13 +32,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
-            <i class="fas fa-check-circle mr-3 text-green-500"></i>
-            <span class="font-medium">{{ session('success') }}</span>
-        </div>
-    @endif
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
