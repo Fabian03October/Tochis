@@ -159,18 +159,17 @@
                 <div class="px-4 py-3">
                     <div class="flex flex-wrap gap-2">
                         {{-- Botón "Todos" (Estilo original mantenido, es único de esta vista) --}}
-                        <button onclick="filterByCategory('all')" 
-                                class="category-btn active px-3 py-1.5 text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200 rounded-lg font-medium flex items-center"
+                        <button class="category-btn active px-3 py-1.5 text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200 rounded-lg font-medium flex items-center"
                                 data-category="all">
                             <i class="fas fa-th-large mr-1.5 text-xs"></i>
                             Todos
                         </button>
                         @foreach($categories as $category)
                             @if($category->activeProducts->count() > 0)
-                                <button onclick="filterByCategory({{ $category->id }})" 
-                                        class="category-btn px-3 py-1.5 text-xs text-white hover:opacity-90 transition duration-200 rounded-lg font-medium flex items-center"
+                                <button class="category-btn px-3 py-1.5 text-xs text-white hover:opacity-90 transition duration-200 rounded-lg font-medium flex items-center"
                                         style="background: linear-gradient(135deg, {{ $category->color }}, {{ $category->color }}dd)"
-                                        data-category="{{ $category->id }}">
+                                        data-category="{{ $category->id }}"
+                                        data-color="{{ $category->color }}">
                                     <i class="fas fa-utensils mr-1.5 text-xs"></i>
                                     {{ $category->name }}
                                     <span class="ml-2 bg-white bg-opacity-30 px-1.5 py-0.5 rounded-full text-xs font-bold">
@@ -207,12 +206,13 @@
                     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                         @foreach($categories as $category)
                             @foreach($category->activeProducts as $product)
-                                <div class.="product-card bg-white border-2 border-transparent rounded-xl p-4 hover:shadow-xl cursor-pointer transform hover:-translate-y-2"
+                                <div class="product-card bg-white border-2 border-transparent rounded-xl p-4 hover:shadow-xl cursor-pointer transform hover:-translate-y-2"
                                      data-category="{{ $category->id }}"
                                      data-product-id="{{ $product->id }}"
                                      data-product-name="{{ strtolower($product->name) }}"
                                      data-has-options="{{ $product->category->is_customizable ? 'true' : 'false' }}"
-                                     onclick="handleProductClick({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, {{ $product->is_food ? 'true' : 'false' }})">
+                                     data-product-price="{{ $product->price }}"
+                                     data-is-food="{{ $product->is_food ? 'true' : 'false' }}">
                                     
                                     <div class="relative mb-4">
                                         @if($product->image)
@@ -220,7 +220,8 @@
                                                  alt="{{ $product->name }}"
                                                  class="w-full h-28 object-cover rounded-lg shadow-md">
                                         @else
-                                            <div class="w-full h-28 tochis-gradient-light rounded-lg flex items-center justify-center shadow-md">
+                                            <div class="w-full h-28 rounded-lg flex items-center justify-center shadow-md"
+                                                 style="background: linear-gradient(135deg, {{ $product->category->color }}, {{ $product->category->color }}dd)">
                                                 @if($product->is_food)
                                                     <i class="fas fa-utensils text-white text-3xl"></i>
                                                 @else
@@ -231,8 +232,15 @@
                                         
                                         @if($product->is_food)
                                             <div class="absolute top-2 right-2">
-                                                <span class="tochis-gradient text-white text-xs px-3 py-1 rounded-full shadow-lg flex items-center font-bold">
-                                                    <i class="fas fa-utensils mr-1"></i>Comida
+                                                <span class="text-white text-xs px-3 py-1 rounded-full shadow-lg flex items-center font-bold"
+                                                      style="background: linear-gradient(135deg, {{ $product->category->color }}, {{ $product->category->color }}dd)">
+                                                    <i class="fas fa-utensils mr-1"></i>{{ $product->category->name }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            <div class="absolute top-2 right-2">
+                                                <span class="bg-gray-600 text-white text-xs px-3 py-1 rounded-full shadow-lg flex items-center font-bold">
+                                                    <i class="fas fa-box mr-1"></i>{{ $product->category->name }}
                                                 </span>
                                             </div>
                                         @endif
@@ -659,10 +667,20 @@ let lastSaleId = null;
 
 // --- Mover 'onclick' a 'addEventListener' ---
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado, configurando event listeners...');
     
-    // Filtro de categorías
-    document.querySelectorAll('.category-btn').forEach(button => {
-        button.addEventListener('click', () => filterByCategory(button.dataset.category));
+    // Filtro de categorías - Mejorado con debugging
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    console.log('Botones de categoría encontrados:', categoryButtons.length);
+    
+    categoryButtons.forEach((button, index) => {
+        console.log(`Configurando botón ${index}:`, button.dataset.category);
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Click en categoría:', button.dataset.category);
+            filterByCategory(button.dataset.category);
+        });
     });
 
     // Limpiar carrito
@@ -684,21 +702,37 @@ document.addEventListener('DOMContentLoaded', function() {
         const products = document.querySelectorAll('.product-card');
         let visibleCount = 0;
 
-        products.forEach(product => {
-            const productName = product.dataset.productName;
+        console.log('Filtrando productos con término:', searchTerm);
+
+        products.forEach((product, index) => {
+            const productName = product.dataset.productName ? product.dataset.productName.toLowerCase() : '';
             
             // Lógica para mostrar/ocultar basado en categoría activa
             const activeCategoryBtn = document.querySelector('.category-btn.active');
             const currentCategory = activeCategoryBtn ? activeCategoryBtn.dataset.category : 'all';
-            const inCategory = (currentCategory === 'all' || product.dataset.category === currentCategory);
+            const productCategory = product.dataset.category;
+            const inCategory = (currentCategory === 'all' || productCategory === currentCategory);
 
-            if (productName.includes(searchTerm) && inCategory) {
+            const matchesSearch = searchTerm === '' || productName.includes(searchTerm);
+            
+            console.log(`Producto ${index}:`, {
+                name: productName,
+                productCategory: productCategory,
+                currentCategory: currentCategory,
+                inCategory: inCategory,
+                matchesSearch: matchesSearch,
+                willShow: matchesSearch && inCategory
+            });
+            
+            if (matchesSearch && inCategory) {
                 product.style.display = 'block';
                 visibleCount++;
             } else {
                 product.style.display = 'none';
             }
         });
+
+        console.log('Productos visibles:', visibleCount);
 
         document.getElementById('no-products').style.display = visibleCount === 0 ? 'block' : 'none';
     });
@@ -707,14 +741,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('products-grid').addEventListener('click', function(e) {
         const productCard = e.target.closest('.product-card');
         if (productCard) {
-            const { productId, productName, hasOptions } = productCard.dataset;
-            // Encontrar el precio del elemento
-            const priceText = productCard.querySelector('.text-green-600').textContent;
-            const price = parseFloat(priceText.replace('$', ''));
-            // Encontrar si es comida (basado en el ícono)
-            const isFood = productCard.querySelector('.fa-utensils') !== null;
+            const productId = productCard.dataset.productId;
+            const productName = productCard.dataset.productName;
+            const price = parseFloat(productCard.dataset.productPrice);
+            const isFood = productCard.dataset.isFood === 'true';
+            const hasOptions = productCard.dataset.hasOptions === 'true';
             
-            handleProductClick(productId, productName, price, isFood, hasOptions === 'true');
+            console.log('Producto clickeado:', { productId, productName, price, isFood, hasOptions });
+            handleProductClick(productId, productName, price, isFood, hasOptions);
         }
     });
 
@@ -821,29 +855,56 @@ function handleProductClick(productId, productName, price, isFood = false, hasOp
 
 // --- Lógica de Filtros ---
 function filterByCategory(categoryId) {
-    document.querySelectorAll('.category-btn').forEach(btn => {
+    console.log('Filtrando por categoría:', categoryId);
+    
+    // Remover clase active de todos los botones
+    const allButtons = document.querySelectorAll('.category-btn');
+    console.log('Botones encontrados para filtrar:', allButtons.length);
+    
+    allButtons.forEach(btn => {
         btn.classList.remove('active');
-        // Quitar estilos de color explícitos si no es el botón "Todos"
-        if(btn.dataset.category !== 'all') {
-             btn.style.background = `linear-gradient(135deg, ${btn.dataset.color}, ${btn.dataset.color}dd)`;
-             btn.classList.add('text-white');
+        
+        // Resetear estilos
+        if (btn.dataset.category !== 'all') {
+            const color = btn.dataset.color;
+            if (color) {
+                btn.style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
+            }
+            btn.classList.remove('bg-gray-100', 'text-gray-700');
+            btn.classList.add('text-white');
         } else {
+            btn.style.background = '';
+            btn.classList.remove('text-white');
             btn.classList.add('bg-gray-100', 'text-gray-700');
         }
     });
     
+    // Agregar clase active al botón seleccionado
     const activeBtn = document.querySelector(`[data-category="${categoryId}"]`);
+    console.log('Botón activo encontrado:', activeBtn);
+    
     if (activeBtn) {
         activeBtn.classList.add('active');
+        
         if (categoryId === 'all') {
-             activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
+            activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
+            activeBtn.classList.add('bg-blue-500', 'text-white');
         } else {
-             activeBtn.style.background = ''; // Dejar que la clase .active maneje el color
+            // Para categorías específicas, usar color más brillante
+            const color = activeBtn.dataset.color;
+            if (color) {
+                activeBtn.style.background = `linear-gradient(135deg, ${color}, #ffffff33)`;
+                activeBtn.style.boxShadow = `0 4px 12px ${color}33`;
+            }
         }
     }
     
-    // Lógica de filtrado (combinada con búsqueda)
-    document.getElementById('search-product').dispatchEvent(new Event('input'));
+    // Trigger filtrado de productos
+    const searchInput = document.getElementById('search-product');
+    if (searchInput) {
+        searchInput.dispatchEvent(new Event('input'));
+        console.log('Filtrado de productos disparado');
+    }
 }
 
 // --- Lógica de Carrito ---
@@ -2050,6 +2111,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar estado cada 30 segundos
     setInterval(getPrinterStatus, 30000);
+    
+    // Test function para verificar que los botones funcionan
+    setTimeout(() => {
+        console.log('=== TESTING CATEGORY BUTTONS ===');
+        const buttons = document.querySelectorAll('.category-btn');
+        console.log('Total buttons found:', buttons.length);
+        
+        buttons.forEach((btn, index) => {
+            console.log(`Button ${index}:`, {
+                category: btn.dataset.category,
+                color: btn.dataset.color,
+                text: btn.textContent.trim(),
+                hasActive: btn.classList.contains('active')
+            });
+        });
+        
+        // Test click en el primer botón de categoría
+        if (buttons.length > 1) {
+            console.log('Testing click on second button...');
+            buttons[1].click();
+        }
+        
+        // Agregar función global para test manual
+        window.testCategoryFilter = function(categoryId) {
+            console.log('=== MANUAL TEST CATEGORY FILTER ===');
+            filterByCategory(categoryId);
+        };
+        
+        console.log('Para probar manualmente: testCategoryFilter("1"), testCategoryFilter("2"), etc.');
+    }, 2000);
 });
 
 </script>
