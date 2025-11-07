@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\CustomizationOptionsController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ComboController;
+use App\Http\Controllers\Admin\PrinterController;
 use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
 use App\Http\Controllers\Cashier\SaleController;
 use App\Http\Controllers\Cashier\CashCutController;
@@ -41,6 +42,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
         Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
         Route::get('/reports/cash-cuts', [ReportController::class, 'cashCuts'])->name('reports.cash-cuts');
+        
+        // Rutas para impresoras térmicas
+        Route::resource('printers', PrinterController::class);
+        Route::post('/printers/{printer}/activate', [PrinterController::class, 'activate'])->name('printers.activate');
+        Route::post('/printers/{printer}/test', [PrinterController::class, 'test'])->name('printers.test');
+        Route::post('/printers/{printer}/print-test', [PrinterController::class, 'printTest'])->name('printers.print-test');
+        Route::get('/printers/{printer}/config', [PrinterController::class, 'getConfig'])->name('printers.config');
     });
 
     // Rutas para cajeros

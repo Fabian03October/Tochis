@@ -457,6 +457,14 @@
                             </div>
                             <span class="menu-text">Reportes</span>
                         </a>
+                        
+                        <a href="{{ route('admin.printers.index') }}" 
+                           class="sidebar-item {{ request()->routeIs('admin.printers.*') || str_contains(request()->url(), 'admin/printers') ? 'active' : '' }}">
+                            <div class="icon-container">
+                                <i class="fas fa-print"></i>
+                            </div>
+                            <span class="menu-text">Impresoras</span>
+                        </a>
                     </div>
                 @else
                     <!-- Menú Cajero -->
