@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\PrinterController;
 use App\Http\Controllers\Admin\MercadoPagoController;
+use App\Http\Controllers\Admin\OrderControlController;
 use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
 use App\Http\Controllers\Cashier\SaleController;
 use App\Http\Controllers\Cashier\CashCutController;
@@ -63,6 +64,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/mercadopago/{mercadopago}/test-qr', [MercadoPagoController::class, 'generateTestQR'])->name('mercadopago.test-qr');
         Route::post('/mercadopago/{mercadopago}/test-payment', [MercadoPagoController::class, 'createTestPayment'])->name('mercadopago.test-payment');
         Route::get('/mercadopago/{mercadopago}/config', [MercadoPagoController::class, 'getConfig'])->name('mercadopago.config');
+        
+        // Rutas para Control de Órdenes
+        Route::prefix('order-control')->name('order-control.')->group(function () {
+            Route::get('/', [OrderControlController::class, 'index'])->name('index');
+            Route::get('/orders', [OrderControlController::class, 'getOrders'])->name('orders');
+            Route::post('/orders/{sale}/start-kitchen', [OrderControlController::class, 'startKitchen'])->name('start-kitchen');
+            Route::post('/orders/{sale}/mark-ready', [OrderControlController::class, 'markReady'])->name('mark-ready');
+            Route::post('/orders/{sale}/mark-delivered', [OrderControlController::class, 'markDelivered'])->name('mark-delivered');
+        });
     });
 
     // Rutas para cajeros
@@ -74,6 +84,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/api/promotions', [SaleController::class, 'getAvailablePromotions'])->name('sale.promotions');
         Route::post('/api/combos/suggest', [SaleController::class, 'getSuggestedCombos'])->name('sale.combos.suggest');
         Route::post('/api/combos/apply', [SaleController::class, 'applyCombo'])->name('sale.combos.apply');
+        
+        // Rutas de control de órdenes para cajero
+        Route::get('/orders', [SaleController::class, 'orders'])->name('orders.index');
+        Route::get('/api/orders', [SaleController::class, 'getOrders'])->name('orders.api');
+        Route::post('/orders/{sale}/mark-ready', [SaleController::class, 'markReady'])->name('orders.mark-ready');
+        Route::post('/orders/{sale}/mark-received', [SaleController::class, 'markReceived'])->name('orders.mark-received');
+        Route::post('/orders/{sale}/mark-delivered', [SaleController::class, 'markDelivered'])->name('orders.mark-delivered');
+        Route::post('/orders/{sale}/mark-complete', [SaleController::class, 'markComplete'])->name('orders.mark-complete');
+        Route::post('/orders/{sale}/mark-item-served/{detail}', [SaleController::class, 'markItemServed'])->name('orders.mark-item-served');
         
         // Rutas de MercadoPago para pagos con tarjeta
         Route::prefix('mercadopago')->name('mercadopago.')->group(function () {

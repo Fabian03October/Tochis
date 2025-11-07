@@ -740,6 +740,24 @@
                             <span class="menu-text">Reportes</span>
                         </a>
                     </div>
+
+                    <!-- 5. Control de Órdenes -->
+                    <div class="sidebar-section-title">
+                        <h3>
+                            <i class="fas fa-clipboard-list"></i>
+                            Operaciones
+                        </h3>
+                    </div>
+                    
+                    <div class="sidebar-menu-group">
+                        <a href="{{ route('admin.order-control.index') }}" 
+                           class="sidebar-item {{ request()->routeIs('admin.order-control.*') ? 'active' : '' }}">
+                            <div class="icon-container">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <span class="menu-text">Control de Órdenes</span>
+                        </a>
+                    </div>
                 @else
                     <!-- Menú Cajero -->
                     <div class="sidebar-section-title">
@@ -772,6 +790,14 @@
                                 <i class="fas fa-receipt"></i>
                             </div>
                             <span class="menu-text">Historial de Ventas</span>
+                        </a>
+                        
+                        <a href="{{ route('cashier.orders.index') }}" 
+                           class="sidebar-item {{ request()->routeIs('cashier.orders.*') || str_contains(request()->url(), 'cashier/orders') ? 'active' : '' }}">
+                            <div class="icon-container">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <span class="menu-text">Control de Órdenes</span>
                         </a>
                         
                         <a href="{{ route('cashier.cash-cut.index') }}" 
