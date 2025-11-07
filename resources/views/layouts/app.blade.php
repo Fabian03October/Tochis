@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f97316">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'TOCHIS - Sistema POS')</title>
     
@@ -370,6 +373,231 @@
             transform: none !important;
             box-shadow: none !important;
         }
+
+        /* =========================
+           RESPONSIVE DESIGN - TABLETAS Y MÓVILES
+           ========================= */
+
+        /* Tabletas horizontales (1024px y menos) */
+        @media (max-width: 1024px) {
+            .sidebar-fixed {
+                width: 240px !important;
+            }
+            
+            .main-content {
+                margin-left: 240px !important;
+            }
+            
+            .sidebar-item {
+                padding: 14px 16px;
+                margin: 6px 12px;
+            }
+            
+            .sidebar-item .icon-container {
+                width: 40px;
+                height: 40px;
+                margin-right: 12px;
+            }
+            
+            .sidebar-item .icon-container i {
+                font-size: 18px;
+            }
+        }
+
+        /* Tabletas verticales y dispositivos medianos (768px y menos) */
+        @media (max-width: 768px) {
+            .sidebar-fixed {
+                width: 200px !important;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 9999 !important;
+            }
+            
+            .sidebar-fixed.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            
+            .sidebar-item {
+                padding: 12px 14px;
+                margin: 4px 10px;
+                font-size: 14px;
+            }
+            
+            .sidebar-item .icon-container {
+                width: 36px;
+                height: 36px;
+                margin-right: 10px;
+            }
+            
+            .sidebar-item .icon-container i {
+                font-size: 16px;
+            }
+            
+            .sidebar-section-title {
+                padding: 16px 16px 8px 16px;
+            }
+            
+            .sidebar-section-title h3 {
+                font-size: 11px;
+            }
+            
+            /* Botón hamburguesa para móviles */
+            .mobile-menu-button {
+                display: block !important;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 10000;
+                background: var(--tochis-orange);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                width: 48px;
+                height: 48px;
+                box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+                transition: all 0.3s ease;
+            }
+            
+            .mobile-menu-button:hover {
+                background: var(--tochis-orange-dark);
+                transform: scale(1.05);
+            }
+            
+            .mobile-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 9998;
+            }
+            
+            .mobile-overlay.active {
+                display: block;
+            }
+        }
+
+        /* Smartphones (480px y menos) */
+        @media (max-width: 480px) {
+            .sidebar-fixed {
+                width: 280px !important; /* Ancho completo en móviles pequeños */
+            }
+            
+            .sidebar-item {
+                padding: 16px 18px; /* Más padding para toques fáciles */
+                margin: 6px 14px;
+                font-size: 15px;
+            }
+            
+            .sidebar-item .icon-container {
+                width: 44px;
+                height: 44px;
+                margin-right: 14px;
+            }
+            
+            .sidebar-item .icon-container i {
+                font-size: 18px;
+            }
+            
+            .sidebar-section-title h3 {
+                font-size: 12px;
+            }
+            
+            /* Ajustar contenido principal para móviles */
+            .container-fluid {
+                padding: 15px !important;
+            }
+            
+            .card {
+                margin-bottom: 20px;
+                border-radius: 16px;
+            }
+            
+            .btn {
+                padding: 14px 20px !important;
+                font-size: 15px !important;
+                min-height: 48px; /* Área mínima de toque */
+            }
+            
+            .btn-sm {
+                padding: 10px 16px !important;
+                font-size: 13px !important;
+                min-height: 40px;
+            }
+            
+            /* Tablas responsivas */
+            .table-responsive {
+                font-size: 14px;
+            }
+            
+            .table th, .table td {
+                padding: 12px 8px !important;
+            }
+        }
+
+        /* Orientación landscape en tabletas */
+        @media (max-width: 1024px) and (orientation: landscape) {
+            .sidebar-fixed {
+                width: 200px !important;
+            }
+            
+            .main-content {
+                margin-left: 200px !important;
+            }
+        }
+
+        /* Ocultar botón hamburguesa en desktop */
+        @media (min-width: 769px) {
+            .mobile-menu-button {
+                display: none !important;
+            }
+        }
+
+        /* Ajustes específicos para iPads */
+        @media (max-width: 1024px) and (min-width: 768px) {
+            /* iPad en modo portrait */
+            .sidebar-item {
+                padding: 15px 18px;
+                margin: 8px 14px;
+            }
+            
+            .sidebar-item .menu-text {
+                font-size: 14px;
+            }
+            
+            /* Mejorar área de toque */
+            .btn, .sidebar-item, .form-control {
+                min-height: 44px; /* Estándar de Apple para área de toque */
+            }
+        }
+
+        /* Mejoras para touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            .sidebar-item:hover {
+                transform: none; /* Eliminar hover effects en touch */
+            }
+            
+            .btn:hover {
+                transform: none;
+            }
+            
+            /* Efectos de toque */
+            .sidebar-item:active {
+                background: rgba(255, 255, 255, 0.2) !important;
+                transform: scale(0.98);
+            }
+            
+            .btn:active {
+                transform: scale(0.98);
+            }
+        }
     </style>
     
     @stack('styles')
@@ -377,8 +605,16 @@
 <body class="bg-gray-50 font-sans antialiased">
     <div class="min-h-screen flex">
         @auth
+        <!-- Botón hamburguesa para móviles -->
+        <button class="mobile-menu-button" id="mobileMenuButton" style="display: none;">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Overlay para cerrar menú en móviles -->
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+        
         <!-- Sidebar -->
-        <div class="sidebar-fixed flex flex-col">
+        <div class="sidebar-fixed flex flex-col" id="sidebar">
             <!-- Logo y Título -->
             <div class="h-20 logo-area flex items-center justify-center flex-shrink-0">
                 <div class="text-center">
@@ -573,7 +809,7 @@
         @endauth
 
         <!-- Main Content -->
-        <div class="main-content flex-1">
+        <div class="main-content flex-1" style="margin-left: 280px; transition: margin-left 0.3s ease;">
             @auth
             <!-- Header -->
             <div class="bg-white shadow-sm border-b border-gray-200">
@@ -733,6 +969,189 @@
                 }, 1000);
             }
         });
+
+        // ========================
+        // MENÚ MÓVIL Y RESPONSIVE
+        // ========================
+        
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const mainContent = document.querySelector('.main-content');
+        
+        // Función para detectar si estamos en móvil
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+        
+        // Función para mostrar/ocultar menú móvil
+        function toggleMobileMenu() {
+            if (isMobile()) {
+                sidebar.classList.toggle('active');
+                mobileOverlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            }
+        }
+        
+        // Función para cerrar menú móvil
+        function closeMobileMenu() {
+            if (isMobile()) {
+                sidebar.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Event listeners para menú móvil
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', toggleMobileMenu);
+        }
+        
+        if (mobileOverlay) {
+            mobileOverlay.addEventListener('click', closeMobileMenu);
+        }
+        
+        // Cerrar menú al hacer clic en un enlace (en móvil)
+        $('.sidebar-item').on('click', function() {
+            if (isMobile()) {
+                setTimeout(closeMobileMenu, 150); // Pequeño delay para mejor UX
+            }
+        });
+        
+        // Manejo de redimensionado de ventana
+        function handleResize() {
+            if (isMobile()) {
+                // Mostrar botón hamburguesa
+                if (mobileMenuButton) {
+                    mobileMenuButton.style.display = 'block';
+                }
+                // Ajustar contenido principal
+                if (mainContent) {
+                    mainContent.style.marginLeft = '0';
+                }
+            } else {
+                // Ocultar botón hamburguesa
+                if (mobileMenuButton) {
+                    mobileMenuButton.style.display = 'none';
+                }
+                // Restaurar layout de escritorio
+                closeMobileMenu();
+                if (mainContent) {
+                    mainContent.style.marginLeft = window.innerWidth <= 1024 ? 
+                        (window.innerWidth <= 768 ? '0' : '240px') : '280px';
+                }
+            }
+        }
+        
+        // Ejecutar al cargar la página
+        handleResize();
+        
+        // ========================
+        // DEVICE ID PARA MÚLTIPLES USUARIOS
+        // ========================
+        
+        // Generar o recuperar Device ID único
+        function getOrCreateDeviceId() {
+            let deviceId = localStorage.getItem('device_id');
+            if (!deviceId) {
+                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('device_id', deviceId);
+            }
+            return deviceId;
+        }
+        
+        // Enviar Device ID en todas las peticiones AJAX
+        const deviceId = getOrCreateDeviceId();
+        
+        // Configurar headers globales para AJAX
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Device-ID': deviceId
+            }
+        });
+        
+        // También enviar en formularios
+        $(document).on('submit', 'form', function() {
+            const form = $(this);
+            if (!form.find('input[name="device_id"]').length) {
+                form.append('<input type="hidden" name="device_id" value="' + deviceId + '">');
+            }
+        });
+        
+        // Mostrar información del dispositivo en consola (para debug)
+        console.log('Device ID:', deviceId);
+        console.log('User Agent:', navigator.userAgent);
+        console.log('Screen Size:', window.screen.width + 'x' + window.screen.height);
+        console.log('Viewport Size:', window.innerWidth + 'x' + window.innerHeight);
+        
+        // Ejecutar al cargar la página
+        handleResize();
+        
+        // Ejecutar al redimensionar
+        $(window).on('resize', handleResize);
+        
+        // Detección de orientación para tabletas
+        $(window).on('orientationchange', function() {
+            setTimeout(handleResize, 100); // Delay para que se complete el cambio
+        });
+        
+        // Touch gestures para menú (swipe)
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const swipeDistance = touchEndX - touchStartX;
+            
+            if (isMobile()) {
+                // Swipe derecha para abrir menú
+                if (swipeDistance > swipeThreshold && touchStartX < 50) {
+                    if (!sidebar.classList.contains('active')) {
+                        toggleMobileMenu();
+                    }
+                }
+                // Swipe izquierda para cerrar menú
+                else if (swipeDistance < -swipeThreshold && sidebar.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            }
+        }
+        
+        // Prevenir zoom en doble tap (mejor para PWA)
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Mejoras para PWA y tabletas
+        if ('serviceWorker' in navigator) {
+            // Registrar service worker si está disponible
+            console.log('Service Worker support detected');
+        }
+        
+        // Detectar si es una tableta
+        function isTablet() {
+            return window.innerWidth > 768 && window.innerWidth <= 1024;
+        }
+        
+        // Ajustes específicos para tabletas
+        if (isTablet()) {
+            document.body.classList.add('tablet-device');
+        }
     </script>
     
     @stack('scripts')

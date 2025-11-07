@@ -17,13 +17,26 @@ class MultiDeviceSession
     {
         // Permitir múltiples sesiones para el mismo usuario
         if (auth()->check()) {
-            // Configurar cookie de sesión para permitir múltiples dispositivos
+            // Crear un identificador único por dispositivo/pestaña
+            $deviceId = $request->header('X-Device-ID') ?? 
+                       $request->cookie('device_id') ?? 
+                       uniqid('device_', true);
+            
+            // Configurar cookie de sesión única por dispositivo y usuario
+            $sessionName = 'laravel_session_' . auth()->id() . '_' . md5($deviceId);
+            
             config([
+                'session.cookie' => $sessionName,
                 'session.same_site' => 'lax',
-                'session.secure' => false, // true si usas HTTPS
+                'session.secure' => $request->isSecure(),
                 'session.http_only' => true,
-                'session.cookie' => 'laravel_session_' . auth()->id(),
+                'session.lifetime' => 480, // 8 horas para POS
             ]);
+            
+            // Establecer cookie de dispositivo si no existe
+            if (!$request->cookie('device_id')) {
+                cookie('device_id', $deviceId, 525600); // 1 año
+            }
         }
 
         return $next($request);
