@@ -58,4 +58,27 @@ class CustomizationController extends Controller
             'specialties' => $specialties
         ]);
     }
+
+    public function getProductOptions(Product $product)
+    {
+        $observations = $product->observationOptions()->where('is_active', true)->get();
+        $specialties = $product->specialtyOptions()->where('is_active', true)->get();
+        
+        return response()->json([
+            'observations' => $observations->map(function($option) {
+                return [
+                    'id' => $option->id,
+                    'name' => $option->name,
+                    'price' => $option->price
+                ];
+            }),
+            'specialties' => $specialties->map(function($option) {
+                return [
+                    'id' => $option->id,
+                    'name' => $option->name,
+                    'price' => $option->price
+                ];
+            })
+        ]);
+    }
 }

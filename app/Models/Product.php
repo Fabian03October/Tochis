@@ -55,17 +55,17 @@ class Product extends Model
 
     public function options()
     {
-        return $this->hasMany(Platilloption::class);
+        return $this->hasMany(ProductOption::class);
     }
 
     public function observationOptions()
     {
-        return $this->hasMany(Platilloption::class)->where('type', 'observation');
+        return $this->hasMany(ProductOption::class)->where('type', 'observation');
     }
 
     public function specialtyOptions()
     {
-        return $this->hasMany(Platilloption::class)->where('type', 'specialty');
+        return $this->hasMany(ProductOption::class)->where('type', 'specialty');
     }
 
     /**

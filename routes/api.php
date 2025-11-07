@@ -21,4 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Rutas para opciones de personalización
 Route::get('/customization-options', [CustomizationController::class, 'getOptions']);
-Route::get('/products/{product}/options', [CustomizationController::class, 'getPlatilloptions']);
+Route::get('/products/{product}/options', [CustomizationController::class, 'getProductOptions']);

@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
-use App\Models\Platilloption;
+use App\Models\ProductOption;
 
-class PlatilloptionsSeeder extends Seeder
+class ProductOptionsSeeder extends Seeder
 {
     public function run()
     {
@@ -36,7 +36,7 @@ class PlatilloptionsSeeder extends Seeder
             
             // Crear observaciones
             foreach ($observations as $obs) {
-                Platilloption::create([
+                ProductOption::create([
                     'product_id' => $product->id,
                     'name' => $obs['name'],
                     'type' => 'observation',
@@ -47,7 +47,7 @@ class PlatilloptionsSeeder extends Seeder
             
             // Crear especialidades
             foreach ($specialties as $spec) {
-                Platilloption::create([
+                ProductOption::create([
                     'product_id' => $product->id,
                     'name' => $spec['name'],
                     'type' => 'specialty',

@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Platilloption extends Model
+class ProductOption extends Model
 {
     use HasFactory;
+
+    protected $table = 'product_options'; // Tabla correcta
 
     protected $fillable = [
         'product_id',

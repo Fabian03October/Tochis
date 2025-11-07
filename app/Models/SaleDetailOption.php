@@ -32,8 +32,8 @@ class SaleDetailOption extends Model
     /**
      * Get the product customization option
      */
-    public function Platilloption()
+    public function productOption()
     {
-        return $this->belongsTo(ProductCustomizationOption::class, 'product_option_id');
+        return $this->belongsTo(ProductOption::class, 'product_option_id');
     }
 }
