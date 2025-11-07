@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Crear Producto - Sistema POS')
-@section('page-title', 'Crear Nuevo Producto')
+@section('title', 'Crear Platillo - Sistema POS')
+@section('page-title', 'Crear Nuevo Platillo')
 
 @section('content')
 <div class="fade-in">
@@ -9,15 +9,15 @@
     <div class="bg-white rounded-lg shadow p-6 mb-6">
         <div class="sm:flex sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-xl font-semibold text-gray-900">Crear Nuevo Producto</h2>
+                <h2 class="text-xl font-semibold text-gray-900">Crear Nuevo Platillo</h2>
                 <p class="mt-2 text-sm text-gray-600">
-                    Completa la información del producto para agregarlo al inventario.
+                    Completa la información del Platillo para agregarlo al inventario.
                 </p>
             </div>
             <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                 <a href="{{ route('admin.products.index') }}" class="btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i>
-                    Volver a Productos
+                    Volver a Platillos
                 </a>
             </div>
         </div>
@@ -40,7 +40,7 @@
                     <!-- Product Name -->
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                            Nombre del Producto *
+                            Nombre del Platillo *
                         </label>
                         <input type="text" 
                                id="name" 
@@ -63,7 +63,7 @@
                               name="description" 
                               rows="3"
                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('description') border-red-500 @enderror"
-                              placeholder="Descripción detallada del producto...">{{ old('description') }}</textarea>
+                              placeholder="Descripción detallada del Platillo...">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -130,7 +130,7 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                         <p class="mt-1 text-sm text-gray-500">
-                            Costo de adquisición del producto.
+                            Costo de adquisición del Platillo.
                         </p>
                     </div>
 
@@ -186,7 +186,7 @@
                 <!-- Product Image -->
                 <div>
                     <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
-                        Imagen del Producto
+                        Imagen del Platillo
                     </label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors duration-200">
                         <div class="space-y-1 text-center">
@@ -226,10 +226,10 @@
                         </div>
                         <div class="ml-3 text-sm">
                             <label for="is_active" class="font-medium text-gray-700">
-                                Producto Activo
+                                Platillo Activo
                             </label>
                             <p class="text-gray-500">
-                                Los productos activos aparecen en el punto de venta y pueden ser vendidos.
+                                Los Platillos activos aparecen en el punto de venta y pueden ser vendidos.
                             </p>
                         </div>
                     </div>
@@ -245,7 +245,7 @@
             </a>
             <button type="submit" class="btn-primary">
                 <i class="fas fa-save mr-2"></i>
-                Crear Producto
+                Crear Platillo
             </button>
         </div>
     </form>

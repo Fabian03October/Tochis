@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Editar Producto - Sistema POS')
-@section('page-title', 'Editar Producto')
+@section('title', 'Editar Platillo - Sistema POS')
+@section('page-title', 'Editar Platillo')
 
 @section('content')
 <div class="fade-in">
@@ -9,19 +9,19 @@
     <div class="bg-white rounded-lg shadow p-6 mb-6">
         <div class="sm:flex sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-xl font-semibold text-gray-900">Editar Producto</h2>
+                <h2 class="text-xl font-semibold text-gray-900">Editar Platillo</h2>
                 <p class="mt-2 text-sm text-gray-600">
-                    Modifica la información del producto "{{ $product->name }}".
+                    Modifica la información del Platillo "{{ $product->name }}".
                 </p>
             </div>
             <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none space-x-2">
                 <a href="{{ route('admin.products.show', $product) }}" class="btn-secondary">
                     <i class="fas fa-eye mr-2"></i>
-                    Ver Producto
+                    Ver Platillo
                 </a>
                 <a href="{{ route('admin.products.index') }}" class="btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i>
-                    Volver a Productos
+                    Volver a Platillos
                 </a>
             </div>
         </div>
@@ -45,7 +45,7 @@
                     <!-- Product Name -->
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                            Nombre del Producto *
+                            Nombre del Platillo *
                         </label>
                         <input type="text" 
                                id="name" 
@@ -68,7 +68,7 @@
                               name="description" 
                               rows="3"
                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('description') border-red-500 @enderror"
-                              placeholder="Descripción detallada del producto...">{{ old('description', $product->description) }}</textarea>
+                              placeholder="Descripción detallada del Platillo...">{{ old('description', $product->description) }}</textarea>
                     @error('description')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -135,7 +135,7 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                         <p class="mt-1 text-sm text-gray-500">
-                            Costo de adquisición del producto.
+                            Costo de adquisición del Platillo.
                         </p>
                     </div>
 
@@ -200,7 +200,7 @@
                                  class="h-20 w-20 object-cover rounded-lg border border-gray-200">
                             <div>
                                 <p class="text-sm text-gray-600">
-                                    Imagen actual del producto. Puedes cargar una nueva imagen abajo para reemplazarla.
+                                    Imagen actual del Platillo. Puedes cargar una nueva imagen abajo para reemplazarla.
                                 </p>
                             </div>
                         </div>
@@ -210,7 +210,7 @@
                 <!-- Product Image -->
                 <div>
                     <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
-                        {{ $product->image ? 'Nueva Imagen del Producto' : 'Imagen del Producto' }}
+                        {{ $product->image ? 'Nueva Imagen del Platillo' : 'Imagen del Platillo' }}
                     </label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors duration-200">
                         <div class="space-y-1 text-center">
@@ -250,10 +250,10 @@
                         </div>
                         <div class="ml-3 text-sm">
                             <label for="is_active" class="font-medium text-gray-700">
-                                Producto Activo
+                                Platillo Activo
                             </label>
                             <p class="text-gray-500">
-                                Los productos activos aparecen en el punto de venta y pueden ser vendidos.
+                                Los Platillos activos aparecen en el punto de venta y pueden ser vendidos.
                             </p>
                         </div>
                     </div>
@@ -266,7 +266,7 @@
             <div class="flex items-center space-x-4">
                 <a href="{{ route('admin.products.show', $product) }}" class="btn-secondary">
                     <i class="fas fa-eye mr-2"></i>
-                    Ver Producto
+                    Ver Platillo
                 </a>
                 <a href="{{ route('admin.products.index') }}" class="btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i>
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function confirmDelete() {
-    if (confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.')) {
+    if (confirm('¿Estás seguro de que deseas eliminar este Platillo? Esta acción no se puede deshacer.')) {
         document.getElementById('delete-form').submit();
     }
 }

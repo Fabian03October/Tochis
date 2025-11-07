@@ -20,13 +20,13 @@ class VerifyDashboardData extends Command
         $this->info('================================================================');
         $this->newLine();
 
-        // 1. Verificar total de productos
+        // 1. Verificar total de Platillos
         $totalProducts = Product::count();
-        $this->info('📦 PRODUCTOS:');
+        $this->info('📦 PlatilloS:');
         $this->line("   - Total en BD: {$totalProducts}");
 
         $activeProducts = Product::where('is_active', true)->count();
-        $this->line("   - Productos activos: {$activeProducts}");
+        $this->line("   - Platillos activos: {$activeProducts}");
         $this->newLine();
 
         // 2. Verificar total de categorías
@@ -45,9 +45,9 @@ class VerifyDashboardData extends Command
         $this->line("   - Total admins: {$totalAdmins}");
         $this->newLine();
 
-        // 4. Verificar productos con stock bajo
+        // 4. Verificar Platillos con stock bajo
         $lowStockProducts = Product::whereColumn('stock', '<=', 'min_stock')->count();
-        $this->info('⚠️ PRODUCTOS CON STOCK BAJO:');
+        $this->info('⚠️ PlatilloS CON STOCK BAJO:');
         $this->line("   - Total con stock bajo: {$lowStockProducts}");
 
         $lowStockDetails = Product::whereColumn('stock', '<=', 'min_stock')->get();
@@ -57,7 +57,7 @@ class VerifyDashboardData extends Command
                 $this->line("     * {$product->name}: Stock actual {$product->stock}, Mínimo {$product->min_stock}");
             }
         } else {
-            $this->line("   - ✅ No hay productos con stock bajo");
+            $this->line("   - ✅ No hay Platillos con stock bajo");
         }
         $this->newLine();
 

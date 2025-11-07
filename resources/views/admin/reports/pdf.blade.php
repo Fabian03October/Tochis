@@ -474,7 +474,7 @@
         </div>
         <div class="stat-card">
             <div class="stat-icon">📦</div>
-            <div class="stat-label">Productos Vendidos</div>
+            <div class="stat-label">Platillos Vendidos</div>
             <div class="stat-value">{{ number_format($totalProductsSold) }}</div>
             <div class="stat-change">{{ $totalTransactions > 0 ? number_format($totalProductsSold / $totalTransactions, 1) : 0 }} promedio/venta</div>
         </div>
@@ -553,13 +553,13 @@
         </div>
     </div>
 
-    <!-- Productos Más Vendidos y Ventas por Categoría -->
+    <!-- Platillos Más Vendidos y Ventas por Categoría -->
     <div class="two-column">
-        <!-- Productos Más Vendidos -->
+        <!-- Platillos Más Vendidos -->
         <div class="section">
             <div class="section-header">
                 <div class="section-icon">🏆</div>
-                <h3 class="section-title">Top 10 Productos</h3>
+                <h3 class="section-title">Top 10 Platillos</h3>
             </div>
             <div class="section-content">
                 @if($topProducts->count() > 0)
@@ -567,7 +567,7 @@
                         <thead>
                             <tr>
                                 <th>Rank</th>
-                                <th>Producto</th>
+                                <th>Platillo</th>
                                 <th>Categoría</th>
                                 <th class="text-right">Vendidos</th>
                                 <th class="text-right">Ingresos Est.</th>
@@ -598,7 +598,7 @@
                         </tbody>
                     </table>
                 @else
-                    <div class="no-data">No hay datos de productos disponibles</div>
+                    <div class="no-data">No hay datos de Platillos disponibles</div>
                 @endif
             </div>
         </div>
@@ -618,7 +618,7 @@
                                 <div class="amount">${{ number_format($category->total_sales, 2) }}</div>
                             </div>
                             <div style="display: flex; justify-content: space-between; font-size: 10px; color: #6c757d; margin-bottom: 5px;">
-                                <span>{{ $category->products_count }} productos diferentes</span>
+                                <span>{{ $category->products_count }} Platillos diferentes</span>
                                 <span>{{ number_format($category->total_quantity) }} unidades vendidas</span>
                             </div>
                             <div class="progress-bar">
@@ -782,7 +782,7 @@
                                 </td>
                                 <td class="text-right">
                                     <div class="highlight">{{ $sale->saleDetails->sum('quantity') }}</div>
-                                    <div style="font-size: 9px; color: #6c757d;">{{ $sale->saleDetails->count() }} productos</div>
+                                    <div style="font-size: 9px; color: #6c757d;">{{ $sale->saleDetails->count() }} Platillos</div>
                                 </td>
                                 <td class="text-center">
                                     <span class="badge {{ $sale->payment_method === 'cash' ? 'badge-success' : ($sale->payment_method === 'card' ? 'badge-primary' : 'badge-warning') }}">
@@ -859,7 +859,7 @@
                             <li>Diversificación en métodos de pago</li>
                         @endif
                         @if($topProducts->count() >= 5)
-                            <li>Buen portafolio de productos populares</li>
+                            <li>Buen portafolio de Platillos populares</li>
                         @endif
                         <li>Sistema de registro eficiente y detallado</li>
                     </ul>
@@ -905,7 +905,7 @@
                         </div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-weight: 600; color: #0d47a1;">Rotación de Productos</div>
+                        <div style="font-weight: 600; color: #0d47a1;">Rotación de Platillos</div>
                         <div style="font-size: 14px; font-weight: 900; color: #1976d2;">
                             {{ number_format($totalProductsSold / ($startDate->diffInDays($endDate) + 1), 0) }} und/día
                         </div>

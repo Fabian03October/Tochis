@@ -21,17 +21,17 @@ try {
     // Prueba 1: Verificar conexión a base de datos
     echo "✅ Prueba 1: Conexión a base de datos\n";
     $productsCount = Product::count();
-    echo "   - Productos en BD: {$productsCount}\n";
+    echo "   - Platillos en BD: {$productsCount}\n";
     
-    // Prueba 2: Verificar productos activos
-    echo "\n✅ Prueba 2: Productos activos\n";
+    // Prueba 2: Verificar Platillos activos
+    echo "\n✅ Prueba 2: Platillos activos\n";
     $activeProducts = Product::where('is_active', true)->count();
-    echo "   - Productos activos: {$activeProducts}\n";
+    echo "   - Platillos activos: {$activeProducts}\n";
     
-    // Prueba 3: Verificar productos de comida
-    echo "\n✅ Prueba 3: Productos de comida\n";
+    // Prueba 3: Verificar Platillos de comida
+    echo "\n✅ Prueba 3: Platillos de comida\n";
     $foodProducts = Product::where('is_food', true)->count();
-    echo "   - Productos de comida: {$foodProducts}\n";
+    echo "   - Platillos de comida: {$foodProducts}\n";
     
     // Prueba 4: Verificar categorías activas
     echo "\n✅ Prueba 4: Categorías activas\n";

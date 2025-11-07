@@ -333,7 +333,7 @@
     
     <div class="items-section">
         <div class="section-header">
-            🍽️ PRODUCTOS A PREPARAR
+            🍽️ PlatilloS A PREPARAR
         </div>
         
         @php
@@ -344,7 +344,7 @@
         @endphp
         
         <div style="text-align: center; margin-bottom: 15px; font-size: 16px; font-weight: bold; background: #f0f0f0; padding: 8px; border: 2px solid #333;">
-            TOTAL DE PRODUCTOS: {{ $totalItems }}
+            TOTAL DE PlatilloS: {{ $totalItems }}
         </div>
         
         @foreach($itemsByCategory as $categoryName => $details)
@@ -431,7 +431,7 @@
                             
                             @if($isSpicy || $hasAllergens)
                                 <div class="allergen-warning">
-                                    @if($isSpicy) 🌶️ PRODUCTO PICANTE @endif
+                                    @if($isSpicy) 🌶️ Platillo PICANTE @endif
                                     @if($hasAllergens) ⚠️ CONTIENE ALÉRGENOS @endif
                                 </div>
                             @endif

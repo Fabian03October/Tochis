@@ -30,7 +30,7 @@ class Combo extends Model
     ];
 
     /**
-     * Productos que componen este combo
+     * Platillos que componen este combo
      */
     public function products()
     {
@@ -67,31 +67,31 @@ class Combo extends Model
     }
 
     /**
-     * Verificar si un conjunto de productos coincide con este combo
+     * Verificar si un conjunto de Platillos coincide con este combo
      */
     public function matchesProducts($productIds)
     {
         $requiredProducts = $this->products()->wherePivot('is_required', true)->pluck('product_id')->toArray();
         $providedProducts = is_array($productIds) ? $productIds : [$productIds];
         
-        // Verificar que al menos tenga los productos requeridos
+        // Verificar que al menos tenga los Platillos requeridos
         $hasRequiredProducts = empty(array_diff($requiredProducts, $providedProducts));
         
-        // Verificar que tenga al menos el mínimo de productos
+        // Verificar que tenga al menos el mínimo de Platillos
         $hasMinimumItems = count($providedProducts) >= $this->min_items;
         
         return $hasRequiredProducts && $hasMinimumItems;
     }
 
     /**
-     * Obtener el nivel de coincidencia con productos del carrito
+     * Obtener el nivel de coincidencia con Platillos del carrito
      */
     public function getMatchLevel($cartProducts)
     {
         $comboProductIds = $this->products->pluck('id')->toArray();
         $cartProductIds = collect($cartProducts)->pluck('id')->toArray();
         
-        // Evitar división por cero si el combo no tiene productos
+        // Evitar división por cero si el combo no tiene Platillos
         if (empty($comboProductIds)) {
             return [
                 'percentage' => 0,

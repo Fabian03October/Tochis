@@ -333,7 +333,7 @@
                         <a href="{{ route('admin.products.index') }}" 
                            class="sidebar-item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
                             <i class="fas fa-hamburger"></i>
-                            <span>Productos</span>
+                            <span>Platillos</span>
                         </a>
                         
                         <a href="{{ route('admin.customization-options.index') }}" 

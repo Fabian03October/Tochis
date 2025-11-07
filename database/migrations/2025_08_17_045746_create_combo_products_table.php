@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('combo_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->integer('quantity')->default(1); // Cantidad requerida de este producto
+            $table->integer('quantity')->default(1); // Cantidad requerida de este Platillo
             $table->boolean('is_required')->default(true); // Si es obligatorio para el combo
             $table->boolean('is_alternative')->default(false); // Si puede ser sustituido
             $table->timestamps();

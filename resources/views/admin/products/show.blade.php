@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $product->name . ' - Sistema POS')
-@section('page-title', 'Detalle del Producto')
+@section('page-title', 'Detalle del Platillo')
 
 @section('content')
 <div class="fade-in">
@@ -17,11 +17,11 @@
             <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none space-x-2">
                 <a href="{{ route('admin.products.edit', $product) }}" class="btn-primary">
                     <i class="fas fa-edit mr-2"></i>
-                    Editar Producto
+                    Editar Platillo
                 </a>
                 <a href="{{ route('admin.products.index') }}" class="btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i>
-                    Volver a Productos
+                    Volver a Platillos
                 </a>
             </div>
         </div>
@@ -35,7 +35,7 @@
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900">
                         <i class="fas fa-info-circle mr-2 text-blue-600"></i>
-                        Información del Producto
+                        Información del Platillo
                     </h3>
                 </div>
                 
@@ -88,7 +88,7 @@
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900">
                         <i class="fas fa-dollar-sign mr-2 text-green-600"></i>
-                        Información de Precios
+                        Información de Platillos
                     </h3>
                 </div>
                 
@@ -182,7 +182,7 @@
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900">
                         <i class="fas fa-image mr-2 text-purple-600"></i>
-                        Imagen del Producto
+                        Imagen del Platillo
                     </h3>
                 </div>
                 
@@ -258,27 +258,27 @@
                     <a href="{{ route('admin.products.edit', $product) }}" 
                        class="w-full btn-primary text-center">
                         <i class="fas fa-edit mr-2"></i>
-                        Editar Producto
+                        Editar Platillo
                     </a>
                     
                     @if($product->is_active)
                         <button onclick="toggleStatus(false)" 
                                 class="w-full btn-secondary">
                             <i class="fas fa-eye-slash mr-2"></i>
-                            Desactivar Producto
+                            Desactivar Platillo
                         </button>
                     @else
                         <button onclick="toggleStatus(true)" 
                                 class="w-full btn-success">
                             <i class="fas fa-eye mr-2"></i>
-                            Activar Producto
+                            Activar Platillo
                         </button>
                     @endif
                     
                     <button onclick="confirmDelete()" 
                             class="w-full btn-danger">
                         <i class="fas fa-trash mr-2"></i>
-                        Eliminar Producto
+                        Eliminar Platillo
                     </button>
                 </div>
             </div>
@@ -308,14 +308,14 @@
 <script>
 function toggleStatus(status) {
     const action = status ? 'activar' : 'desactivar';
-    if (confirm(`¿Estás seguro de que deseas ${action} este producto?`)) {
+    if (confirm(`¿Estás seguro de que deseas ${action} este Platillo?`)) {
         document.getElementById('is_active_input').value = status ? '1' : '0';
         document.getElementById('toggle-form').submit();
     }
 }
 
 function confirmDelete() {
-    if (confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.')) {
+    if (confirm('¿Estás seguro de que deseas eliminar este Platillo? Esta acción no se puede deshacer.')) {
         document.getElementById('delete-form').submit();
     }
 }

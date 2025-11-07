@@ -2,7 +2,7 @@
 
 ## 📋 Descripción General
 
-Sistema de Punto de Venta (POS) desarrollado en Laravel para el restaurante TOCHIS. Incluye gestión completa de productos, ventas, combos, promociones y reportes con una interfaz moderna estilo FoodMeal.
+Sistema de Punto de Venta (POS) desarrollado en Laravel para el restaurante TOCHIS. Incluye gestión completa de Platillos, ventas, combos, promociones y reportes con una interfaz moderna estilo FoodMeal.
 
 ---
 
@@ -76,14 +76,14 @@ laravel-pos/
 - is_active, created_at, updated_at
 ```
 
-#### **2. `categories` - Categorías de Productos**
+#### **2. `categories` - Categorías de Platillos**
 ```sql
 - id, name, description, color
 - is_active, is_customizable
 - created_at, updated_at
 ```
 
-#### **3. `products` - Productos del Menú**
+#### **3. `products` - Platillos del Menú**
 ```sql
 - id, name, code, description, category_id
 - price, cost, stock, min_stock
@@ -137,28 +137,28 @@ laravel-pos/
 - ✅ Activación/desactivación
 - ✅ Opciones de personalización
 
-#### **Gestión de Productos:**
+#### **Gestión de Platillos:**
 - ✅ CRUD completo con imágenes
 - ✅ Control de inventario
-- ✅ Clasificación comida/productos
+- ✅ Clasificación comida/Platillos
 - ✅ Tiempo de preparación
 - ✅ Código de barras
 
 #### **Gestión de Combos:**
-- ✅ Creación de combos con múltiples productos
+- ✅ Creación de combos con múltiples Platillos
 - ✅ Cálculo automático de descuentos
 - ✅ Sugerencias automáticas
 - ✅ Configuración de elementos mínimos
 
 #### **Gestión de Promociones:**
 - ✅ Promociones por porcentaje o monto fijo
-- ✅ Aplicables a productos, categorías o todo
+- ✅ Aplicables a Platillos, categorías o todo
 - ✅ Fechas de vigencia
 - ✅ Límites de uso
 
 #### **Reportes:**
 - ✅ Reportes de ventas por período
-- ✅ Análisis de productos más vendidos
+- ✅ Análisis de Platillos más vendidos
 - ✅ Reportes de cortes de caja
 - ✅ Exportación de datos
 
@@ -170,7 +170,7 @@ laravel-pos/
 - ✅ Búsqueda en tiempo real
 - ✅ Carrito de compras interactivo
 
-#### **Personalización de Productos:**
+#### **Personalización de Platillos:**
 - ✅ Modal de personalización para comidas
 - ✅ Selección de opciones adicionales
 - ✅ Observaciones especiales
@@ -215,7 +215,7 @@ Apertura de Caja → Nueva Venta → Procesamiento → Cierre de Caja
 
 ### **🛍️ Flujo de Venta:**
 ```
-Selección de Productos → Personalización (opcional) → 
+Selección de Platillos → Personalización (opcional) → 
 Aplicación de Combos/Promociones → Procesamiento de Pago → 
 Confirmación
 ```
@@ -238,8 +238,8 @@ POST /logout                   # Cerrar sesión
 GET  /admin/dashboard          # Dashboard principal
 GET  /admin/categories         # Lista de categorías
 POST /admin/categories         # Crear categoría
-GET  /admin/products           # Lista de productos
-POST /admin/products           # Crear producto
+GET  /admin/products           # Lista de Platillos
+POST /admin/products           # Crear Platillo
 GET  /admin/combos             # Lista de combos
 POST /admin/combos             # Crear combo
 GET  /admin/promotions         # Lista de promociones
@@ -256,7 +256,7 @@ GET  /cashier/sale/history     # Historial de ventas
 
 #### **API Endpoints:**
 ```php
-GET  /api/products/{id}/options        # Opciones de producto
+GET  /api/products/{id}/options        # Opciones de Platillo
 POST /api/combos/suggest               # Sugerir combos
 POST /api/combos/apply                 # Aplicar combo
 GET  /api/promotions                   # Promociones disponibles
@@ -273,7 +273,7 @@ GET  /api/promotions                   # Promociones disponibles
 ┌─────────────────────────────────────────────────┐
 │ [Header con usuario y caja]                    │
 ├─────────────┬─────────────────┬─────────────────┤
-│ Categorías  │ Grid Productos  │ Carrito         │
+│ Categorías  │ Grid Platillos  │ Carrito         │
 │ - Filtros   │ - Cards         │ - Items         │
 │ - Búsqueda  │ - Precios       │ - Totales       │
 │ - Conteos   │ - Stock         │ - Checkout      │
@@ -294,10 +294,10 @@ let suggestedCombos = [];     // Combos sugeridos
 
 **Funciones Principales:**
 ```javascript
-handleProductClick()      // Maneja clics en productos
+handleProductClick()      // Maneja clics en Platillos
 addToCart()              // Agrega items al carrito
 updateCartDisplay()      // Actualiza interfaz del carrito
-filterByCategory()       // Filtra productos por categoría
+filterByCategory()       // Filtra Platillos por categoría
 openCustomizationModal() // Abre modal de personalización
 processSale()           // Procesa la venta
 checkForCombos()        // Verifica combos disponibles
@@ -366,12 +366,12 @@ Password: cajero123
 ### **Datos de Prueba Incluidos:**
 
 #### **Categorías:**
-- 🍔 **Hamburguesas** (9 productos)
-- 🍕 **Pizza** (8 productos)
-- 🍗 **Pollo** (6 productos)
-- 🥤 **Bebidas** (4 productos)
-- 🍰 **Postres** (3 productos)
-- 🍟 **Acompañamientos** (3 productos)
+- 🍔 **Hamburguesas** (9 Platillos)
+- 🍕 **Pizza** (8 Platillos)
+- 🍗 **Pollo** (6 Platillos)
+- 🥤 **Bebidas** (4 Platillos)
+- 🍰 **Postres** (3 Platillos)
+- 🍟 **Acompañamientos** (3 Platillos)
 
 #### **Combos de Ejemplo:**
 - **Combo Familiar** - Hamburguesa + Papa + Bebida
@@ -478,8 +478,8 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 ---
 
 *Última actualización: Septiembre 2025 - Versión 1.0*
-1. **Seleccionar productos** desde el menú por categorías
-2. **Personalizar productos** (observaciones/especialidades)
+1. **Seleccionar Platillos** desde el menú por categorías
+2. **Personalizar Platillos** (observaciones/especialidades)
 3. **Aplicar promociones** automáticamente
 4. **Seleccionar método de pago**
 5. **Procesar venta** y generar cambio

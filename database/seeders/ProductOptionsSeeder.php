@@ -4,13 +4,13 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
-use App\Models\ProductOption;
+use App\Models\Platilloption;
 
-class ProductOptionsSeeder extends Seeder
+class PlatilloptionsSeeder extends Seeder
 {
     public function run()
     {
-        // Buscar productos de comida para agregar opciones
+        // Buscar Platillos de comida para agregar opciones
         $foodProducts = Product::where('is_food', true)->get();
         
         foreach ($foodProducts as $product) {
@@ -36,7 +36,7 @@ class ProductOptionsSeeder extends Seeder
             
             // Crear observaciones
             foreach ($observations as $obs) {
-                ProductOption::create([
+                Platilloption::create([
                     'product_id' => $product->id,
                     'name' => $obs['name'],
                     'type' => 'observation',
@@ -47,7 +47,7 @@ class ProductOptionsSeeder extends Seeder
             
             // Crear especialidades
             foreach ($specialties as $spec) {
-                ProductOption::create([
+                Platilloption::create([
                     'product_id' => $product->id,
                     'name' => $spec['name'],
                     'type' => 'specialty',

@@ -102,7 +102,7 @@ class CategoryController extends Controller
     {
         if ($category->products()->count() > 0) {
             return redirect()->route('admin.categories.index')
-                            ->with('error', 'No se puede eliminar la categoría porque tiene productos asociados.');
+                            ->with('error', 'No se puede eliminar la categoría porque tiene Platillos asociados.');
         }
 
         $category->delete();

@@ -48,7 +48,7 @@ class Promotion extends Model
         return $this->belongsToMany(Product::class, 'promotion_products');
     }
 
-    // Métodos auxiliares para categorías y productos
+    // Métodos auxiliares para categorías y Platillos
     public function getCategoryIdsAttribute()
     {
         return $this->categories->pluck('id')->toArray();

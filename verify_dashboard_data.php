@@ -12,16 +12,16 @@ use Carbon\Carbon;
 echo "🔍 VERIFICANDO DATOS DEL DASHBOARD ADMIN VS BASE DE DATOS\n";
 echo "================================================================\n\n";
 
-// 1. Verificar total de productos
+// 1. Verificar total de Platillos
 $totalProducts = Product::count();
-echo "📦 PRODUCTOS:\n";
+echo "📦 PlatilloS:\n";
 echo "   - Total en BD: {$totalProducts}\n";
 
 $activeProducts = Product::where('is_active', true)->count();
-echo "   - Productos activos: {$activeProducts}\n";
+echo "   - Platillos activos: {$activeProducts}\n";
 
 $inactiveProducts = Product::where('is_active', false)->count();
-echo "   - Productos inactivos: {$inactiveProducts}\n\n";
+echo "   - Platillos inactivos: {$inactiveProducts}\n\n";
 
 // 2. Verificar total de categorías
 $totalCategories = Category::count();
@@ -40,12 +40,12 @@ echo "   - Total usuarios: {$totalUsers}\n";
 echo "   - Total cajeros: {$totalCashiers}\n";
 echo "   - Total admins: {$totalAdmins}\n\n";
 
-// 4. Verificar productos con stock bajo
+// 4. Verificar Platillos con stock bajo
 $lowStockProducts = Product::whereColumn('stock', '<=', 'min_stock')->count();
-echo "⚠️ PRODUCTOS CON STOCK BAJO:\n";
+echo "⚠️ PlatilloS CON STOCK BAJO:\n";
 echo "   - Total con stock bajo: {$lowStockProducts}\n";
 
-// Mostrar detalles de productos con stock bajo
+// Mostrar detalles de Platillos con stock bajo
 $lowStockDetails = Product::whereColumn('stock', '<=', 'min_stock')->get();
 if ($lowStockDetails->count() > 0) {
     echo "   - Detalles:\n";
@@ -53,7 +53,7 @@ if ($lowStockDetails->count() > 0) {
         echo "     * {$product->name}: Stock actual {$product->stock}, Mínimo {$product->min_stock}\n";
     }
 } else {
-    echo "   - ✅ No hay productos con stock bajo\n";
+    echo "   - ✅ No hay Platillos con stock bajo\n";
 }
 echo "\n";
 
@@ -83,8 +83,8 @@ echo "📅 VENTAS DEL MES (" . Carbon::now()->format('m/Y') . "):\n";
 echo "   - Total ingresos: $" . number_format($monthRevenue, 2) . "\n";
 echo "   - Número de ventas: {$monthSalesCount}\n\n";
 
-// 7. Verificar productos más vendidos (últimos 30 días)
-echo "🏆 PRODUCTOS MÁS VENDIDOS (últimos 30 días):\n";
+// 7. Verificar Platillos más vendidos (últimos 30 días)
+echo "🏆 PlatilloS MÁS VENDIDOS (últimos 30 días):\n";
 
 $topProducts = Product::with(['saleDetails' => function($query) {
     $query->whereHas('sale', function($q) {
@@ -134,13 +134,13 @@ echo "   - Ventas sin detalles: {$salesWithoutDetails}\n";
 $orphanDetails = \App\Models\SaleDetail::whereDoesntHave('sale')->count();
 echo "   - Detalles de venta huérfanos: {$orphanDetails}\n";
 
-// Verificar productos sin categoría
+// Verificar Platillos sin categoría
 $productsWithoutCategory = Product::whereNull('category_id')->count();
-echo "   - Productos sin categoría: {$productsWithoutCategory}\n";
+echo "   - Platillos sin categoría: {$productsWithoutCategory}\n";
 
-// Verificar categorías sin productos
+// Verificar categorías sin Platillos
 $categoriesWithoutProducts = Category::whereDoesntHave('products')->count();
-echo "   - Categorías sin productos: {$categoriesWithoutProducts}\n";
+echo "   - Categorías sin Platillos: {$categoriesWithoutProducts}\n";
 
 echo "\n================================================================\n";
 echo "✅ Verificación completada\n";

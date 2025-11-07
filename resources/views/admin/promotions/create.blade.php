@@ -150,7 +150,7 @@
                                value="all" 
                                class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
                                {{ old('apply_to') === 'all' ? 'checked' : '' }}>
-                        <span class="ml-2 text-sm text-gray-700">Todos los productos</span>
+                        <span class="ml-2 text-sm text-gray-700">Todos los Platillos</span>
                     </label>
                     
                     <label class="flex items-center">
@@ -168,7 +168,7 @@
                                value="product" 
                                class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
                                {{ old('apply_to') === 'product' ? 'checked' : '' }}>
-                        <span class="ml-2 text-sm text-gray-700">Productos específicos</span>
+                        <span class="ml-2 text-sm text-gray-700">Platillos específicos</span>
                     </label>
                 </div>
                 @error('apply_to')
@@ -197,7 +197,7 @@
             <!-- Products Selection -->
             <div id="products_section" class="hidden">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Seleccionar Productos
+                    Seleccionar Platillos
                 </label>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-4">
                     @foreach($products as $product)
@@ -347,8 +347,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         let discountText = type === 'percentage' ? `${discountValue}%` : `$${discountValue}`;
-        let applyText = applyTo === 'all' ? 'todos los productos' : 
-                       applyTo === 'category' ? 'categorías seleccionadas' : 'productos seleccionados';
+        let applyText = applyTo === 'all' ? 'todos los Platillos' : 
+                       applyTo === 'category' ? 'categorías seleccionadas' : 'Platillos seleccionados';
         let durationText = durationType && durationValue ? `${durationValue} ${durationType === 'hours' ? 'horas' : 'días'}` : '';
         
         previewContent.innerHTML = `

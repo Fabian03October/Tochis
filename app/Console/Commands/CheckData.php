@@ -24,17 +24,17 @@ class CheckData extends Command
         
         $this->info("Total Categorías: {$totalCategories}");
         $this->info("Categorías Activas: {$activeCategories}");
-        $this->info("Total Productos: {$totalProducts}");
-        $this->info("Productos Activos: {$activeProducts}");
-        $this->info("Productos de Comida: {$foodProducts}");
-        $this->info("Productos con Stock > 0: {$productsWithStock}");
+        $this->info("Total Platillos: {$totalProducts}");
+        $this->info("Platillos Activos: {$activeProducts}");
+        $this->info("Platillos de Comida: {$foodProducts}");
+        $this->info("Platillos con Stock > 0: {$productsWithStock}");
         
-        $this->info("\n=== CATEGORÍAS CON PRODUCTOS ===");
+        $this->info("\n=== CATEGORÍAS CON PlatilloS ===");
         $categories = Category::active()->with(['activeProducts'])->get();
         
         foreach ($categories as $category) {
             $productCount = $category->activeProducts->count();
-            $this->info("- {$category->name}: {$productCount} productos");
+            $this->info("- {$category->name}: {$productCount} Platillos");
             
             if ($productCount > 0) {
                 foreach ($category->activeProducts as $product) {

@@ -59,10 +59,10 @@ try {
             echo "Nombre: {$combo['name']}\n";
             echo "Precio: \${$combo['price']}\n";
             echo "Coincidencia: {$matchLevel['percentage']}%\n";
-            echo "Productos coincidentes: {$matchLevel['matched_count']}/{$matchLevel['total_count']}\n";
+            echo "Platillos coincidentes: {$matchLevel['matched_count']}/{$matchLevel['total_count']}\n";
             
             if (!empty($suggestion['missing_products'])) {
-                echo "Productos faltantes:\n";
+                echo "Platillos faltantes:\n";
                 foreach ($suggestion['missing_products'] as $missing) {
                     echo "  - {$missing['name']} - \${$missing['price']}\n";
                 }

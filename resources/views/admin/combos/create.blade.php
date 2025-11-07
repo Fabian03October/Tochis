@@ -69,7 +69,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div>
                     <label for="min_items" class="block text-sm font-medium text-gray-700 mb-2">
-                        Mínimo de productos para sugerir
+                        Mínimo de Platillos para sugerir
                     </label>
                     <input type="number" 
                            name="min_items" 
@@ -100,14 +100,14 @@
                 </div>
             </div>
 
-            <!-- Selector de productos -->
+            <!-- Selector de Platillos -->
             <div class="mb-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Productos del Combo</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Platillos del Combo</h3>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Lista de productos disponibles -->
+                    <!-- Lista de Platillos disponibles -->
                     <div>
-                        <h4 class="text-md font-medium text-gray-700 mb-3">Productos Disponibles</h4>
+                        <h4 class="text-md font-medium text-gray-700 mb-3">Platillos Disponibles</h4>
                         <div class="border border-gray-300 rounded-md p-4 max-h-96 overflow-y-auto">
                             @foreach($products->groupBy('category.name') as $categoryName => $categoryProducts)
                                 <div class="mb-4">
@@ -133,13 +133,13 @@
                         </div>
                     </div>
 
-                    <!-- Productos seleccionados -->
+                    <!-- Platillos seleccionados -->
                     <div>
-                        <h4 class="text-md font-medium text-gray-700 mb-3">Productos del Combo</h4>
+                        <h4 class="text-md font-medium text-gray-700 mb-3">Platillos del Combo</h4>
                         <div class="border border-gray-300 rounded-md p-4 min-h-96">
                             <div id="selected-products" class="space-y-3">
                                 <p class="text-gray-500 text-sm" id="no-products-message">
-                                    Selecciona productos de la lista de la izquierda
+                                    Selecciona Platillos de la lista de la izquierda
                                 </p>
                             </div>
                             
@@ -191,7 +191,7 @@ function toggleProduct(productId, productName, productPrice) {
     const noProductsMessage = document.getElementById('no-products-message');
     
     if (checkbox.checked) {
-        // Agregar producto
+        // Agregar Platillo
         selectedProducts[productId] = {
             name: productName,
             price: productPrice,
@@ -227,7 +227,7 @@ function toggleProduct(productId, productName, productPrice) {
         selectedContainer.appendChild(productDiv);
         noProductsMessage.style.display = 'none';
     } else {
-        // Remover producto
+        // Remover Platillo
         removeProduct(productId);
     }
     
@@ -281,11 +281,11 @@ function updatePriceSummary() {
     document.getElementById('savings').textContent = `$${savings.toFixed(2)}`;
     document.getElementById('discount-percentage').textContent = `${discountPercentage.toFixed(1)}%`;
     
-    // Validar que el combo tenga al menos 2 productos
+    // Validar que el combo tenga al menos 2 Platillos
     const submitBtn = document.getElementById('submit-btn');
     if (Object.keys(selectedProducts).length < 2) {
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Selecciona al menos 2 productos';
+        submitBtn.textContent = 'Selecciona al menos 2 Platillos';
     } else {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Crear Combo';
@@ -299,7 +299,7 @@ document.getElementById('price').addEventListener('input', updatePriceSummary);
 document.getElementById('combo-form').addEventListener('submit', function(e) {
     if (Object.keys(selectedProducts).length < 2) {
         e.preventDefault();
-        alert('Debes seleccionar al menos 2 productos para el combo');
+        alert('Debes seleccionar al menos 2 Platillos para el combo');
         return false;
     }
     

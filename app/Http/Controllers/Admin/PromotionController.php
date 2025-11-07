@@ -78,7 +78,7 @@ class PromotionController extends Controller
             'created_by' => auth()->id(),
         ]);
 
-        // Asociar categorías o productos si aplica
+        // Asociar categorías o Platillos si aplica
         if ($request->apply_to === 'category' && $request->has('applicable_items')) {
             $promotion->categories()->attach($request->applicable_items);
         } elseif ($request->apply_to === 'product' && $request->has('applicable_items')) {

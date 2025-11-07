@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('type', ['percentage', 'fixed_amount']); // Tipo de descuento
             $table->decimal('discount_value', 8, 2); // Valor del descuento
             $table->enum('apply_to', ['all', 'category', 'product']); // A qué se aplica
-            $table->json('applicable_items')->nullable(); // IDs de categorías o productos
+            $table->json('applicable_items')->nullable(); // IDs de categorías o Platillos
             $table->decimal('minimum_amount', 8, 2)->default(0); // Monto mínimo para aplicar
             $table->integer('max_uses')->nullable(); // Máximo número de usos
             $table->integer('uses_count')->default(0); // Contador de usos

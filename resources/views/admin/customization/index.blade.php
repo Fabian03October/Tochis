@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Personalización de Productos')
+@section('title', 'Personalización de Platillos')
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">Personalización de Productos</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Personalización de Platillos</h1>
     </div>
 
     <!-- Configuración de Categorías -->
     <div class="bg-white rounded-lg shadow mb-6">
         <div class="px-6 py-4 border-b border-gray-200">
             <h2 class="text-xl font-semibold text-gray-900">Configuración de Categorías</h2>
-            <p class="text-sm text-gray-600">Define qué categorías permiten personalización de productos</p>
+            <p class="text-sm text-gray-600">Define qué categorías permiten personalización de Platillos</p>
         </div>
         <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -46,7 +46,7 @@
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-xl font-semibold text-gray-900">Observaciones</h2>
-                    <p class="text-sm text-gray-600">Elementos que se pueden quitar de los productos</p>
+                    <p class="text-sm text-gray-600">Elementos que se pueden quitar de los Platillos</p>
                 </div>
                 <button onclick="openAddModal('observation')" 
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
@@ -86,7 +86,7 @@
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-xl font-semibold text-gray-900">Especialidades</h2>
-                    <p class="text-sm text-gray-600">Elementos que se pueden agregar a los productos (con costo adicional)</p>
+                    <p class="text-sm text-gray-600">Elementos que se pueden agregar a los Platillos (con costo adicional)</p>
                 </div>
                 <button onclick="openAddModal('specialty')" 
                         class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">

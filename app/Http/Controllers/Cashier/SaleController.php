@@ -17,10 +17,10 @@ class SaleController extends Controller
     public function index()
     {
         $categories = Category::active()->with(['activeProducts' => function($query) {
-            // No filtrar por stock para productos de comida, solo para productos regulares
+            // No filtrar por stock para Platillos de comida, solo para Platillos regulares
             $query->where(function($q) {
-                $q->where('is_food', true) // Productos de comida siempre disponibles
-                  ->orWhere('stock', '>', 0); // Productos regulares con stock
+                $q->where('is_food', true) // Platillos de comida siempre disponibles
+                  ->orWhere('stock', '>', 0); // Platillos regulares con stock
             })->orderBy('name');
         }])->orderBy('name')->get();
 
@@ -41,16 +41,16 @@ class SaleController extends Controller
             $requestData = $request->all();
             $discountAmount = 0;
             
-            \Log::info('📦 Productos originales recibidos', [
+            \Log::info('📦 Platillos originales recibidos', [
                 'total_products' => count($requestData['products'] ?? []),
                 'products_detail' => $requestData['products'] ?? []
             ]);
             
-            // Separar productos reales de descuentos
+            // Separar Platillos reales de descuentos
             if (isset($requestData['products'])) {
                 $realProducts = [];
                 foreach ($requestData['products'] as $index => $product) {
-                    \Log::info("📋 Analizando producto en posición {$index}", [
+                    \Log::info("📋 Analizando Platillo en posición {$index}", [
                         'id' => $product['id'] ?? 'sin_id',
                         'name' => $product['name'] ?? 'sin_nombre',
                         'price' => $product['price'] ?? 0,
@@ -89,9 +89,9 @@ class SaleController extends Controller
                             'criteria_matched' => 'combo-discount detected'
                         ]);
                     } else {
-                        // Es un producto real
+                        // Es un Platillo real
                         $realProducts[] = $product;
-                        \Log::info("🛍️ Producto real agregado desde posición {$index}", [
+                        \Log::info("🛍️ Platillo real agregado desde posición {$index}", [
                             'id' => $product['id'],
                             'name' => $product['name'] ?? 'sin_nombre',
                             'price' => $product['price'] ?? 0
@@ -100,21 +100,21 @@ class SaleController extends Controller
                 }
                 
                 \Log::info('📊 Resumen del filtrado', [
-                    'productos_originales' => count($requestData['products']),
-                    'productos_reales' => count($realProducts),
+                    'Platillos_originales' => count($requestData['products']),
+                    'Platillos_reales' => count($realProducts),
                     'descuento_total' => $discountAmount,
-                    'ids_productos_reales' => collect($realProducts)->pluck('id')->toArray()
+                    'ids_Platillos_reales' => collect($realProducts)->pluck('id')->toArray()
                 ]);
                 
                 $requestData['products'] = $realProducts;
             }
             
-            \Log::info('Productos filtrados', [
+            \Log::info('Platillos filtrados', [
                 'total_products' => count($requestData['products']),
                 'discount_amount' => $discountAmount
             ]);
             
-            // Validar solo productos reales
+            // Validar solo Platillos reales
             $validator = \Validator::make($requestData, [
                 'products' => 'required|array|min:1',
                 'products.*.id' => 'required|exists:products,id',
@@ -142,9 +142,9 @@ class SaleController extends Controller
                 foreach ($requestData['products'] as $productData) {
                     $product = Product::findOrFail($productData['id']);
                     
-                    // Solo validar stock para productos que no son comida
+                    // Solo validar stock para Platillos que no son comida
                     if (!$product->is_food && $product->stock < $productData['quantity']) {
-                        throw new \Exception("Stock insuficiente para el producto: {$product->name}");
+                        throw new \Exception("Stock insuficiente para el Platillo: {$product->name}");
                     }
 
                     // Calcular precio con especialidades
@@ -272,7 +272,7 @@ class SaleController extends Controller
                         }
                     }
 
-                    // Actualizar stock solo para productos que no son comida
+                    // Actualizar stock solo para Platillos que no son comida
                     if (!$detail['product']->is_food) {
                         $detail['product']->decreaseStock($detail['quantity']);
                     }
@@ -389,10 +389,10 @@ class SaleController extends Controller
         $applicableAmount = 0;
 
         if ($promotion->apply_to === 'all') {
-            // Aplicar a todos los productos
+            // Aplicar a todos los Platillos
             $applicableAmount = $subtotal;
         } elseif ($promotion->apply_to === 'category') {
-            // Aplicar solo a productos de categorías específicas
+            // Aplicar solo a Platillos de categorías específicas
             $categoryIds = $promotion->categories->pluck('id')->toArray();
             
             foreach ($saleDetails as $detail) {
@@ -401,7 +401,7 @@ class SaleController extends Controller
                 }
             }
         } elseif ($promotion->apply_to === 'product') {
-            // Aplicar solo a productos específicos
+            // Aplicar solo a Platillos específicos
             $productIds = $promotion->products->pluck('id')->toArray();
             
             foreach ($saleDetails as $detail) {
@@ -449,7 +449,7 @@ class SaleController extends Controller
     }
 
     /**
-     * Detectar combos sugeridos basados en productos del carrito
+     * Detectar combos sugeridos basados en Platillos del carrito
      */
     public function getSuggestedCombos(Request $request)
     {
@@ -458,7 +458,7 @@ class SaleController extends Controller
                 'request_data' => $request->all()
             ]);
 
-            // Filtrar productos reales (sin descuentos) antes de la validación
+            // Filtrar Platillos reales (sin descuentos) antes de la validación
             $allCartProducts = $request->input('cart_products', []);
             $realCartProducts = [];
             
@@ -488,13 +488,13 @@ class SaleController extends Controller
                 
                 if (!$isDiscount) {
                     $realCartProducts[] = $product;
-                    \Log::info("🛍️ Producto real para sugerencias: {$productId}");
+                    \Log::info("🛍️ Platillo real para sugerencias: {$productId}");
                 } else {
                     \Log::info("💰 Descuento excluido de sugerencias: {$productId}");
                 }
             }
 
-            // Validar solo productos reales
+            // Validar solo Platillos reales
             $validator = \Validator::make(['cart_products' => $realCartProducts], [
                 'cart_products' => 'required|array',
                 'cart_products.*.id' => 'required|exists:products,id',
@@ -517,7 +517,7 @@ class SaleController extends Controller
             $cartProducts = collect($realCartProducts);
             $cartProductIds = $cartProducts->pluck('id')->toArray();
             
-            \Log::info('📦 Productos del carrito', [
+            \Log::info('📦 Platillos del carrito', [
                 'cart_product_ids' => $cartProductIds,
                 'cart_products_count' => $cartProducts->count()
             ]);
@@ -633,13 +633,13 @@ class SaleController extends Controller
             ], 400);
         }
 
-        // Verificar que el carrito tiene los productos necesarios
+        // Verificar que el carrito tiene los Platillos necesarios
         $cartProductIds = collect($request->cart_products)->pluck('id')->toArray();
         
         if (!$combo->matchesProducts($cartProductIds)) {
             return response()->json([
                 'success' => false,
-                'message' => 'El carrito no contiene todos los productos necesarios para este combo'
+                'message' => 'El carrito no contiene todos los Platillos necesarios para este combo'
             ], 400);
         }
 

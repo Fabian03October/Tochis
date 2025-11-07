@@ -26,14 +26,14 @@ class ComboSeeder extends Seeder
             'auto_suggest' => true
         ]);
 
-        // Obtener productos para el combo 1
+        // Obtener Platillos para el combo 1
         $hamburguesa1 = Product::where('name', 'LIKE', '%Hamburguesa Clásica%')->first();
         $hamburguesa2 = Product::where('name', 'LIKE', '%Hamburguesa con Queso%')->first();
         $cocaCola = Product::where('name', 'LIKE', '%Coca Cola%')->first();
         $helado = Product::where('name', 'LIKE', '%Helado%')->first();
 
         if ($hamburguesa1 && $hamburguesa2 && $cocaCola && $helado) {
-            // Asociar productos al combo
+            // Asociar Platillos al combo
             $combo1->products()->attach([
                 $hamburguesa1->id => ['quantity' => 1, 'is_required' => true, 'is_alternative' => false],
                 $hamburguesa2->id => ['quantity' => 1, 'is_required' => true, 'is_alternative' => false],

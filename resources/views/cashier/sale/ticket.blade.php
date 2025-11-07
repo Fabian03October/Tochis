@@ -235,7 +235,7 @@
     
     <div class="items-section">
         <div class="items-header">
-            <span>PRODUCTO</span>
+            <span>Platillo</span>
             <span>CANT</span>
             <span>PRECIO</span>
         </div>

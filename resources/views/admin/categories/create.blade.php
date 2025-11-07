@@ -3,7 +3,7 @@
 @section('title')
 <div>
         <h1 class="text-2xl font-bold text-gray-9000">Crear Nueva Categoría</h1>
-        <p class="text-gray-400 text-sm">Organiza tus productos creando una nueva categoría</p>
+        <p class="text-gray-400 text-sm">Organiza tus Platillos creando una nueva categoría</p>
     </div>
 @endsection
 
@@ -31,7 +31,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-gray-800">Crear Nueva Categoría</h1>
-                    <p class="text-gray-500 text-sm">Organiza tus productos creando una nueva categoría</p>
+                    <p class="text-gray-500 text-sm">Organiza tus Platillos creando una nueva categoría</p>
                 </div>
             </div>
         </div> --}}
@@ -146,11 +146,11 @@
                                        {{ old('is_customizable') ? 'checked' : '' }}
                                        class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
                                 <label for="is_customizable" class="ml-2 text-sm font-medium text-gray-900 cursor-pointer">
-                                    Permitir personalización de productos
+                                    Permitir personalización de Platillos
                                 </label>
                             </div>
                             <p class="text-xs text-gray-600 mt-1">
-                                Los productos mostrarán opciones de personalización en el punto de venta.
+                                Los Platillos mostrarán opciones de personalización en el punto de venta.
                             </p>
                         </div>
                     </div>
@@ -233,7 +233,7 @@
                                 <span class="text-xs font-semibold text-gray-800">{{ \App\Models\Category::where('is_customizable', true)->count() }}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-xs text-gray-600">Productos Totales:</span>
+                                <span class="text-xs text-gray-600">Platillos Totales:</span>
                                 <span class="text-xs font-semibold text-gray-800">{{ \App\Models\Product::count() }}</span>
                             </div>
                         </div>

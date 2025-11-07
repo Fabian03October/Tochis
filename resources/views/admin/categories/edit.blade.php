@@ -134,11 +134,11 @@
                                         {{ old('is_customizable', $category->is_customizable) ? 'checked' : '' }}
                                         class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
                                 <label for="is_customizable" class="ml-2 text-sm font-medium text-gray-900 cursor-pointer">
-                                    Permitir personalización de productos
+                                    Permitir personalización de Platillos
                                 </label>
                             </div>
                             <p class="text-xs text-gray-600 mt-1">
-                                Los productos mostrarán opciones de personalización en el punto de venta.
+                                Los Platillos mostrarán opciones de personalización en el punto de venta.
                             </p>
                         </div>
                     </div>
@@ -227,7 +227,7 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
                                 <p class="text-xl font-bold text-blue-700">{{ $category->products()->count() }}</p>
-                                <p class="text-xs text-blue-600 font-medium">Productos</p>
+                                <p class="text-xs text-blue-600 font-medium">Platillos</p>
                             </div>
                             <div class="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
                                 <p class="text-xl font-bold text-green-700">{{ $category->products()->where('is_active', true)->count() }}</p>

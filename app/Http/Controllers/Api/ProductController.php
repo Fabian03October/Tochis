@@ -58,7 +58,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Producto no encontrado',
+                'message' => 'Platillo no encontrado',
                 'data' => [
                     'observations' => [],
                     'specialties' => []

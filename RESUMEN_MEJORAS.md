@@ -8,7 +8,7 @@
 
 ### ✅ **Código Backend Limpio:**
 - Eliminadas secciones duplicadas en `SaleController.php`
-- Unificada lógica de cálculo de productos
+- Unificada lógica de cálculo de Platillos
 
 ---
 
@@ -41,7 +41,7 @@
 - Timeout de 30 segundos para prevenir cuelgues
 - Manejo específico de diferentes tipos de error
 - Mensajes de error más informativos
-- Validación de productos con precios negativos
+- Validación de Platillos con precios negativos
 - Verificación de CSRF token mejorada
 ```
 
@@ -50,9 +50,9 @@
 function validateCart() {
     // ✅ Validaciones implementadas:
     - Verificar que el carrito sea un array válido
-    - Validar ID, cantidad y precio de cada producto
+    - Validar ID, cantidad y precio de cada Platillo
     - Verificar especialidades y precios
-    - Detectar descuentos mezclados con productos
+    - Detectar descuentos mezclados con Platillos
     - Límites de cantidad (1-1000)
     - Límites de precio especialidades (0-999.99)
 }
@@ -100,8 +100,8 @@ function validateCart() {
 ```php
 // ✅ Pruebas implementadas:
 - Conexión a base de datos ✅
-- Productos activos (33) ✅
-- Productos de comida (28) ✅
+- Platillos activos (33) ✅
+- Platillos de comida (28) ✅
 - Categorías activas (9) ✅
 - Promociones disponibles (0) ✅
 - Combos activos (3) ✅
@@ -112,9 +112,9 @@ function validateCart() {
 ## 📊 **6. MÉTRICAS DEL SISTEMA**
 
 ### ✅ **Estado Actual:**
-- **Productos totales:** 33
-- **Productos activos:** 33
-- **Productos de comida:** 28 (sin validación de stock)
+- **Platillos totales:** 33
+- **Platillos activos:** 33
+- **Platillos de comida:** 28 (sin validación de stock)
 - **Categorías activas:** 9
 - **Combos disponibles:** 3
 - **Promociones activas:** 0
@@ -132,13 +132,13 @@ function validateCart() {
 ## 🚀 **7. FUNCIONALIDADES MANTENIDAS**
 
 ### ✅ **Sistema de Ventas:**
-- ✅ Agregar productos al carrito
+- ✅ Agregar Platillos al carrito
 - ✅ Aplicar especialidades y observaciones
 - ✅ Calcular promociones automáticas
 - ✅ Sugerir y aplicar combos
 - ✅ Procesar ventas con diferentes métodos de pago
-- ✅ Validar stock para productos físicos
-- ✅ Manejar productos de comida sin stock
+- ✅ Validar stock para Platillos físicos
+- ✅ Manejar Platillos de comida sin stock
 - ✅ Actualizar inventario automáticamente
 
 ### ✅ **Validaciones de Seguridad:**

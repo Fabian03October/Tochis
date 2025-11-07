@@ -656,7 +656,7 @@
                         <i class="fas fa-shopping-basket"></i>
                     </div>
                     <p>Tu orden está vacía</p>
-                    <p style="font-size: 12px; color: #9ca3af;">Selecciona deliciosos platillos para agregar</p>
+                    <p style="font-size: 12px; color: #9ca3af;">Selecciona deliciosos Platillos para agregar</p>
                 </div>
             </div>
             

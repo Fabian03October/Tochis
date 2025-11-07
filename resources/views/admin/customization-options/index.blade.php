@@ -4,18 +4,26 @@
 @section('page-title')
     <div>
         <h1 class="text-2xl font-bold text-gray-900">Opciones de Personalización</h1>
-        <p class="text-gray-400 text-sm">Gestiona las opciones de personalización para productos</p>
+        <p class="text-gray-400 text-sm">Gestiona las opciones de personalización para Platillos</p>
     </div>
+@endsection
+
+{{-- 1. Animación (Añadida) --}}
+@section('styles')
+<style>
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 @endsection
 
 @section('content')
 <div class="fade-in">
-    <!-- Header Section -->
     <div class="flex justify-end items-center mb-6">
-        {{-- <div>
-            <h1 class="text-2xl font-bold text-gray-900">Opciones de Personalización</h1>
-            <p class="text-gray-600">Gestiona las opciones de personalización para productos</p>
-        </div> --}}
         <a href="{{ route('admin.customization-options.create') }}" class="btn-primary">
             <i class="fas fa-plus mr-2"></i>
             Nueva Opción
@@ -29,9 +37,8 @@
         </div>
     @endif
 
-    <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-blue-100 rounded-lg">
                     <i class="fas fa-cogs text-blue-600 text-xl"></i>
@@ -43,7 +50,7 @@
             </div>
         </div>
         
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-red-100 rounded-lg">
                     <i class="fas fa-minus-circle text-red-600 text-xl"></i>
@@ -55,7 +62,7 @@
             </div>
         </div>
         
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-green-100 rounded-lg">
                     <i class="fas fa-plus-circle text-green-600 text-xl"></i>
@@ -67,7 +74,7 @@
             </div>
         </div>
         
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-purple-100 rounded-lg">
                     <i class="fas fa-toggle-on text-purple-600 text-xl"></i>
@@ -81,42 +88,41 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Observaciones (Quitar ingredientes) -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
                 <div class="flex items-center">
                     <div class="p-2 bg-red-100 rounded-lg mr-3">
                         <i class="fas fa-minus-circle text-red-600"></i>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900">Observaciones (Quitar ingredientes)</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Observaciones (Quitar ingredientes)</h3>
                 </div>
             </div>
             
             @if($observations->count() > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                        <thead class="bg-gradient-to-r from-gray-100 to-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Opción
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Orden
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Estado
                                 </th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Acciones
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-100">
                             @foreach($observations as $observation)
-                                <tr class="hover:bg-gray-50">
+                                <tr class="hover:bg-gray-50 group">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                                            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                                 <i class="fas fa-minus text-red-600 text-sm"></i>
                                             </div>
                                             <div class="ml-3">
@@ -141,18 +147,22 @@
                                             </span>
                                         @endif
                                     </td>
+                                    
+                                    {{-- 4. BOTONES DE ACCIÓN ACTUALIZADOS --}}
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex items-center justify-end space-x-2">
+                                            
                                             <a href="{{ route('admin.customization-options.edit', $observation) }}" 
-                                               class="text-yellow-600 hover:text-yellow-900 p-2 rounded-lg hover:bg-yellow-50 transition duration-200"
+                                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 transition duration-200 transform hover:scale-110"
                                                title="Editar">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-sm"></i>
                                             </a>
+                                            
                                             <button type="button" 
                                                     onclick="confirmDelete('{{ $observation->id }}', '{{ $observation->name }}')"
-                                                    class="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition duration-200"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 transition duration-200 transform hover:scale-110"
                                                     title="Eliminar">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fas fa-trash text-sm"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -162,9 +172,9 @@
                     </table>
                 </div>
             @else
-                <div class="text-center py-12">
-                    <div class="text-red-400 text-6xl mb-4">
-                        <i class="fas fa-minus-circle"></i>
+                <div class="p-12 text-center">
+                    <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-minus-circle text-3xl text-red-400"></i>
                     </div>
                     <h3 class="text-lg font-medium text-gray-900 mb-2">No hay observaciones</h3>
                     <p class="text-gray-500 mb-6">Aún no has creado ninguna opción para quitar ingredientes.</p>
@@ -176,45 +186,44 @@
             @endif
         </div>
 
-        <!-- Especialidades (Agregar ingredientes) -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
                 <div class="flex items-center">
                     <div class="p-2 bg-green-100 rounded-lg mr-3">
                         <i class="fas fa-plus-circle text-green-600"></i>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900">Especialidades (Agregar ingredientes)</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Especialidades (Agregar ingredientes)</h3>
                 </div>
             </div>
             
             @if($specialties->count() > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                        <thead class="bg-gradient-to-r from-gray-100 to-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Opción
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Precio
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Orden
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Estado
                                 </th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
                                     Acciones
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-100">
                             @foreach($specialties as $specialty)
-                                <tr class="hover:bg-gray-50">
+                                <tr class="hover:bg-gray-50 group">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                                 <i class="fas fa-plus text-green-600 text-sm"></i>
                                             </div>
                                             <div class="ml-3">
@@ -248,18 +257,22 @@
                                             </span>
                                         @endif
                                     </td>
+                                    
+                                    {{-- 6. BOTONES DE ACCIÓN ACTUALIZADOS --}}
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex items-center justify-end space-x-2">
+                                            
                                             <a href="{{ route('admin.customization-options.edit', $specialty) }}" 
-                                               class="text-yellow-600 hover:text-yellow-900 p-2 rounded-lg hover:bg-yellow-50 transition duration-200"
+                                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 transition duration-200 transform hover:scale-110"
                                                title="Editar">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-sm"></i>
                                             </a>
+                                            
                                             <button type="button" 
                                                     onclick="confirmDelete('{{ $specialty->id }}', '{{ $specialty->name }}')"
-                                                    class="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition duration-200"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 transition duration-200 transform hover:scale-110"
                                                     title="Eliminar">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fas fa-trash text-sm"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -269,9 +282,9 @@
                     </table>
                 </div>
             @else
-                <div class="text-center py-12">
-                    <div class="text-green-400 text-6xl mb-4">
-                        <i class="fas fa-plus-circle"></i>
+                <div class="p-12 text-center">
+                    <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-plus-circle text-3xl text-green-400"></i>
                     </div>
                     <h3 class="text-lg font-medium text-gray-900 mb-2">No hay especialidades</h3>
                     <p class="text-gray-500 mb-6">Aún no has creado ninguna opción para agregar ingredientes.</p>
@@ -285,7 +298,6 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal Script -->
 <script>
 function confirmDelete(optionId, optionName) {
     if (confirm(`¿Estás seguro de que deseas eliminar la opción "${optionName}"?`)) {

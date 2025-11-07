@@ -43,7 +43,7 @@ class ComboController extends Controller
             'quantities.*' => 'integer|min:1',
         ]);
 
-        // Calcular precio original (suma de productos individuales)
+        // Calcular precio original (suma de Platillos individuales)
         $originalPrice = 0;
         $selectedProducts = Product::whereIn('id', $request->products)->get();
         
@@ -63,7 +63,7 @@ class ComboController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
-        // Asociar productos al combo
+        // Asociar Platillos al combo
         foreach ($request->products as $productId) {
             $combo->products()->attach($productId, [
                 'quantity' => $request->quantities[$productId] ?? 1,
@@ -131,7 +131,7 @@ class ComboController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
-        // Sincronizar productos
+        // Sincronizar Platillos
         $syncData = [];
         foreach ($request->products as $productId) {
             $syncData[$productId] = [

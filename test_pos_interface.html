@@ -60,7 +60,7 @@
     
     <div class="test-card">
         <h2>🛒 Simulador de Carrito</h2>
-        <p>Agrega productos para probar la detección de combos:</p>
+        <p>Agrega Platillos para probar la detección de combos:</p>
         <button onclick="testAddProduct(1, 'Hamburguesa Clásica', 8.99)">🍔 Hamburguesa</button>
         <button onclick="testAddProduct(2, 'Papas Fritas', 3.99)">🍟 Papas</button>
         <button onclick="testAddProduct(3, 'Refresco', 2.99)">🥤 Refresco</button>
@@ -101,7 +101,7 @@
     <div class="test-card">
         <h2>🎯 Estado de Combos</h2>
         <div id="combo-status" class="test-warning">
-            No hay combos detectados (agregar productos para probar)
+            No hay combos detectados (agregar Platillos para probar)
         </div>
         <button onclick="testComboDetection()">🔍 Forzar Detección</button>
     </div>
@@ -124,7 +124,7 @@
             }
             
             updateTestDisplay();
-            console.log('🛒 Test: Producto agregado', {id, name, price});
+            console.log('🛒 Test: Platillo agregado', {id, name, price});
         }
         
         function clearTestCart() {
@@ -189,7 +189,7 @@
             const status = document.getElementById('combo-status');
             
             if (testCart.length === 0) {
-                status.innerHTML = 'No hay productos en el carrito';
+                status.innerHTML = 'No hay Platillos en el carrito';
                 status.className = 'test-warning';
             } else if (testCart.length >= 2) {
                 // Simular detección de combo
@@ -201,11 +201,11 @@
                     status.innerHTML = '🎉 ¡Combo detectado! Hamburguesa + Papas + Refresco';
                     status.className = 'test-success';
                 } else {
-                    status.innerHTML = 'Productos agregados, pero no forman un combo conocido';
+                    status.innerHTML = 'Platillos agregados, pero no forman un combo conocido';
                     status.className = 'test-warning';
                 }
             } else {
-                status.innerHTML = 'Agrega más productos para detectar combos';
+                status.innerHTML = 'Agrega más Platillos para detectar combos';
                 status.className = 'test-warning';
             }
         }

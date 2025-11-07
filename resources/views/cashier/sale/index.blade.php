@@ -151,12 +151,12 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-bold text-gray-800 flex items-center">
                             <i class="fas fa-hamburger mr-3 text-gray-500"></i>
-                            Menú de Productos
+                            Menú de Platillos
                         </h3>
                         <div class="relative">
                             <input type="text" 
                                    id="search-product" 
-                                   placeholder="Buscar deliciosos platillos..."
+                                   placeholder="Buscar deliciosos Platillos..."
                                    class="pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-400 transition-all duration-300 w-80">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
@@ -176,7 +176,7 @@
                                      data-has-options="{{ $product->category->is_customizable ? 'true' : 'false' }}"
                                      onclick="handleProductClick({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, {{ $product->is_food ? 'true' : 'false' }})">
                                     
-                                    <!-- Imagen del producto -->
+                                    <!-- Imagen del Platillo -->
                                     <div class="relative mb-4">
                                         @if($product->image)
                                             <img src="{{ Storage::url($product->image) }}" 
@@ -192,7 +192,7 @@
                                             </div>
                                         @endif
                                         
-                                        <!-- Badge de tipo de producto -->
+                                        <!-- Badge de tipo de Platillo -->
                                         @if($product->is_food)
                                             <div class="absolute top-2 right-2">
                                                 <span class="tochis-gradient text-white text-xs px-3 py-1 rounded-full shadow-lg flex items-center font-bold">
@@ -202,7 +202,7 @@
                                         @endif
                                     </div>
                                     
-                                    <!-- Información del producto -->
+                                    <!-- Información del Platillo -->
                                     <div class="space-y-2">
                                         <h4 class="font-semibold text-gray-900 text-sm leading-tight line-clamp-2 min-h-[2.5rem]">
                                             {{ $product->name }}
@@ -233,7 +233,7 @@
                     
                     <div id="no-products" class="hidden text-center py-8">
                         <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">No se encontraron productos</p>
+                        <p class="text-gray-500">No se encontraron Platillos</p>
                     </div>
                 </div>
             </div>
@@ -266,7 +266,7 @@
                                 <i class="fas fa-shopping-basket text-white text-2xl"></i>
                             </div>
                             <p class="text-gray-600 font-semibold">Tu orden está vacía</p>
-                            <p class="text-sm text-gray-500 mt-1">Selecciona deliciosos platillos para agregar</p>
+                            <p class="text-sm text-gray-500 mt-1">Selecciona deliciosos Platillos para agregar</p>
                         </div>
                     </div>
                 </div>
@@ -414,7 +414,7 @@ let comboCheckTimeout = null;
 function handleProductClick(productId, productName, price, isFood = false) {
     console.log('Product clicked:', {productId, productName, price, isFood});
     
-    // Obtener información adicional del producto
+    // Obtener información adicional del Platillo
     const productCard = document.querySelector(`[data-product-id="${productId}"]`);
     const categoryId = productCard ? productCard.dataset.category : null;
     
@@ -438,7 +438,7 @@ function filterByCategory(categoryId) {
     // Update active button - Reset all buttons first
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.classList.remove('active');
-        // Reset all to default gray style for "Todos los Productos"
+        // Reset all to default gray style for "Todos los Platillos"
         if (btn.dataset.category === 'all') {
             btn.classList.add('bg-gray-100', 'text-gray-700');
             btn.classList.remove('bg-blue-600', 'text-white');
@@ -533,7 +533,7 @@ function openCustomizationModal(productId, productName, price, categoryId = null
     const modalProductName = document.getElementById('product-name');
     const modalProductPrice = document.getElementById('product-price');
     
-    // Establecer información del producto
+    // Establecer información del Platillo
     modalProductName.textContent = productName;
     modalProductPrice.textContent = '$' + parseFloat(price).toFixed(2);
     
@@ -545,10 +545,10 @@ function openCustomizationModal(productId, productName, price, categoryId = null
     document.getElementById('modal-quantity').value = 1;
     document.getElementById('modal-notes').value = '';
     
-    // Cargar opciones del producto desde el servidor
-    loadProductOptions(productId);
+    // Cargar opciones del Platillo desde el servidor
+    loadPlatilloptions(productId);
     
-    // Guardar información del producto actual (corregido para usar variable global)
+    // Guardar información del Platillo actual (corregido para usar variable global)
     currentProduct = {
         id: productId,
         name: productName,
@@ -563,9 +563,9 @@ function openCustomizationModal(productId, productName, price, categoryId = null
     modal.classList.remove('hidden');
 }
 
-// Cargar opciones del producto
-function loadProductOptions(productId) {
-    // Aquí haremos una petición AJAX para cargar las opciones específicas del producto
+// Cargar opciones del Platillo
+function loadPlatilloptions(productId) {
+    // Aquí haremos una petición AJAX para cargar las opciones específicas del Platillo
     fetch(`/api/products/${productId}/options`)
         .then(response => response.json())
         .then(data => {
@@ -641,15 +641,15 @@ function closeCustomizeModal() {
 
 // Remove product from cart
 function removeFromCart(productId) {
-    console.log('🗑️ Removiendo producto del carrito:', productId);
+    console.log('🗑️ Removiendo Platillo del carrito:', productId);
     cart = cart.filter(item => item.id !== productId);
     
-    // Limpiar promociones aplicadas al remover productos
+    // Limpiar promociones aplicadas al remover Platillos
     appliedPromotions = [];
     totalDiscount = 0;
     
     updateCartDisplay();
-    console.log('✅ Producto removido y promociones recalculadas');
+    console.log('✅ Platillo removido y promociones recalculadas');
 }
 
 // Update quantity
@@ -707,7 +707,7 @@ function removeCartItem(index) {
         return;
     }
     
-    // Si se elimina un producto normal, remover y recalcular promociones
+    // Si se elimina un Platillo normal, remover y recalcular promociones
     cart.splice(index, 1);
     
     // Limpiar y recalcular promociones al remover items
@@ -758,7 +758,7 @@ function updateCartDisplay() {
         }
         
         if (cart.length === 0) {
-            cartItems.innerHTML = '<div id="empty-cart" class="text-center py-12"><div class="tochis-gradient-light rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4"><i class="fas fa-shopping-basket text-white text-2xl"></i></div><p class="text-gray-600 font-semibold">Tu orden está vacía</p><p class="text-sm text-gray-500 mt-1">Selecciona deliciosos platillos para agregar</p></div>';
+            cartItems.innerHTML = '<div id="empty-cart" class="text-center py-12"><div class="tochis-gradient-light rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4"><i class="fas fa-shopping-basket text-white text-2xl"></i></div><p class="text-gray-600 font-semibold">Tu orden está vacía</p><p class="text-sm text-gray-500 mt-1">Selecciona deliciosos Platillos para agregar</p></div>';
             if (clearBtn) clearBtn.style.display = 'none';
         } else {
             if (clearBtn) clearBtn.style.display = 'block';
@@ -908,7 +908,7 @@ function processSale() {
     console.log('💰 Total actual:', total);
     
     if (cart.length === 0) {
-        alert('Tu orden está vacía. ¡Agrega algunos deliciosos platillos!');
+        alert('Tu orden está vacía. ¡Agrega algunos deliciosos Platillos!');
         return;
     }
     
@@ -1187,7 +1187,7 @@ function addItemToCart(item) {
     console.log('addItemToCart called with:', item);
     console.log('current cart before:', cart);
     
-    // Buscar si ya existe un item idéntico (mismo producto, mismas observaciones y especialidades)
+    // Buscar si ya existe un item idéntico (mismo Platillo, mismas observaciones y especialidades)
     const existingIndex = cart.findIndex(cartItem => 
         cartItem.id === item.id && 
         JSON.stringify(cartItem.observations || []) === JSON.stringify(item.observations || []) &&
@@ -1210,7 +1210,7 @@ function addItemToCart(item) {
     updateCartDisplay();
 }
 
-function loadProductOptions(productId) {
+function loadPlatilloptions(productId) {
     const observationsSection = document.getElementById('observations-section');
     const specialtiesSection = document.getElementById('specialties-section');
     const observationsList = document.getElementById('observations-list');
@@ -1220,7 +1220,7 @@ function loadProductOptions(productId) {
     observationsList.innerHTML = '';
     specialtiesList.innerHTML = '';
     
-    // Cargar opciones específicas del producto desde el servidor
+    // Cargar opciones específicas del Platillo desde el servidor
     fetch(`/api/customization-options?product_id=${productId}`)
         .then(response => response.json())
         .then(data => {
@@ -1340,21 +1340,21 @@ function calculateApplicablePromotions() {
                 if (promotion.apply_to === 'all') {
                     applicableAmount = currentSubtotal;
                 } else if (promotion.apply_to === 'category') {
-                    // Aplicar solo a productos de categorías específicas
+                    // Aplicar solo a Platillos de categorías específicas
                     const promotionCategoryIds = promotion.category_ids || [];
                     console.log('Promoción para categorías:', promotion.name);
                     console.log('IDs de categorías de la promoción:', promotionCategoryIds);
                     console.log('Detalles del carrito:', saleDetails);
                     
                     saleDetails.forEach(detail => {
-                        console.log(`Producto: ${detail.id}, Categoría: ${detail.categoryId}, ¿Incluido?:`, promotionCategoryIds.includes(parseInt(detail.categoryId)));
+                        console.log(`Platillo: ${detail.id}, Categoría: ${detail.categoryId}, ¿Incluido?:`, promotionCategoryIds.includes(parseInt(detail.categoryId)));
                         if (promotionCategoryIds.includes(parseInt(detail.categoryId))) {
                             applicableAmount += detail.subtotal;
                             console.log(`Agregando ${detail.subtotal} al monto aplicable. Total: ${applicableAmount}`);
                         }
                     });
                 } else if (promotion.apply_to === 'product') {
-                    // Aplicar solo a productos específicos
+                    // Aplicar solo a Platillos específicos
                     const promotionProductIds = promotion.product_ids || [];
                     
                     saleDetails.forEach(detail => {
@@ -1478,14 +1478,14 @@ function checkForComboSuggestions() {
         clearTimeout(comboCheckTimeout);
     }
     
-    // Solo verificar si hay al menos 2 productos en el carrito
+    // Solo verificar si hay al menos 2 Platillos en el carrito
     if (cart.length < 2) {
-        console.log('❌ No hay suficientes productos (mínimo 2). Ocultando combos.');
+        console.log('❌ No hay suficientes Platillos (mínimo 2). Ocultando combos.');
         hideCombos();
         return;
     }
     
-    console.log('✅ Carrito tiene suficientes productos. Configurando timeout...');
+    console.log('✅ Carrito tiene suficientes Platillos. Configurando timeout...');
     
     // Debounce para evitar muchas llamadas a la API
     comboCheckTimeout = setTimeout(() => {
@@ -1599,16 +1599,16 @@ function showComboSuggestions(suggestions) {
                     </div>
                     <div class="bg-purple-50 rounded-lg p-3 text-center">
                         <div class="text-2xl font-bold text-purple-600">${matchLevel.matched_products}/${matchLevel.total_products}</div>
-                        <div class="text-xs text-purple-700 font-medium">Productos</div>
+                        <div class="text-xs text-purple-700 font-medium">Platillos</div>
                     </div>
                 </div>
                 
                 ${missingProducts.length > 0 ? `
-                    <!-- Productos por Agregar -->
+                    <!-- Platillos por Agregar -->
                     <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
                         <div class="flex items-center mb-3">
                             <i class="fas fa-plus-circle text-orange-600 mr-2 text-lg"></i>
-                            <span class="font-bold text-orange-700">Productos por agregar:</span>
+                            <span class="font-bold text-orange-700">Platillos por agregar:</span>
                         </div>
                         <div class="grid grid-cols-1 gap-2">
                             ${missingProducts.map(p => `
@@ -1632,7 +1632,7 @@ function showComboSuggestions(suggestions) {
                         <button onclick="addMissingProducts(${JSON.stringify(missingProducts).replace(/"/g, '&quot;')}, ${combo.id})" 
                                 class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center">
                             <i class="fas fa-plus mr-2"></i>
-                            Agregar Productos Faltantes
+                            Agregar Platillos Faltantes
                         </button>
                     `}
                     
@@ -1758,19 +1758,19 @@ function applyCombo(comboId) {
 }
 
 /**
- * Mostrar productos faltantes para completar combo
+ * Mostrar Platillos faltantes para completar combo
  */
 function showMissingProducts(missingProducts) {
     const productNames = missingProducts.map(p => p.name).join('\n- ');
     
     if (confirm(`Para completar este combo, agrega:\n\n- ${productNames}\n\n¿Quieres que te ayude a encontrarlos?`)) {
-        // Aquí podrías highlighting los productos en la lista
+        // Aquí podrías highlighting los Platillos en la lista
         highlightMissingProducts(missingProducts);
     }
 }
 
 /**
- * Resaltar productos faltantes en la interfaz
+ * Resaltar Platillos faltantes en la interfaz
  */
 function highlightMissingProducts(missingProducts) {
     // Limpiar highlights anteriores
@@ -1778,13 +1778,13 @@ function highlightMissingProducts(missingProducts) {
         card.classList.remove('ring-2', 'ring-orange-400', 'bg-orange-50');
     });
     
-    // Resaltar productos faltantes
+    // Resaltar Platillos faltantes
     missingProducts.forEach(product => {
         const productCard = document.querySelector(`[data-product-id="${product.id}"]`);
         if (productCard) {
             productCard.classList.add('ring-2', 'ring-orange-400', 'bg-orange-50');
             
-            // Scroll hacia el primer producto
+            // Scroll hacia el primer Platillo
             if (missingProducts.indexOf(product) === 0) {
                 productCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
@@ -1816,11 +1816,11 @@ function dismissCombo(index) {
 }
 
 /**
- * Agregar productos faltantes al carrito
+ * Agregar Platillos faltantes al carrito
  */
 async function addMissingProducts(missingProducts, comboId) {
-    console.log('🛒 AGREGANDO PRODUCTOS FALTANTES AL CARRITO');
-    console.log('📦 Productos faltantes (raw):', missingProducts);
+    console.log('🛒 AGREGANDO PlatilloS FALTANTES AL CARRITO');
+    console.log('📦 Platillos faltantes (raw):', missingProducts);
     console.log('🎯 Combo ID:', comboId);
     
     // Si missingProducts es una cadena, parsearla
@@ -1829,25 +1829,25 @@ async function addMissingProducts(missingProducts, comboId) {
             // Reemplazar las entidades HTML de vuelta a comillas
             missingProducts = missingProducts.replace(/&quot;/g, '"');
             missingProducts = JSON.parse(missingProducts);
-            console.log('✅ Productos parseados:', missingProducts);
+            console.log('✅ Platillos parseados:', missingProducts);
         } catch (error) {
-            console.error('❌ Error parseando productos:', error);
-            showSuccessMessage('❌ Error procesando productos faltantes');
+            console.error('❌ Error parseando Platillos:', error);
+            showSuccessMessage('❌ Error procesando Platillos faltantes');
             return;
         }
     }
     
     // Verificar que tenemos un array válido
     if (!Array.isArray(missingProducts) || missingProducts.length === 0) {
-        console.error('❌ No hay productos válidos para agregar');
-        showSuccessMessage('❌ No hay productos para agregar');
+        console.error('❌ No hay Platillos válidos para agregar');
+        showSuccessMessage('❌ No hay Platillos para agregar');
         return;
     }
     
-    console.log('📦 Productos procesados:', missingProducts);
+    console.log('📦 Platillos procesados:', missingProducts);
     
     try {
-        // Agregar cada producto faltante al carrito
+        // Agregar cada Platillo faltante al carrito
         for (const product of missingProducts) {
             console.log(`➕ Agregando ${product.name} al carrito`);
             
@@ -1862,7 +1862,7 @@ async function addMissingProducts(missingProducts, comboId) {
                 originalName: product.name
             };
             
-            // Verificar si el producto ya existe en el carrito
+            // Verificar si el Platillo ya existe en el carrito
             const existingIndex = cart.findIndex(item => 
                 item.id === product.id && 
                 JSON.stringify(item.specialties || []) === JSON.stringify([]) &&
@@ -1886,13 +1886,13 @@ async function addMissingProducts(missingProducts, comboId) {
         
         // Mostrar mensaje de éxito
         setTimeout(() => {
-            showSuccessMessage(`✅ Se agregaron ${missingProducts.length} productos faltantes al carrito`);
+            showSuccessMessage(`✅ Se agregaron ${missingProducts.length} Platillos faltantes al carrito`);
             console.log('🔄 Verificando combos nuevamente...');
             checkForComboSuggestions();
         }, 500);
         
     } catch (error) {
-        console.error('❌ Error al agregar productos faltantes:', error);
+        console.error('❌ Error al agregar Platillos faltantes:', error);
         // Solo mostrar error si realmente hay un problema, no el mensaje genérico
         console.error('Error details:', error.message);
     }
@@ -1960,7 +1960,7 @@ function testComboDetection() {
     console.log('🧪 INICIANDO PRUEBA DE DETECCIÓN DE COMBOS');
     
     if (cart.length === 0) {
-        alert('❌ Agrega algunos productos al carrito primero para probar la detección de combos');
+        alert('❌ Agrega algunos Platillos al carrito primero para probar la detección de combos');
         return;
     }
     
@@ -1990,7 +1990,7 @@ function showTestCombos() {
                 total_products: 3
             },
             missing_products: [
-                { id: 999, name: "Producto Faltante de Prueba" }
+                { id: 999, name: "Platillo Faltante de Prueba" }
             ]
         }
     ];
@@ -1999,7 +1999,7 @@ function showTestCombos() {
 }
 </script>
 
-<!-- Modal para personalizar productos -->
+<!-- Modal para personalizar Platillos -->
 <div id="customizeModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" onclick="closeCustomizeModal()">
@@ -2011,11 +2011,11 @@ function showTestCombos() {
                 <div class="sm:flex sm:items-start">
                     <div class="w-full">
                         <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modal-title">
-                            <i class="fas fa-cog mr-2 text-blue-600"></i>Personalizar Producto
+                            <i class="fas fa-cog mr-2 text-blue-600"></i>Personalizar Platillo
                         </h3>
                         
                         <div class="space-y-4">
-                            <!-- Información del producto -->
+                            <!-- Información del Platillo -->
                             <div class="bg-gray-50 p-4 rounded-lg">
                                 <h4 id="product-name" class="font-medium text-gray-900"></h4>
                                 <p id="product-price" class="text-lg font-bold text-green-600"></p>
@@ -2088,7 +2088,7 @@ function showTestCombos() {
 @endpush
 
 <style>
-/* Estilos personalizados para los cards de productos */
+/* Estilos personalizados para los cards de Platillos */
 .product-card {
     min-height: 200px;
     max-width: 280px;

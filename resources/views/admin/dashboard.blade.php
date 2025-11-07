@@ -14,7 +14,7 @@
                     <i class="fas fa-box text-xl"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Total Productos</p>
+                    <p class="text-sm font-medium text-gray-600">Total Platillos</p>
                     <p class="text-2xl font-semibold text-gray-900">{{ $totalProducts }}</p>
                 </div>
             </div>
@@ -127,7 +127,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">
                 <i class="fas fa-trophy mr-2 text-yellow-600"></i>
-                Productos Más Vendidos (30 días)
+                Platillos Más Vendidos (30 días)
             </h3>
             <div class="space-y-3">
                 @forelse($topProducts as $item)
@@ -158,7 +158,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <a href="{{ route('admin.products.create') }}" class="btn-primary flex items-center justify-center">
                     <i class="fas fa-plus-circle mr-3"></i>
-                    <span>Agregar Producto</span>
+                    <span>Agregar Platillo</span>
                 </a>
 
                 <a href="{{ route('admin.categories.create') }}" class="btn-success flex items-center justify-center">

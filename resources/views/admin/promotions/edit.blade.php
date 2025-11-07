@@ -120,13 +120,13 @@
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 required>
                             <option value="all" {{ old('apply_to', $promotion->apply_to) === 'all' ? 'selected' : '' }}>
-                                Todos los productos
+                                Todos los Platillos
                             </option>
                             <option value="category" {{ old('apply_to', $promotion->apply_to) === 'category' ? 'selected' : '' }}>
                                 Categorías específicas
                             </option>
                             <option value="product" {{ old('apply_to', $promotion->apply_to) === 'product' ? 'selected' : '' }}>
-                                Productos específicos
+                                Platillos específicos
                             </option>
                         </select>
                         @error('apply_to')
@@ -155,7 +155,7 @@
 
                     <div id="product-selection" class="{{ old('apply_to', $promotion->apply_to) !== 'product' ? 'hidden' : '' }}">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Seleccionar Productos
+                            Seleccionar Platillos
                         </label>
                         <div class="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-3">
                             @foreach($products as $product)
@@ -356,11 +356,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (applyTo === 'all') {
-            preview += 'en todos los productos';
+            preview += 'en todos los Platillos';
         } else if (applyTo === 'category') {
             preview += 'en categorías seleccionadas';
         } else {
-            preview += 'en productos seleccionados';
+            preview += 'en Platillos seleccionados';
         }
         
         if (minimum && minimum > 0) {

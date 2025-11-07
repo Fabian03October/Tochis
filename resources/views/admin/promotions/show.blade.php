@@ -51,11 +51,11 @@
                         <dt class="text-sm font-medium text-gray-500">Se Aplica a</dt>
                         <dd class="mt-1 text-sm text-gray-900">
                             @if($promotion->apply_to === 'all')
-                                Todos los productos
+                                Todos los Platillos
                             @elseif($promotion->apply_to === 'category')
                                 Categorías específicas
                             @else
-                                Productos específicos
+                                Platillos específicos
                             @endif
                         </dd>
                     </div>

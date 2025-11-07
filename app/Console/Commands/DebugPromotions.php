@@ -50,7 +50,7 @@ class DebugPromotions extends Command
                 // Cargar relaciones explícitamente
                 $promotion->load('categories', 'products');
                 $this->line("Categorías asociadas: " . $promotion->categories->pluck('id')->implode(', '));
-                $this->line("Productos asociados: " . $promotion->products->pluck('id')->implode(', '));
+                $this->line("Platillos asociados: " . $promotion->products->pluck('id')->implode(', '));
                 $this->line("---");
             }
         }
@@ -63,9 +63,9 @@ class DebugPromotions extends Command
             $this->line("ID: {$category->id} | Nombre: {$category->name}");
         }
 
-        // 3. Revisar productos con sus categorías
+        // 3. Revisar Platillos con sus categorías
         $this->newLine();
-        $this->info('3. ALGUNOS PRODUCTOS CON CATEGORÍAS:');
+        $this->info('3. ALGUNOS PlatilloS CON CATEGORÍAS:');
         $products = Product::with('category')->take(10)->get();
         foreach ($products as $product) {
             $this->line("ID: {$product->id} | Nombre: {$product->name} | Categoría: {$product->category->name} (ID: {$product->category_id})");
@@ -90,7 +90,7 @@ class DebugPromotions extends Command
             $this->warn('No hay registros en la tabla promotion_products');
         } else {
             foreach ($pivotProducts as $pivot) {
-                $this->line("Promoción ID: {$pivot->promotion_id} | Producto ID: {$pivot->product_id}");
+                $this->line("Promoción ID: {$pivot->promotion_id} | Platillo ID: {$pivot->product_id}");
             }
         }
 

@@ -141,7 +141,7 @@
                 <div class="flex justify-between items-center">
                     <div class="text-sm text-gray-600">
                         <i class="fas fa-info-circle mr-1"></i>
-                        Solo las opciones seleccionadas aparecerán en el modal de personalización para productos de esta categoría.
+                        Solo las opciones seleccionadas aparecerán en el modal de personalización para Platillos de esta categoría.
                     </div>
                     <div class="flex space-x-4">
                         <a href="{{ route('admin.categories.index') }}" class="btn-secondary">
@@ -163,10 +163,10 @@
             <div>
                 <h4 class="text-blue-800 font-medium">¿Cómo funciona?</h4>
                 <ul class="text-blue-700 text-sm mt-2 space-y-1">
-                    <li>• Selecciona las opciones que quieres que aparezcan para productos de esta categoría</li>
+                    <li>• Selecciona las opciones que quieres que aparezcan para Platillos de esta categoría</li>
                     <li>• Las <strong>observaciones</strong> permiten quitar ingredientes (sin costo adicional)</li>
                     <li>• Las <strong>especialidades</strong> permiten agregar ingredientes (pueden tener costo adicional)</li>
-                    <li>• Solo productos de categorías marcadas como "personalizables" mostrarán el modal</li>
+                    <li>• Solo Platillos de categorías marcadas como "personalizables" mostrarán el modal</li>
                 </ul>
             </div>
         </div>

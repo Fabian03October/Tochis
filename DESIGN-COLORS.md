@@ -45,9 +45,9 @@
 ### Categorías
 - Principal: Azul
 - Activas: Verde
-- Total productos: Púrpura
+- Total Platillos: Púrpura
 
-### Productos  
+### Platillos  
 - Principal: Azul
 - Activos: Verde
 - Stock bajo: Amarillo

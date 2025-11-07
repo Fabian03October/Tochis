@@ -107,7 +107,7 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Productos Vendidos</dt>
+                        <dt class="text-sm font-medium text-gray-500 truncate">Platillos Vendidos</dt>
                         <dd class="text-lg font-medium text-gray-900">{{ number_format($totalProductsSold) }}</dd>
                     </dl>
                 </div>
@@ -137,7 +137,7 @@
             <div class="px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-medium text-gray-900">
                     <i class="fas fa-star mr-2 text-yellow-600"></i>
-                    Productos Más Vendidos
+                    Platillos Más Vendidos
                 </h3>
             </div>
             
@@ -173,7 +173,7 @@
                 @else
                     <div class="text-center py-8">
                         <i class="fas fa-chart-bar text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">No hay datos de productos para el período seleccionado.</p>
+                        <p class="text-gray-500">No hay datos de Platillos para el período seleccionado.</p>
                     </div>
                 @endif
             </div>
@@ -199,7 +199,7 @@
                                          style="background-color: {{ $category->color }};"></div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-900">{{ $category->name }}</p>
-                                        <p class="text-sm text-gray-500">{{ $category->products_count }} productos</p>
+                                        <p class="text-sm text-gray-500">{{ $category->products_count }} Platillos</p>
                                     </div>
                                 </div>
                                 <div class="text-right">
@@ -311,7 +311,7 @@
             <div class="px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-medium text-gray-900">
                     <i class="fas fa-exclamation-triangle mr-2 text-red-600"></i>
-                    Productos con Stock Bajo
+                    Platillos con Stock Bajo
                 </h3>
             </div>
             
@@ -347,14 +347,14 @@
                     <div class="mt-4">
                         <a href="{{ route('admin.products.index', ['status' => '1']) }}" 
                            class="text-sm text-blue-600 hover:text-blue-800">
-                            Ver todos los productos →
+                            Ver todos los Platillos →
                         </a>
                     </div>
                 @else
                     <div class="text-center py-8">
                         <i class="fas fa-check-circle text-4xl text-green-300 mb-4"></i>
                         <p class="text-green-600 font-medium">¡Excelente!</p>
-                        <p class="text-gray-500">Todos los productos tienen stock suficiente.</p>
+                        <p class="text-gray-500">Todos los Platillos tienen stock suficiente.</p>
                     </div>
                 @endif
             </div>

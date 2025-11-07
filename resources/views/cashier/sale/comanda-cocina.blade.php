@@ -212,7 +212,7 @@
     </div>
     
     @php
-        // Filtrar solo productos que NO son bebidas
+        // Filtrar solo Platillos que NO son bebidas
         $kitchenItems = $sale->saleDetails->filter(function($detail) {
             $categoryName = strtolower($detail->product->category->name);
             return !str_contains($categoryName, 'bebida') && 
@@ -233,7 +233,7 @@
     
     @if($totalItems > 0)
         <div style="text-align: center; font-weight: bold; margin-bottom: 15px; border: 2px solid #000; padding: 8px;">
-            🍽️ PRODUCTOS PARA COCINA: {{ $totalItems }}
+            🍽️ PlatilloS PARA COCINA: {{ $totalItems }}
         </div>
         
         @foreach($itemsByCategory as $categoryName => $details)
@@ -319,7 +319,7 @@
                         @if($isSpicy || $hasAllergens)
                             <div class="special-alerts">
                                 @if($isSpicy)
-                                    <div class="alert-spicy">🌶️ PRODUCTO PICANTE</div>
+                                    <div class="alert-spicy">🌶️ Platillo PICANTE</div>
                                 @endif
                                 @if($hasAllergens)
                                     <div class="alert-allergen">⚠️ CONTIENE ALÉRGENOS</div>
@@ -332,7 +332,7 @@
         @endforeach
     @else
         <div style="text-align: center; padding: 20px; background: #f3f4f6; border: 2px dashed #9ca3af;">
-            <h3>❌ NO HAY PRODUCTOS PARA COCINA</h3>
+            <h3>❌ NO HAY PlatilloS PARA COCINA</h3>
             <p>Esta orden solo contiene bebidas</p>
         </div>
     @endif

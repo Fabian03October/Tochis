@@ -114,7 +114,7 @@
                             
                             <div>
                                 <label for="min_items" class="block text-sm font-medium text-gray-700">
-                                    Productos Mínimos <span class="text-red-500">*</span>
+                                    Platillos Mínimos <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" 
                                        id="min_items" 
@@ -123,7 +123,7 @@
                                        value="{{ old('min_items', $combo->min_items) }}"
                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                        required>
-                                <p class="mt-1 text-sm text-gray-500">Mínimo 2 productos</p>
+                                <p class="mt-1 text-sm text-gray-500">Mínimo 2 Platillos</p>
                             </div>
                         </div>
                         
@@ -156,25 +156,25 @@
                     </div>
                 </div>
                 
-                <!-- Selección de Productos -->
+                <!-- Selección de Platillos -->
                 <div class="bg-white shadow-sm rounded-lg overflow-hidden mt-6">
                     <div class="px-6 py-5 border-b border-gray-200">
                         <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            Productos del Combo
+                            Platillos del Combo
                         </h3>
-                        <p class="mt-1 text-sm text-gray-600">Selecciona los productos que incluirá este combo</p>
+                        <p class="mt-1 text-sm text-gray-600">Selecciona los Platillos que incluirá este combo</p>
                     </div>
                     
                     <div class="px-6 py-4">
-                        <!-- Buscador de productos -->
+                        <!-- Buscador de Platillos -->
                         <div class="mb-4">
                             <input type="text" 
                                    id="productSearch" 
-                                   placeholder="Buscar productos..."
+                                   placeholder="Buscar Platillos..."
                                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         
-                        <!-- Lista de productos -->
+                        <!-- Lista de Platillos -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto" id="productsList">
                             @foreach($products as $product)
                                 @php
@@ -218,7 +218,7 @@
                         </div>
                         
                         <div class="mt-4 text-sm text-gray-600">
-                            <span id="selectedCount">{{ $combo->products->count() }}</span> productos seleccionados
+                            <span id="selectedCount">{{ $combo->products->count() }}</span> Platillos seleccionados
                         </div>
                     </div>
                 </div>
@@ -261,11 +261,11 @@
                     </div>
                 </div>
                 
-                <!-- Productos Seleccionados -->
+                <!-- Platillos Seleccionados -->
                 <div class="bg-white shadow-sm rounded-lg overflow-hidden mt-6">
                     <div class="px-6 py-5 border-b border-gray-200">
                         <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            Productos Seleccionados
+                            Platillos Seleccionados
                         </h3>
                     </div>
                     
@@ -283,7 +283,7 @@
                         
                         <div id="noProductsMessage" class="text-center py-4 text-gray-500 {{ $combo->products->count() > 0 ? 'hidden' : '' }}">
                             <i class="fas fa-box-open text-2xl mb-2"></i>
-                            <p>No hay productos seleccionados</p>
+                            <p>No hay Platillos seleccionados</p>
                         </div>
                     </div>
                 </div>
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const savingsPercentage = document.getElementById('savingsPercentage');
     const priceInput = document.getElementById('price');
     
-    // Buscar productos
+    // Buscar Platillos
     productSearch.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
         const productItems = productsList.querySelectorAll('.product-item');
@@ -371,7 +371,7 @@ function updateProductSelection(checkbox) {
     const productPrice = productItem.querySelector('.text-green-600').textContent;
     
     if (checkbox.checked) {
-        // Agregar producto
+        // Agregar Platillo
         productItem.classList.add('border-blue-500', 'bg-blue-50');
         productItem.classList.remove('border-gray-200');
         
@@ -387,7 +387,7 @@ function updateProductSelection(checkbox) {
         
         document.getElementById('selectedProductsList').appendChild(selectedProduct);
     } else {
-        // Remover producto
+        // Remover Platillo
         productItem.classList.remove('border-blue-500', 'bg-blue-50');
         productItem.classList.add('border-gray-200');
         
@@ -401,7 +401,7 @@ function updateProductSelection(checkbox) {
     const selectedProductsCount = document.querySelectorAll('.product-checkbox:checked').length;
     document.getElementById('selectedCount').textContent = selectedProductsCount;
     
-    // Mostrar/ocultar mensaje de productos vacíos
+    // Mostrar/ocultar mensaje de Platillos vacíos
     const noProductsMessage = document.getElementById('noProductsMessage');
     if (selectedProductsCount === 0) {
         noProductsMessage.classList.remove('hidden');

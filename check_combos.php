@@ -8,7 +8,7 @@ $combos = App\Models\Combo::with('products')->get();
 
 echo "=== VERIFICACIÓN DE COMBOS ===" . PHP_EOL;
 foreach($combos as $combo) {
-    echo "Combo: {$combo->name} - Productos: {$combo->products->count()}" . PHP_EOL;
+    echo "Combo: {$combo->name} - Platillos: {$combo->products->count()}" . PHP_EOL;
 }
 
 echo PHP_EOL . "Total de combos: " . $combos->count() . PHP_EOL;

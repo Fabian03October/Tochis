@@ -11,7 +11,7 @@ class CustomizationController extends Controller
 {
     public function getOptions(Request $request)
     {
-        // Si se especifica un producto, obtener opciones específicas de su categoría
+        // Si se especifica un Platillo, obtener opciones específicas de su categoría
         if ($request->has('product_id')) {
             $product = Product::with('category.customizationOptions')->find($request->product_id);
             

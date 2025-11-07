@@ -103,12 +103,12 @@
                         </div>
                     </div>
 
-                    <!-- Productos Incluidos -->
+                    <!-- Platillos Incluidos -->
                     <div class="p-4">
                         <div class="mb-4">
                             <h4 class="font-semibold text-gray-800 mb-2 flex items-center">
                                 <i class="fas fa-box text-orange-600 mr-2"></i>
-                                Productos Incluidos
+                                Platillos Incluidos
                             </h4>
                             <div class="flex flex-wrap gap-1">
                                 @foreach($combo->products as $product)

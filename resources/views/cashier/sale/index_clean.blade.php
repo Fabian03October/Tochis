@@ -31,10 +31,10 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <!-- Panel Izquierdo - Productos -->
+        <!-- Panel Izquierdo - Platillos -->
         <div class="col-md-8">
             <div class="tochis-card p-4">
-                <h5 class="mb-4">Seleccionar Productos</h5>
+                <h5 class="mb-4">Seleccionar Platillos</h5>
                 
                 <!-- Categorías -->
                 <div class="mb-4">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 
-                <!-- Productos -->
+                <!-- Platillos -->
                 <div class="row" id="products-container">
                     @foreach($products as $product)
                         <div class="col-md-4 mb-3 product-item" data-category="{{ $product->category_id }}">
@@ -81,7 +81,7 @@
                     <div class="text-center py-4">
                         <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
                         <p class="text-muted">Tu orden está vacía</p>
-                        <small class="text-muted">Selecciona deliciosos platillos para agregar</small>
+                        <small class="text-muted">Selecciona deliciosos Platillos para agregar</small>
                     </div>
                 </div>
                 
@@ -128,17 +128,17 @@ console.log('JavaScript iniciando...');
 // Variables básicas
 let cart = [];
 
-// Función para hacer clic en productos
+// Función para hacer clic en Platillos
 function handleProductClick(productId, productName, price, stock, isFood, categoryId, categoryName) {
     console.log('=== INICIO handleProductClick ===');
     console.log('Parámetros recibidos:', {productId, productName, price, stock, isFood, categoryId, categoryName});
     
-    // Buscar si el producto ya existe en el carrito
+    // Buscar si el Platillo ya existe en el carrito
     let existingItem = cart.find(item => item.id === productId);
     
     if (existingItem) {
         existingItem.quantity += 1;
-        console.log('Incrementando cantidad del producto existente');
+        console.log('Incrementando cantidad del Platillo existente');
     } else {
         const newItem = {
             id: productId,
@@ -151,7 +151,7 @@ function handleProductClick(productId, productName, price, stock, isFood, catego
             categoryName: categoryName
         };
         cart.push(newItem);
-        console.log('Agregando nuevo producto:', newItem);
+        console.log('Agregando nuevo Platillo:', newItem);
     }
     
     console.log('Carrito después de agregar:', cart);
@@ -193,7 +193,7 @@ function updateCartDisplay() {
             <div class="text-center py-4">
                 <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
                 <p class="text-muted">Tu orden está vacía</p>
-                <small class="text-muted">Selecciona deliciosos platillos para agregar</small>
+                <small class="text-muted">Selecciona deliciosos Platillos para agregar</small>
             </div>
         `;
         updateTotals();
@@ -272,7 +272,7 @@ function clearCart() {
 // Función para procesar orden
 function processOrder() {
     if (cart.length === 0) {
-        alert('El carrito está vacío. Agrega productos antes de procesar la venta.');
+        alert('El carrito está vacío. Agrega Platillos antes de procesar la venta.');
         return;
     }
     

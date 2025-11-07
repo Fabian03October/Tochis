@@ -7,7 +7,7 @@
 @section('page-title')
     <div>
         <h1 class="text-2xl font-bold text-gray-900">Nueva Opción de Personalización</h1>
-        <p class="text-gray-400 text-sm">Crea una nueva opción de personalización para productos</p>
+        <p class="text-gray-400 text-sm">Crea una nueva opción de personalización para Platillos</p>
     </div>
 @endsection
 

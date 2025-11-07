@@ -32,7 +32,7 @@ class DashboardController extends Controller
         $monthRevenue = $monthSales->sum('total');
         $monthSalesCount = $monthSales->count();
 
-        // Productos más vendidos (últimos 30 días)
+        // Platillos más vendidos (últimos 30 días)
         $topProducts = Product::with(['saleDetails' => function($query) {
             $query->whereHas('sale', function($q) {
                 $q->where('created_at', '>=', Carbon::now()->subDays(30))

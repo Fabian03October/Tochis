@@ -146,7 +146,7 @@
                                 <div class="text-sm text-gray-500">{{ $sale->created_at->format('H:i:s') }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $sale->saleDetails->count() }} productos</div>
+                                <div class="text-sm text-gray-900">{{ $sale->saleDetails->count() }} Platillos</div>
                                 <div class="text-sm text-gray-500">{{ $sale->saleDetails->sum('quantity') }} unidades</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -259,7 +259,7 @@ function showSaleDetails(saleId) {
             </div>
             
             <div class="border-b pb-4">
-                <p class="text-sm text-gray-600">Productos</p>
+                <p class="text-sm text-gray-600">Platillos</p>
                 <div class="mt-2 space-y-2">
     `;
     

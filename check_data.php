@@ -3,7 +3,7 @@
 use App\Models\Category;
 use App\Models\Product;
 
-echo "=== DIAGNÓSTICO DE CATEGORÍAS Y PRODUCTOS ===\n\n";
+echo "=== DIAGNÓSTICO DE CATEGORÍAS Y PlatilloS ===\n\n";
 
 $categories = Category::where('is_active', true)->with(['products' => function($query) {
     $query->where('is_active', true);
@@ -11,7 +11,7 @@ $categories = Category::where('is_active', true)->with(['products' => function($
 
 foreach ($categories as $category) {
     echo "Categoría: {$category->name}\n";
-    echo "Productos activos: {$category->products->count()}\n";
+    echo "Platillos activos: {$category->products->count()}\n";
     
     if ($category->products->count() > 0) {
         foreach ($category->products as $product) {
@@ -19,13 +19,13 @@ foreach ($categories as $category) {
             echo "  - {$product->name} {$stockInfo}\n";
         }
     } else {
-        echo "  ⚠️ Sin productos activos\n";
+        echo "  ⚠️ Sin Platillos activos\n";
     }
     echo "\n";
 }
 
 echo "=== RESUMEN ===\n";
 echo "Total categorías activas: " . $categories->count() . "\n";
-echo "Total productos activos: " . Product::where('is_active', true)->count() . "\n";
-echo "Productos de comida: " . Product::where('is_active', true)->where('is_food', true)->count() . "\n";
-echo "Productos con stock: " . Product::where('is_active', true)->where('is_food', false)->where('stock', '>', 0)->count() . "\n";
+echo "Total Platillos activos: " . Product::where('is_active', true)->count() . "\n";
+echo "Platillos de comida: " . Product::where('is_active', true)->where('is_food', true)->count() . "\n";
+echo "Platillos con stock: " . Product::where('is_active', true)->where('is_food', false)->where('stock', '>', 0)->count() . "\n";

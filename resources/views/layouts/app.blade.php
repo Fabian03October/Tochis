@@ -423,7 +423,7 @@
                             <div class="icon-container">
                                 <i class="fas fa-hamburger"></i>
                             </div>
-                            <span class="menu-text">Productos</span>
+                            <span class="menu-text">Platillos</span>
                         </a>
                         
                         <a href="{{ route('admin.customization-options.index') }}" 

@@ -88,7 +88,7 @@
                         
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Ítems Mínimos</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $combo->min_items }} productos</dd>
+                            <dd class="mt-1 text-sm text-gray-900">{{ $combo->min_items }} Platillos</dd>
                         </div>
                         
                         <div>
@@ -119,12 +119,12 @@
                 </div>
             </div>
             
-            <!-- Productos del Combo -->
+            <!-- Platillos del Combo -->
             <div class="bg-white shadow-sm rounded-lg overflow-hidden mt-6">
                 <div class="px-6 py-5 border-b border-gray-200">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        Productos Incluidos
-                        <span class="ml-2 text-sm text-gray-500">({{ $combo->products->count() }} productos)</span>
+                        Platillos Incluidos
+                        <span class="ml-2 text-sm text-gray-500">({{ $combo->products->count() }} Platillos)</span>
                     </h3>
                 </div>
                 
@@ -134,7 +134,7 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Producto
+                                        Platillo
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Categoría
@@ -200,10 +200,10 @@
                 @else
                     <div class="px-6 py-8 text-center">
                         <i class="fas fa-box-open text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">No hay productos asignados a este combo</p>
+                        <p class="text-gray-500">No hay Platillos asignados a este combo</p>
                         <a href="{{ route('admin.combos.edit', $combo) }}" 
                            class="mt-3 inline-flex items-center text-blue-600 hover:text-blue-500">
-                            <i class="fas fa-plus mr-1"></i>Agregar productos
+                            <i class="fas fa-plus mr-1"></i>Agregar Platillos
                         </a>
                     </div>
                 @endif
@@ -235,7 +235,7 @@
                         <div class="flex items-center">
                             <i class="fas fa-box text-blue-600 text-xl mr-3"></i>
                             <div>
-                                <div class="text-sm text-blue-600 font-medium">Productos Incluidos</div>
+                                <div class="text-sm text-blue-600 font-medium">Platillos Incluidos</div>
                                 <div class="text-2xl font-bold text-blue-800">{{ $combo->products->count() }}</div>
                             </div>
                         </div>

@@ -12,9 +12,9 @@ class FixProductTypes extends Command
 
     public function handle()
     {
-        $this->info('Corrigiendo tipos de productos...');
+        $this->info('Corrigiendo tipos de Platillos...');
         
-        // Marcar todos los productos como NO comida primero
+        // Marcar todos los Platillos como NO comida primero
         Product::query()->update(['is_food' => false]);
         
         // Categorías que SÍ son de comida
@@ -27,7 +27,7 @@ class FixProductTypes extends Command
             'Carnes'
         ];
         
-        // Productos específicos que SÍ son comida (por nombre)
+        // Platillos específicos que SÍ son comida (por nombre)
         $foodProductNames = [
             'Coca Cola 600ml',
             'Pepsi 600ml', 
@@ -45,18 +45,18 @@ class FixProductTypes extends Command
             'Gansito Marinela'
         ];
         
-        // Actualizar productos de comida por categoría
+        // Actualizar Platillos de comida por categoría
         foreach ($foodCategories as $categoryName) {
             $updated = Product::whereHas('category', function($query) use ($categoryName) {
                 $query->where('name', $categoryName);
             })->update(['is_food' => true]);
             
             if ($updated > 0) {
-                $this->info("✓ Marcados {$updated} productos de la categoría '{$categoryName}' como comida");
+                $this->info("✓ Marcados {$updated} Platillos de la categoría '{$categoryName}' como comida");
             }
         }
         
-        // Actualizar productos específicos por nombre
+        // Actualizar Platillos específicos por nombre
         foreach ($foodProductNames as $productName) {
             $updated = Product::where('name', $productName)->update(['is_food' => true]);
             if ($updated > 0) {
@@ -69,10 +69,10 @@ class FixProductTypes extends Command
         $nonFoodCount = Product::where('is_food', false)->count();
         
         $this->info("\n=== RESUMEN ===");
-        $this->info("Productos de comida: {$foodCount}");
-        $this->info("Productos NO comida: {$nonFoodCount}");
+        $this->info("Platillos de comida: {$foodCount}");
+        $this->info("Platillos NO comida: {$nonFoodCount}");
         
-        $this->info("\n=== PRODUCTOS NO COMIDA ===");
+        $this->info("\n=== PlatilloS NO COMIDA ===");
         $nonFoodProducts = Product::with('category')->where('is_food', false)->get();
         foreach ($nonFoodProducts as $product) {
             $this->line("- {$product->name} ({$product->category->name})");

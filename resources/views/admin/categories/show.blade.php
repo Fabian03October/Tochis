@@ -4,7 +4,7 @@
 @section('title')
 <div>
     <h1 class="text-2xl font-bold text-gray-900">{{ $category->name }}</h1>
-    <p class="text-gray-400 text-sm">Detalles de la categoría y productos asociados</p>
+    <p class="text-gray-400 text-sm">Detalles de la categoría y Platillos asociados</p>
 </div>
 @endsection
 
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        {{-- 4. Grid de 3 columnas (1 para info, 2 para productos) --}}
+        {{-- 4. Grid de 3 columnas (1 para info, 2 para Platillos) --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <div class="lg:col-span-1 space-y-6">
@@ -107,11 +107,11 @@
                     <div class="p-4 space-y-4">
                         <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
                             <p class="text-2xl font-bold text-blue-700">{{ $category->products()->count() }}</p>
-                            <p class="text-xs text-blue-600 font-medium">Productos Totales</p>
+                            <p class="text-xs text-blue-600 font-medium">Platillos Totales</p>
                         </div>
                         <div class="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
                             <p class="text-2xl font-bold text-green-700">{{ $category->products()->where('is_active', true)->count() }}</p>
-                            <p class="text-xs text-green-600 font-medium">Productos Activos</p>
+                            <p class="text-xs text-green-600 font-medium">Platillos Activos</p>
                         </div>
                         <div class="bg-gray-50 rounded-lg p-3">
                             <h5 class="flex items-center text-sm font-semibold text-gray-700 mb-2">
@@ -138,13 +138,13 @@
                                     <i class="fas fa-box text-purple-600"></i>
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-900">
-                                    Productos en esta Categoría
+                                    Platillos en esta Categoría
                                     <span class="ml-2 text-sm font-normal text-gray-500">({{ $category->products->count() }})</span>
                                 </h3>
                             </div>
                             <a href="{{ route('admin.products.create') }}?category={{ $category->id }}" class="btn-success">
                                 <i class="fas fa-plus mr-2"></i>
-                                Agregar Producto
+                                Agregar Platillo
                             </a>
                         </div>
                     </div>
@@ -157,7 +157,7 @@
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                             <i class="fas fa-box mr-1"></i>
-                                            Producto
+                                            Platillo
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                             <i class="fas fa-dollar-sign mr-1"></i>
@@ -238,13 +238,13 @@
                                 <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-full p-6 mb-6">
                                     <i class="fas fa-box text-4xl text-purple-500"></i>
                                 </div>
-                                <h3 class="text-xl font-semibold text-gray-900 mb-2">No hay productos en esta categoría</h3>
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">No hay Platillos en esta categoría</h3>
                                 <p class="text-gray-500 mb-6 max-w-md text-center">
-                                    Esta categoría aún no tiene productos asociados. Comienza agregando productos para llenar tu inventario.
+                                    Esta categoría aún no tiene Platillos asociados. Comienza agregando Platillos para llenar tu inventario.
                                 </p>
                                 <a href="{{ route('admin.products.create') }}?category={{ $category->id }}" class="btn-success">
                                     <i class="fas fa-plus mr-2"></i>
-                                    Agregar Primer Producto
+                                    Agregar Primer Platillo
                                 </a>
                             </div>
                         </div>

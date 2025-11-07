@@ -35,7 +35,7 @@ class ReportController extends Controller
 
         $averageSale = $totalTransactions > 0 ? $totalSales / $totalTransactions : 0;
 
-        // Productos más vendidos
+        // Platillos más vendidos
         $topProducts = Product::select('products.*')
             ->selectRaw('SUM(sale_details.quantity) as total_sold')
             ->join('sale_details', 'products.id', '=', 'sale_details.product_id')
@@ -83,7 +83,7 @@ class ReportController extends Controller
             ->groupBy('payment_method')
             ->get();
 
-        // Productos con stock bajo
+        // Platillos con stock bajo
         $lowStockProducts = Product::where('stock', '<=', DB::raw('min_stock'))
             ->where('is_active', true)
             ->with('category')

@@ -134,7 +134,7 @@
                                     <div class="text-sm text-gray-900">
                                         @if($promotion->apply_to === 'all')
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                Todos los productos
+                                                Todos los Platillos
                                             </span>
                                         @elseif($promotion->apply_to === 'category')
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -142,7 +142,7 @@
                                             </span>
                                         @else
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                                Productos específicos
+                                                Platillos específicos
                                             </span>
                                         @endif
                                     </div>

@@ -1,19 +1,20 @@
 @extends('layouts.app')
 
-@section('title', 'Productos - Sistema POS')
-@section('page-title', 'Gestión de Productos')
+@section('title', 'Platillos - Sistema POS')
+@section('page-title')
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Platillos</h1>
+        <p class="text-gray-600">Gestiona los Platillos de tu punto de venta</p>
+    </div>
+@endsection
 
 @section('content')
 <div class="fade-in">
     <!-- Header Section -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Productos</h1>
-            <p class="text-gray-600">Gestiona el inventario de productos de tu punto de venta</p>
-        </div>
+    <div class="flex justify-end items-center mb-6">
         <a href="{{ route('admin.products.create') }}" class="btn-primary">
             <i class="fas fa-plus mr-2"></i>
-            Nuevo Producto
+            Nuevo Platillo
         </a>
     </div>
 
@@ -25,7 +26,7 @@
                     <i class="fas fa-boxes text-blue-600 text-xl"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm text-gray-500">Total Productos</p>
+                    <p class="text-sm text-gray-500">Total Platillos</p>
                     <p class="text-2xl font-bold text-gray-900">{{ $products->total() }}</p>
                 </div>
             </div>
@@ -37,7 +38,7 @@
                     <i class="fas fa-check-circle text-green-600 text-xl"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm text-gray-500">Productos Activos</p>
+                    <p class="text-sm text-gray-500">Platillos Activos</p>
                     <p class="text-2xl font-bold text-gray-900">{{ $products->where('is_active', true)->count() }}</p>
                 </div>
             </div>
@@ -73,7 +74,7 @@
         <form method="GET" action="{{ route('admin.products.index') }}" class="space-y-4 md:space-y-0 md:flex md:items-end md:space-x-4">
             <div class="flex-1">
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
-                    Buscar productos
+                    Buscar Platillos
                 </label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -139,7 +140,7 @@
     <!-- Products Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Lista de Productos</h3>
+            <h3 class="text-lg font-medium text-gray-900">Lista de Platillos</h3>
         </div>
         
         @if($products->count() > 0)
@@ -148,7 +149,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Producto
+                                Platillo
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Categoría
@@ -271,11 +272,11 @@
                 <div class="text-gray-400 text-6xl mb-4">
                     <i class="fas fa-boxes"></i>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No hay productos</h3>
-                <p class="text-gray-500 mb-6">Comienza agregando tu primer producto al inventario.</p>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No hay Platillos</h3>
+                <p class="text-gray-500 mb-6">Comienza agregando tu primer Platillo al inventario.</p>
                 <a href="{{ route('admin.products.create') }}" class="btn-primary">
                     <i class="fas fa-plus mr-2"></i>
-                    Nuevo Producto
+                    Nuevo Platillo
                 </a>
             </div>
         @endif
@@ -292,7 +293,7 @@
 <!-- Delete Confirmation Modal Script -->
 <script>
 function confirmDelete(productId, productName) {
-    if (confirm(`¿Estás seguro de que deseas eliminar el producto "${productName}"?`)) {
+    if (confirm(`¿Estás seguro de que deseas eliminar el Platillo "${productName}"?`)) {
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = `/admin/products/${productId}`;

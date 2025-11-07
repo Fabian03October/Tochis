@@ -19,9 +19,9 @@ class FixChocoProduct extends Command
                 'is_food' => true,
                 'stock' => 50
             ]);
-            $this->info('Producto choco crispi actualizado como comida con stock 50');
+            $this->info('Platillo choco crispi actualizado como comida con stock 50');
         } else {
-            $this->error('Producto choco crispi no encontrado');
+            $this->error('Platillo choco crispi no encontrado');
         }
     }
 }

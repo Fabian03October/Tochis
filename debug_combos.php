@@ -34,7 +34,7 @@ try {
         echo "Activo: " . ($combo->is_active ? 'SÍ' : 'NO') . "\n";
         echo "Auto-suggest: " . ($combo->auto_suggest ? 'SÍ' : 'NO') . "\n";
         echo "Precio: \${$combo->price}\n";
-        echo "Productos ({$combo->products->count()}):\n";
+        echo "Platillos ({$combo->products->count()}):\n";
         
         foreach ($combo->products as $product) {
             echo "  - {$product->name} (ID: {$product->id})\n";
@@ -42,17 +42,17 @@ try {
         echo "\n";
     }
     
-    // Verificar productos en carrito de ejemplo
-    echo "🛒 VERIFICANDO PRODUCTOS PARA COMBO:\n";
+    // Verificar Platillos en carrito de ejemplo
+    echo "🛒 VERIFICANDO PlatilloS PARA COMBO:\n";
     echo "------------------------------------\n";
     
-    $productIds = [1, 2]; // IDs de los productos que veo en tu imagen
+    $productIds = [1, 2]; // IDs de los Platillos que veo en tu imagen
     foreach ($productIds as $id) {
         $product = Product::find($id);
         if ($product) {
             echo "ID {$id}: {$product->name} - \${$product->price}\n";
         } else {
-            echo "ID {$id}: PRODUCTO NO ENCONTRADO\n";
+            echo "ID {$id}: Platillo NO ENCONTRADO\n";
         }
     }
     

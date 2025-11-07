@@ -17,12 +17,26 @@ class ProductController extends Controller
     {
         $query = Product::with('category');
 
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+        // Filtro por categoría
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
         }
 
+        // Filtro por búsqueda (nombre o código)
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('code', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filtro por estado
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('is_active', true);
+            } elseif ($request->status === 'inactive') {
+                $query->where('is_active', false);
+            }
         }
 
         $products = $query->orderBy('name')->paginate(15);
@@ -68,7 +82,7 @@ class ProductController extends Controller
         Product::create($data);
 
         return redirect()->route('admin.products.index')
-                        ->with('success', 'Producto creado exitosamente.');
+                        ->with('success', 'Platillo creado exitosamente.');
     }
 
     /**
@@ -78,7 +92,7 @@ class ProductController extends Controller
     {
         $product->load('category');
         
-        // Ventas recientes del producto
+        // Ventas recientes del Platillo
         $recentSales = $product->saleDetails()
             ->with('sale')
             ->whereHas('sale', function($query) {
@@ -88,7 +102,7 @@ class ProductController extends Controller
             ->limit(10)
             ->get();
 
-        // Estadísticas del producto (últimos 30 días)
+        // Estadísticas del Platillo (últimos 30 días)
         $totalQuantitySold = $product->saleDetails()
             ->whereHas('sale', function($query) {
                 $query->where('status', 'completed')
@@ -162,7 +176,7 @@ class ProductController extends Controller
         $product->update($data);
 
         return redirect()->route('admin.products.index')
-                        ->with('success', 'Producto actualizado exitosamente.');
+                        ->with('success', 'Platillo actualizado exitosamente.');
     }
 
     /**
@@ -170,16 +184,16 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // Verificar si el producto tiene ventas asociadas
+        // Verificar si el Platillo tiene ventas asociadas
         if ($product->saleDetails()->count() > 0) {
-            // En lugar de eliminar, desactivar el producto
+            // En lugar de eliminar, desactivar el Platillo
             $product->update(['is_active' => false]);
             
             return redirect()->route('admin.products.index')
-                            ->with('warning', 'El producto tiene ventas asociadas, por lo que se ha desactivado en lugar de eliminarse. Los productos desactivados no aparecen en el punto de venta pero mantienen el historial de ventas.');
+                            ->with('warning', 'El Platillo tiene ventas asociadas, por lo que se ha desactivado en lugar de eliminarse. Los Platillos desactivados no aparecen en el punto de venta pero mantienen el historial de ventas.');
         }
 
-        // Solo eliminar si no tiene ventas (productos nuevos sin historial)
+        // Solo eliminar si no tiene ventas (Platillos nuevos sin historial)
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
@@ -187,6 +201,6 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')
-                        ->with('success', 'Producto eliminado exitosamente.');
+                        ->with('success', 'Platillo eliminado exitosamente.');
     }
 }
