@@ -465,6 +465,14 @@
                             </div>
                             <span class="menu-text">Impresoras</span>
                         </a>
+                        
+                        <a href="{{ route('admin.mercadopago.index') }}" 
+                           class="sidebar-item {{ request()->routeIs('admin.mercadopago.*') || str_contains(request()->url(), 'admin/mercadopago') ? 'active' : '' }}">
+                            <div class="icon-container">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <span class="menu-text">MercadoPago</span>
+                        </a>
                     </div>
                 @else
                     <!-- Menú Cajero -->

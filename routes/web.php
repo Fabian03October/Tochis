@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\CustomizationOptionsController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\PrinterController;
+use App\Http\Controllers\Admin\MercadoPagoController;
 use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
 use App\Http\Controllers\Cashier\SaleController;
 use App\Http\Controllers\Cashier\CashCutController;
@@ -23,6 +24,9 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Webhook de MercadoPago (sin autenticación)
+Route::post('/webhook/mercadopago', [MercadoPagoController::class, 'webhook'])->name('webhook.mercadopago');
 
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
@@ -49,6 +53,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/printers/{printer}/test', [PrinterController::class, 'test'])->name('printers.test');
         Route::post('/printers/{printer}/print-test', [PrinterController::class, 'printTest'])->name('printers.print-test');
         Route::get('/printers/{printer}/config', [PrinterController::class, 'getConfig'])->name('printers.config');
+        
+        // Rutas para MercadoPago
+        Route::resource('mercadopago', MercadoPagoController::class);
+        Route::post('/mercadopago/{mercadopago}/activate', [MercadoPagoController::class, 'activate'])->name('mercadopago.activate');
+        Route::post('/mercadopago/{mercadopago}/test', [MercadoPagoController::class, 'test'])->name('mercadopago.test');
+        Route::post('/mercadopago/{mercadopago}/test-qr', [MercadoPagoController::class, 'generateTestQR'])->name('mercadopago.test-qr');
+        Route::post('/mercadopago/{mercadopago}/test-payment', [MercadoPagoController::class, 'createTestPayment'])->name('mercadopago.test-payment');
+        Route::get('/mercadopago/{mercadopago}/config', [MercadoPagoController::class, 'getConfig'])->name('mercadopago.config');
     });
 
     // Rutas para cajeros
