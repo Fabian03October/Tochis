@@ -8,7 +8,7 @@ if (!function_exists('formatDate')) {
     {
         if (!$date) return '';
         
-        $carbon = \Carbon\Carbon::parse($date);
+        $carbon = \Carbon\Carbon::parse($date)->setTimezone('America/Mexico_City');
         return $carbon->format($format);
     }
 }
@@ -21,7 +21,7 @@ if (!function_exists('formatDateSpanish')) {
     {
         if (!$date) return '';
         
-        $carbon = \Carbon\Carbon::parse($date);
+        $carbon = \Carbon\Carbon::parse($date)->setTimezone('America/Mexico_City');
         $months = [
             1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril',
             5 => 'mayo', 6 => 'junio', 7 => 'julio', 8 => 'agosto',
@@ -46,8 +46,8 @@ if (!function_exists('timeAgo')) {
     {
         if (!$date) return '';
         
-        $carbon = \Carbon\Carbon::parse($date);
-        $now = \Carbon\Carbon::now();
+        $carbon = \Carbon\Carbon::parse($date)->setTimezone('America/Mexico_City');
+        $now = \Carbon\Carbon::now('America/Mexico_City');
         
         $diff = $carbon->diff($now);
         

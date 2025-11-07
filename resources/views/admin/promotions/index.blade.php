@@ -1,25 +1,39 @@
 @extends('layouts.app')
 
 @section('title', 'Promociones - Sistema POS')
-@section('page-title', 'Gestión de Promociones')
+
+{{-- 1. Título principal de la página (Corregido) --}}
+@section('page-title')
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Promociones</h1>
+        <p class="text-gray-400 text-sm">Gestiona descuentos y ofertas especiales</p>
+    </div>
+@endsection
+
+{{-- 2. Animación (Añadida) --}}
+@section('styles')
+<style>
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+@endsection
 
 @section('content')
 <div class="fade-in">
-    <!-- Header Section -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Promociones</h1>
-            <p class="text-gray-600">Gestiona descuentos y ofertas especiales</p>
-        </div>
+    <div class="flex justify-end items-center mb-6">
         <a href="{{ route('admin.promotions.create') }}" class="btn-primary">
             <i class="fas fa-plus mr-2"></i>
             Nueva Promoción
         </a>
     </div>
 
-    <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-green-100 rounded-lg">
                     <i class="fas fa-percentage text-green-600 text-xl"></i>
@@ -31,7 +45,7 @@
             </div>
         </div>
         
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-blue-100 rounded-lg">
                     <i class="fas fa-clock text-blue-600 text-xl"></i>
@@ -43,7 +57,7 @@
             </div>
         </div>
         
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-yellow-100 rounded-lg">
                     <i class="fas fa-history text-yellow-600 text-xl"></i>
@@ -55,7 +69,7 @@
             </div>
         </div>
         
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-purple-100 rounded-lg">
                     <i class="fas fa-chart-line text-purple-600 text-xl"></i>
@@ -68,43 +82,46 @@
         </div>
     </div>
 
-    <!-- Promotions Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Lista de Promociones</h3>
-        </div>
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
         
         @if($promotions->count() > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    {{-- 7. Encabezado de tabla unificado --}}
+                    <thead class="bg-gradient-to-r from-gray-100 to-gray-200">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Promoción
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Descuento
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Aplicación
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Período
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Estado
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Usos
                             </th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-gray-100">
                         @foreach($promotions as $promotion)
-                            <tr class="hover:bg-gray-50">
+                            @php
+                                $now = now();
+                                $isActive = $promotion->is_active;
+                                $isStarted = $promotion->start_date <= $now;
+                                $isExpired = $promotion->end_date < $now;
+                            @endphp
+                            <tr class="hover:bg-gray-50 group">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div>
                                         <div class="text-sm font-medium text-gray-900">{{ $promotion->name }}</div>
@@ -156,13 +173,6 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @php
-                                        $now = now();
-                                        $isActive = $promotion->is_active;
-                                        $isStarted = $promotion->start_date <= $now;
-                                        $isExpired = $promotion->end_date < $now;
-                                    @endphp
-                                    
                                     @if(!$isActive)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                             <i class="fas fa-pause mr-1"></i>Pausada
@@ -189,26 +199,37 @@
                                         <div class="text-xs text-gray-500">ilimitado</div>
                                     @endif
                                 </td>
+                                
+                                {{-- 8. BOTONES DE ACCIÓN ACTUALIZADOS --}}
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex items-center justify-end space-x-2">
+                                        
                                         <a href="{{ route('admin.promotions.show', $promotion) }}" 
-                                           class="text-blue-600 hover:text-blue-900" title="Ver">
-                                            <i class="fas fa-eye"></i>
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-700 transition duration-200 transform hover:scale-110" 
+                                           title="Ver">
+                                            <i class="fas fa-eye text-sm"></i>
                                         </a>
                                         
                                         <a href="{{ route('admin.promotions.edit', $promotion) }}" 
-                                           class="text-indigo-600 hover:text-indigo-900" title="Editar">
-                                            <i class="fas fa-edit"></i>
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 transition duration-200 transform hover:scale-110" 
+                                           title="Editar">
+                                            <i class="fas fa-edit text-sm"></i>
                                         </a>
                                         
                                         @if(!$isExpired)
                                             <form method="POST" action="{{ route('admin.promotions.toggle-status', $promotion) }}" class="inline">
                                                 @csrf
                                                 @method('PATCH')
+                                                @php
+                                                    $btnClass = $promotion->is_active 
+                                                        ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' 
+                                                        : 'bg-green-100 text-green-600 hover:bg-green-200';
+                                                    $icon = $promotion->is_active ? 'pause' : 'play';
+                                                @endphp
                                                 <button type="submit" 
-                                                        class="text-{{ $promotion->is_active ? 'yellow' : 'green' }}-600 hover:text-{{ $promotion->is_active ? 'yellow' : 'green' }}-900" 
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg {{ $btnClass }} transition duration-200 transform hover:scale-110" 
                                                         title="{{ $promotion->is_active ? 'Pausar' : 'Activar' }}">
-                                                    <i class="fas fa-{{ $promotion->is_active ? 'pause' : 'play' }}"></i>
+                                                    <i class="fas fa-{{ $icon }} text-sm"></i>
                                                 </button>
                                             </form>
                                         @endif
@@ -219,9 +240,9 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" 
-                                                    class="text-red-600 hover:text-red-900" 
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 transition duration-200 transform hover:scale-110" 
                                                     title="Eliminar">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fas fa-trash text-sm"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -232,15 +253,18 @@
                 </table>
             </div>
             
-            <!-- Pagination -->
-            <div class="px-6 py-4 border-t border-gray-200">
-                {{ $promotions->links() }}
-            </div>
+            @if($promotions->hasPages())
+                <div class="p-4 border-t border-gray-200">
+                    {{ $promotions->links() }}
+                </div>
+            @endif
         @else
-            <div class="px-6 py-12 text-center">
-                <i class="fas fa-percentage text-4xl text-gray-300 mb-4"></i>
+            <div class="p-12 text-center">
+                <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-percentage text-3xl text-gray-400"></i>
+                </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">No hay promociones</h3>
-                <p class="text-gray-500 mb-4">Comienza creando tu primera promoción para ofrecer descuentos a tus clientes.</p>
+                <p class="text-gray-500 mb-6">Comienza creando tu primera promoción para ofrecer descuentos a tus clientes.</p>
                 <a href="{{ route('admin.promotions.create') }}" class="btn-primary">
                     <i class="fas fa-plus mr-2"></i>
                     Crear Primera Promoción

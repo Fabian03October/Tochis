@@ -5,7 +5,6 @@
 
 @section('content')
 <div class="fade-in">
-    <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Nueva Promoción</h1>
@@ -13,210 +12,198 @@
         </div>
         <a href="{{ route('admin.promotions.index') }}" class="btn-secondary">
             <i class="fas fa-arrow-left mr-2"></i>
-            Volver
+            Volver a Promociones
         </a>
     </div>
 
-    <!-- Form -->
-    <div class="bg-white rounded-lg shadow">
-        <form method="POST" action="{{ route('admin.promotions.store') }}" class="p-6 space-y-6">
+    <div class="bg-white rounded-lg shadow-lg">
+        {{-- 1. Ruta de acción cambiada a 'store' --}}
+        <form action="{{ route('admin.promotions.store') }}" method="POST" class="p-6">
             @csrf
+            {{-- 2. Se eliminó @method('PUT') --}}
             
-            <!-- Basic Information -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nombre de la Promoción *
-                    </label>
-                    <input type="text" 
-                           id="name" 
-                           name="name" 
-                           value="{{ old('name') }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror"
-                           placeholder="Ej: Descuento en Hamburguesas"
-                           required>
-                    @error('name')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
-                        Tipo de Descuento *
-                    </label>
-                    <select id="type" 
-                            name="type" 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('type') border-red-500 @enderror"
-                            required>
-                        <option value="">Seleccionar tipo</option>
-                        <option value="percentage" {{ old('type') === 'percentage' ? 'selected' : '' }}>Porcentaje (%)</option>
-                        <option value="fixed_amount" {{ old('type') === 'fixed_amount' ? 'selected' : '' }}>Monto Fijo ($)</option>
-                    </select>
-                    @error('type')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-                    Descripción
-                </label>
-                <textarea id="description" 
-                          name="description" 
-                          rows="3"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('description') border-red-500 @enderror"
-                          placeholder="Descripción detallada de la promoción...">{{ old('description') }}</textarea>
-                @error('description')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Discount Configuration -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div>
-                    <label for="discount_value" class="block text-sm font-medium text-gray-700 mb-2">
-                        Valor del Descuento *
-                    </label>
-                    <div class="relative">
-                        <input type="number" 
-                               id="discount_value" 
-                               name="discount_value" 
-                               value="{{ old('discount_value') }}"
-                               step="0.01" 
-                               min="0.01"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('discount_value') border-red-500 @enderror"
-                               placeholder="0.00"
+                <div class="space-y-6">
+                    <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Información Básica</h3>
+                    
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nombre de la Promoción *
+                        </label>
+                        {{-- 3. Valores cambiados a old() --}}
+                        <input type="text" 
+                               id="name" 
+                               name="name" 
+                               value="{{ old('name') }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
                                required>
-                        <div id="discount_symbol" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
-                            <span id="symbol_text">%</span>
+                        @error('name')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                            Descripción
+                        </label>
+                        <textarea id="description" 
+                                  name="description" 
+                                  rows="3"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="Describe los detalles de la promoción...">{{ old('description') }}</textarea>
+                        @error('description')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Tipo de Descuento *
+                        </label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center">
+                                <input type="radio" 
+                                       name="type" 
+                                       value="percentage" 
+                                       {{ old('type', 'percentage') === 'percentage' ? 'checked' : '' }}
+                                       class="mr-2 text-blue-600 focus:ring-blue-500">
+                                Porcentaje (%)
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" 
+                                       name="type" 
+                                       value="fixed" 
+                                       {{ old('type') === 'fixed' ? 'checked' : '' }}
+                                       class="mr-2 text-blue-600 focus:ring-blue-500">
+                                Monto Fijo ($)
+                            </label>
+                        </div>
+                        @error('type')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="discount_value" class="block text-sm font-medium text-gray-700 mb-2">
+                            Valor del Descuento *
+                        </label>
+                        <div class="relative">
+                            <span id="discount-symbol" class="absolute left-3 top-2 text-gray-500">
+                                {{ old('type', 'percentage') === 'percentage' ? '%' : '$' }}
+                            </span>
+                            <input type="number" 
+                                   id="discount_value" 
+                                   name="discount_value" 
+                                   value="{{ old('discount_value') }}"
+                                   step="0.01" 
+                                   min="0" 
+                                   class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
+                                   required>
+                        </div>
+                        @error('discount_value')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="apply_to" class="block text-sm font-medium text-gray-700 mb-2">
+                            Aplicar a *
+                        </label>
+                        <select id="apply_to" 
+                                name="apply_to" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                required>
+                            <option value="all" {{ old('apply_to', 'all') === 'all' ? 'selected' : '' }}>
+                                Todos los Platillos
+                            </option>
+                            <option value="category" {{ old('apply_to') === 'category' ? 'selected' : '' }}>
+                                Categorías específicas
+                            </option>
+                            <option value="product" {{ old('apply_to') === 'product' ? 'selected' : '' }}>
+                                Platillos específicos
+                            </option>
+                        </select>
+                        @error('apply_to')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div id="category-selection" class="{{ old('apply_to') !== 'category' ? 'hidden' : '' }}">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Seleccionar Categorías
+                        </label>
+                        <div class="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-3">
+                            @foreach($categories as $category)
+                                <label class="flex items-center py-1">
+                                    <input type="checkbox" 
+                                           name="category_ids[]" 
+                                           value="{{ $category->id }}"
+                                           {{ in_array($category->id, old('category_ids', [])) ? 'checked' : '' }}
+                                           class="mr-2 text-blue-600 focus:ring-blue-500">
+                                    {{ $category->name }}
+                                </label>
+                            @endforeach
                         </div>
                     </div>
-                    @error('discount_value')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+
+                    <div id="product-selection" class="{{ old('apply_to') !== 'product' ? 'hidden' : '' }}">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Seleccionar Platillos
+                        </label>
+                        <div class="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-3">
+                            @foreach($products as $product)
+                                <label class="flex items-center py-1">
+                                    <input type="checkbox" 
+                                           name="product_ids[]" 
+                                           value="{{ $product->id }}"
+                                           {{ in_array($product->id, old('product_ids', [])) ? 'checked' : '' }}
+                                           class="mr-2 text-blue-600 focus:ring-blue-500">
+                                    {{ $product->name }} - ${{ number_format($product->price, 2) }}
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="minimum_amount" class="block text-sm font-medium text-gray-700 mb-2">
-                        Monto Mínimo
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-gray-500 sm:text-sm">$</span>
+                <div class="space-y-6">
+                    <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Restricciones y Programación</h3>
+                    
+                    <div>
+                        <label for="minimum_amount" class="block text-sm font-medium text-gray-700 mb-2">
+                            Monto Mínimo de Compra
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2 text-gray-500">$</span>
+                            <input type="number" 
+                                   id="minimum_amount" 
+                                   name="minimum_amount" 
+                                   value="{{ old('minimum_amount') }}"
+                                   step="0.01" 
+                                   min="0" 
+                                   class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         </div>
+                        <p class="mt-1 text-sm text-gray-500">Dejar vacío para sin mínimo</p>
+                        @error('minimum_amount')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="max_uses" class="block text-sm font-medium text-gray-700 mb-2">
+                            Máximo Número de Usos
+                        </label>
                         <input type="number" 
-                               id="minimum_amount" 
-                               name="minimum_amount" 
-                               value="{{ old('minimum_amount', '0') }}"
-                               step="0.01" 
-                               min="0"
-                               class="w-full pl-7 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('minimum_amount') border-red-500 @enderror"
-                               placeholder="0.00">
+                               id="max_uses" 
+                               name="max_uses" 
+                               value="{{ old('max_uses') }}"
+                               min="1" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <p class="mt-1 text-sm text-gray-500">Dejar vacío para uso ilimitado</p>
+                        @error('max_uses')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
-                    <p class="mt-1 text-xs text-gray-500">Compra mínima para aplicar la promoción</p>
-                    @error('minimum_amount')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
 
-                <div>
-                    <label for="max_uses" class="block text-sm font-medium text-gray-700 mb-2">
-                        Máximo de Usos
-                    </label>
-                    <input type="number" 
-                           id="max_uses" 
-                           name="max_uses" 
-                           value="{{ old('max_uses') }}"
-                           min="1"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('max_uses') border-red-500 @enderror"
-                           placeholder="Ilimitado">
-                    <p class="mt-1 text-xs text-gray-500">Dejar vacío para uso ilimitado</p>
-                    @error('max_uses')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            <!-- Application Scope -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-4">
-                    Aplicar Promoción A *
-                </label>
-                <div class="space-y-4">
-                    <label class="flex items-center">
-                        <input type="radio" 
-                               name="apply_to" 
-                               value="all" 
-                               class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
-                               {{ old('apply_to') === 'all' ? 'checked' : '' }}>
-                        <span class="ml-2 text-sm text-gray-700">Todos los Platillos</span>
-                    </label>
-                    
-                    <label class="flex items-center">
-                        <input type="radio" 
-                               name="apply_to" 
-                               value="category" 
-                               class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
-                               {{ old('apply_to') === 'category' ? 'checked' : '' }}>
-                        <span class="ml-2 text-sm text-gray-700">Categorías específicas</span>
-                    </label>
-                    
-                    <label class="flex items-center">
-                        <input type="radio" 
-                               name="apply_to" 
-                               value="product" 
-                               class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
-                               {{ old('apply_to') === 'product' ? 'checked' : '' }}>
-                        <span class="ml-2 text-sm text-gray-700">Platillos específicos</span>
-                    </label>
-                </div>
-                @error('apply_to')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Categories Selection -->
-            <div id="categories_section" class="hidden">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Seleccionar Categorías
-                </label>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-4">
-                    @foreach($categories as $category)
-                        <label class="flex items-center">
-                            <input type="checkbox" 
-                                   name="applicable_items[]" 
-                                   value="{{ $category->id }}"
-                                   class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">{{ $category->name }}</span>
-                        </label>
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Products Selection -->
-            <div id="products_section" class="hidden">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Seleccionar Platillos
-                </label>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-4">
-                    @foreach($products as $product)
-                        <label class="flex items-center">
-                            <input type="checkbox" 
-                                   name="applicable_items[]" 
-                                   value="{{ $product->id }}"
-                                   class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">{{ $product->name }}</span>
-                        </label>
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Time Configuration -->
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Configuración de Tiempo</h3>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div>
                         <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">
                             Fecha y Hora de Inicio *
@@ -225,7 +212,7 @@
                                id="start_date" 
                                name="start_date" 
                                value="{{ old('start_date', now()->format('Y-m-d\TH:i')) }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('start_date') border-red-500 @enderror"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
                                required>
                         @error('start_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -233,56 +220,64 @@
                     </div>
 
                     <div>
-                        <label for="duration_type" class="block text-sm font-medium text-gray-700 mb-2">
-                            Tipo de Duración *
+                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">
+                            Fecha y Hora de Fin *
                         </label>
-                        <select id="duration_type" 
-                                name="duration_type" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('duration_type') border-red-500 @enderror"
-                                required>
-                            <option value="">Seleccionar</option>
-                            <option value="hours" {{ old('duration_type') === 'hours' ? 'selected' : '' }}>Horas</option>
-                            <option value="days" {{ old('duration_type') === 'days' ? 'selected' : '' }}>Días</option>
-                        </select>
-                        @error('duration_type')
+                        <input type="datetime-local" 
+                               id="end_date" 
+                               name="end_date" 
+                               value="{{ old('end_date') }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
+                               required>
+                        @error('end_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div>
-                        <label for="duration_value" class="block text-sm font-medium text-gray-700 mb-2">
-                            Duración *
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Duración Rápida
                         </label>
-                        <input type="number" 
-                               id="duration_value" 
-                               name="duration_value" 
-                               value="{{ old('duration_value', '1') }}"
-                               min="1"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('duration_value') border-red-500 @enderror"
-                               placeholder="1"
-                               required>
-                        @error('duration_value')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                        <p class="mt-1 text-xs text-gray-500">
-                            Ejemplos: "12 horas", "5 días"
-                        </p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="setQuickDuration(1)" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">
+                                1 día
+                            </button>
+                            <button type="button" onclick="setQuickDuration(3)" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">
+                                3 días
+                            </button>
+                            <button type="button" onclick="setQuickDuration(7)" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">
+                                1 semana
+                            </button>
+                            <button type="button" onclick="setQuickDuration(30)" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">
+                                1 mes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" 
+                                   name="is_active" 
+                                   value="1"
+                                   {{ old('is_active', true) ? 'checked' : '' }}
+                                   class="mr-2 text-blue-600 focus:ring-blue-500">
+                            <span class="text-sm font-medium text-gray-700">
+                                Promoción Activa
+                            </span>
+                        </label>
+                        <p class="mt-1 text-sm text-gray-500">Si está desactivada, no se aplicará aunque esté en el rango de fechas</p>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="text-sm font-medium text-blue-900 mb-2">Vista Previa</h4>
+                        <div id="promotion-preview" class="text-sm text-blue-800">
+                            Complete el formulario para ver la vista previa
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Preview Section -->
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Vista Previa</h3>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div id="preview_content" class="text-gray-500">
-                        Complete el formulario para ver la vista previa de la promoción
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+            <div class="mt-8 flex items-center justify-end space-x-4 pt-6 border-t">
                 <a href="{{ route('admin.promotions.index') }}" class="btn-secondary">
                     Cancelar
                 </a>
@@ -295,84 +290,91 @@
     </div>
 </div>
 
-@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const typeSelect = document.getElementById('type');
-    const symbolText = document.getElementById('symbol_text');
-    const applyToRadios = document.querySelectorAll('input[name="apply_to"]');
-    const categoriesSection = document.getElementById('categories_section');
-    const productsSection = document.getElementById('products_section');
-    
-    // Update discount symbol based on type
-    typeSelect.addEventListener('change', function() {
-        if (this.value === 'percentage') {
-            symbolText.textContent = '%';
-        } else if (this.value === 'fixed_amount') {
-            symbolText.textContent = '$';
+    // Handle apply_to change
+    document.getElementById('apply_to').addEventListener('change', function() {
+        const categoryDiv = document.getElementById('category-selection');
+        const productDiv = document.getElementById('product-selection');
+        
+        if (this.value === 'category') {
+            categoryDiv.classList.remove('hidden');
+            productDiv.classList.add('hidden');
+        } else if (this.value === 'product') {
+            productDiv.classList.remove('hidden');
+            categoryDiv.classList.add('hidden');
+        } else {
+            categoryDiv.classList.add('hidden');
+            productDiv.classList.add('hidden');
         }
         updatePreview();
     });
-    
-    // Show/hide applicable items sections
-    applyToRadios.forEach(radio => {
+
+    // Handle discount type change
+    document.querySelectorAll('input[name="type"]').forEach(radio => {
         radio.addEventListener('change', function() {
-            categoriesSection.classList.add('hidden');
-            productsSection.classList.add('hidden');
-            
-            if (this.value === 'category') {
-                categoriesSection.classList.remove('hidden');
-            } else if (this.value === 'product') {
-                productsSection.classList.remove('hidden');
-            }
+            const symbol = document.getElementById('discount-symbol');
+            symbol.textContent = this.value === 'percentage' ? '%' : '$';
             updatePreview();
         });
     });
-    
-    // Update preview
+
+    // Update preview on input changes
+    ['name', 'discount_value', 'minimum_amount'].forEach(fieldName => {
+        document.getElementById(fieldName).addEventListener('input', updatePreview);
+    });
+
     function updatePreview() {
-        const name = document.getElementById('name').value;
-        const type = document.getElementById('type').value;
-        const discountValue = document.getElementById('discount_value').value;
-        const applyTo = document.querySelector('input[name="apply_to"]:checked')?.value;
-        const startDate = document.getElementById('start_date').value;
-        const durationType = document.getElementById('duration_type').value;
-        const durationValue = document.getElementById('duration_value').value;
+        const name = document.getElementById('name').value || 'Nueva Promoción';
+        const type = document.querySelector('input[name="type"]:checked')?.value || 'percentage';
+        const value = document.getElementById('discount_value').value || '0';
+        const applyTo = document.getElementById('apply_to').value;
+        const minimum = document.getElementById('minimum_amount').value;
         
-        const previewContent = document.getElementById('preview_content');
+        let preview = `<strong>${name}</strong><br>`;
         
-        if (!name || !type || !discountValue || !applyTo) {
-            previewContent.innerHTML = '<span class="text-gray-500">Complete el formulario para ver la vista previa de la promoción</span>';
-            return;
+        if (type === 'percentage') {
+            preview += `${value}% de descuento `;
+        } else {
+            preview += `$${value} de descuento `;
         }
         
-        let discountText = type === 'percentage' ? `${discountValue}%` : `$${discountValue}`;
-        let applyText = applyTo === 'all' ? 'todos los Platillos' : 
-                       applyTo === 'category' ? 'categorías seleccionadas' : 'Platillos seleccionados';
-        let durationText = durationType && durationValue ? `${durationValue} ${durationType === 'hours' ? 'horas' : 'días'}` : '';
+        if (applyTo === 'all') {
+            preview += 'en todos los Platillos';
+        } else if (applyTo === 'category') {
+            preview += 'en categorías seleccionadas';
+        } else {
+            preview += 'en Platillos seleccionados';
+        }
         
-        previewContent.innerHTML = `
-            <div class="space-y-2">
-                <h4 class="font-medium text-gray-900">${name}</h4>
-                <p class="text-sm text-gray-600">
-                    <strong>Descuento:</strong> ${discountText} en ${applyText}
-                </p>
-                ${durationText ? `<p class="text-sm text-gray-600"><strong>Duración:</strong> ${durationText}</p>` : ''}
-                ${startDate ? `<p class="text-sm text-gray-600"><strong>Inicia:</strong> ${new Date(startDate).toLocaleString()}</p>` : ''}
-            </div>
-        `;
+        if (minimum && minimum > 0) {
+            preview += `<br>Compra mínima: $${minimum}`;
+        }
+        
+        document.getElementById('promotion-preview').innerHTML = preview;
     }
-    
-    // Add event listeners for preview updates
-    document.getElementById('name').addEventListener('input', updatePreview);
-    document.getElementById('discount_value').addEventListener('input', updatePreview);
-    document.getElementById('start_date').addEventListener('change', updatePreview);
-    document.getElementById('duration_type').addEventListener('change', updatePreview);
-    document.getElementById('duration_value').addEventListener('input', updatePreview);
-    
-    // Trigger initial preview
+
+    // Quick duration buttons
+    window.setQuickDuration = function(days) {
+        const startInput = document.getElementById('start_date');
+        const endInput = document.getElementById('end_date');
+        
+        if (!startInput.value) {
+            const now = new Date();
+            startInput.value = now.toISOString().slice(0, 16);
+        }
+        
+        const startDate = new Date(startInput.value);
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + days);
+        
+        endInput.value = endDate.toISOString().slice(0, 16);
+    };
+
+    // Initialize preview and sections on load (for old() values)
+    document.getElementById('apply_to').dispatchEvent(new Event('change'));
+    document.querySelector('input[name="type"]:checked').dispatchEvent(new Event('change'));
     updatePreview();
 });
 </script>
-@endpush
 @endsection
