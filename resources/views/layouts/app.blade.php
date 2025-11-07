@@ -393,11 +393,11 @@
             <!-- Navigation -->
             <nav class="flex-1 py-6 overflow-y-auto custom-scrollbar">
                 @if(auth()->user()->isAdmin())
-                    <!-- Menú Administrador -->
+                    <!-- 1. Dashboard -->
                     <div class="sidebar-section-title">
                         <h3>
-                            <i class="fas fa-crown"></i>
-                            Administración
+                            <i class="fas fa-chart-line"></i>
+                            Panel Principal
                         </h3>
                     </div>
                     
@@ -409,21 +409,23 @@
                             </div>
                             <span class="menu-text">Dashboard</span>
                         </a>
-                        
+                    </div>
+
+                    <!-- 2. Ajustes de POS -->
+                    <div class="sidebar-section-title">
+                        <h3>
+                            <i class="fas fa-store"></i>
+                            Ajustes de POS
+                        </h3>
+                    </div>
+                    
+                    <div class="sidebar-menu-group">
                         <a href="{{ route('admin.categories.index') }}" 
                            class="sidebar-item {{ request()->routeIs('admin.categories.*') || str_contains(request()->url(), 'admin/categories') ? 'active' : '' }}">
                             <div class="icon-container">
                                 <i class="fas fa-tags"></i>
                             </div>
                             <span class="menu-text">Categorías</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.products.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.products.*') || str_contains(request()->url(), 'admin/products') ? 'active' : '' }}">
-                            <div class="icon-container">
-                                <i class="fas fa-hamburger"></i>
-                            </div>
-                            <span class="menu-text">Platillos</span>
                         </a>
                         
                         <a href="{{ route('admin.customization-options.index') }}" 
@@ -434,12 +436,12 @@
                             <span class="menu-text">Personalización</span>
                         </a>
                         
-                        <a href="{{ route('admin.promotions.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.promotions.*') || str_contains(request()->url(), 'admin/promotions') ? 'active' : '' }}">
+                        <a href="{{ route('admin.products.index') }}" 
+                           class="sidebar-item {{ request()->routeIs('admin.products.*') || str_contains(request()->url(), 'admin/products') ? 'active' : '' }}">
                             <div class="icon-container">
-                                <i class="fas fa-fire"></i>
+                                <i class="fas fa-hamburger"></i>
                             </div>
-                            <span class="menu-text">Promociones</span>
+                            <span class="menu-text">Platillos</span>
                         </a>
                         
                         <a href="{{ route('admin.combos.index') }}" 
@@ -450,14 +452,24 @@
                             <span class="menu-text">Combos</span>
                         </a>
                         
-                        <a href="{{ route('admin.reports.index') }}" 
-                           class="sidebar-item {{ request()->routeIs('admin.reports.*') || str_contains(request()->url(), 'admin/reports') ? 'active' : '' }}">
+                        <a href="{{ route('admin.promotions.index') }}" 
+                           class="sidebar-item {{ request()->routeIs('admin.promotions.*') || str_contains(request()->url(), 'admin/promotions') ? 'active' : '' }}">
                             <div class="icon-container">
-                                <i class="fas fa-chart-bar"></i>
+                                <i class="fas fa-fire"></i>
                             </div>
-                            <span class="menu-text">Reportes</span>
+                            <span class="menu-text">Promociones</span>
                         </a>
-                        
+                    </div>
+
+                    <!-- 3. Ajustes del Sistema -->
+                    <div class="sidebar-section-title">
+                        <h3>
+                            <i class="fas fa-cog"></i>
+                            Ajustes del Sistema
+                        </h3>
+                    </div>
+                    
+                    <div class="sidebar-menu-group">
                         <a href="{{ route('admin.printers.index') }}" 
                            class="sidebar-item {{ request()->routeIs('admin.printers.*') || str_contains(request()->url(), 'admin/printers') ? 'active' : '' }}">
                             <div class="icon-container">
@@ -471,7 +483,25 @@
                             <div class="icon-container">
                                 <i class="fas fa-credit-card"></i>
                             </div>
-                            <span class="menu-text">MercadoPago</span>
+                            <span class="menu-text">Terminal de Pago</span>
+                        </a>
+                    </div>
+
+                    <!-- 4. Reportes -->
+                    <div class="sidebar-section-title">
+                        <h3>
+                            <i class="fas fa-chart-bar"></i>
+                            Reportes
+                        </h3>
+                    </div>
+                    
+                    <div class="sidebar-menu-group">
+                        <a href="{{ route('admin.reports.index') }}" 
+                           class="sidebar-item {{ request()->routeIs('admin.reports.*') || str_contains(request()->url(), 'admin/reports') ? 'active' : '' }}">
+                            <div class="icon-container">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <span class="menu-text">Reportes</span>
                         </a>
                     </div>
                 @else

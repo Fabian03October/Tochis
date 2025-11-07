@@ -1,438 +1,309 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('title', 'Detalles Configuración MercadoPago')
 
-@section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-credit-card"></i>
-                        Detalles: {{ $setting->name }}
-                        @if($setting->is_active)
-                            <span class="badge badge-success ml-2">Activo</span>
-                        @else
-                            <span class="badge badge-secondary ml-2">Inactivo</span>
-                        @endif
-                    </h3>
-                    <div class="float-right">
-                        <a href="{{ route('admin.mercadopago.edit', $setting) }}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
-                        <a href="{{ route('admin.mercadopago.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Volver
-                        </a>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="row">
-                        <!-- Información Básica -->
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-info-circle"></i> Información Básica</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr>
-                                            <th width="30%">Nombre:</th>
-                                            <td>{{ $setting->name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Modo:</th>
-                                            <td>
-                                                @if($setting->is_sandbox)
-                                                    <span class="badge badge-warning">Sandbox (Pruebas)</span>
-                                                @else
-                                                    <span class="badge badge-success">Producción</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Estado:</th>
-                                            <td>
-                                                @if($setting->is_active)
-                                                    <span class="badge badge-success">
-                                                        <i class="fas fa-check"></i> Activo
-                                                    </span>
-                                                @else
-                                                    <span class="badge badge-secondary">
-                                                        <i class="fas fa-pause"></i> Inactivo
-                                                    </span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Creado:</th>
-                                            <td>{{ $setting->created_at->format('d/m/Y H:i:s') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Actualizado:</th>
-                                            <td>{{ $setting->updated_at->format('d/m/Y H:i:s') }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Credenciales API -->
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-key"></i> Credenciales API</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr>
-                                            <th width="30%">Public Key:</th>
-                                            <td>
-                                                <code class="small">{{ Str::mask($setting->public_key, '*', 8, -8) }}</code>
-                                                <button class="btn btn-sm btn-outline-secondary ml-2" 
-                                                        onclick="copyToClipboard('{{ $setting->public_key }}')">
-                                                    <i class="fas fa-copy"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Access Token:</th>
-                                            <td>
-                                                <code class="small">{{ Str::mask($setting->access_token, '*', 8, -8) }}</code>
-                                                <button class="btn btn-sm btn-outline-secondary ml-2" 
-                                                        onclick="copyToClipboard('{{ $setting->access_token }}')">
-                                                    <i class="fas fa-copy"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Conexión:</th>
-                                            <td>
-                                                <span class="badge badge-secondary" id="connection-status">
-                                                    <i class="fas fa-question"></i> Sin verificar
-                                                </span>
-                                                <button class="btn btn-sm btn-primary ml-2" id="test-connection">
-                                                    <i class="fas fa-wifi"></i> Probar
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-4">
-                        <!-- Configuración Terminal -->
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-terminal"></i> Configuración Terminal</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr>
-                                            <th width="30%">Tipo:</th>
-                                            <td>
-                                                @if($setting->terminal_type)
-                                                    <span class="badge badge-info">{{ ucfirst($setting->terminal_type) }}</span>
-                                                @else
-                                                    <span class="text-muted">No especificado</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Terminal ID:</th>
-                                            <td>
-                                                @if($setting->terminal_id)
-                                                    <code>{{ $setting->terminal_id }}</code>
-                                                @else
-                                                    <span class="text-muted">No especificado</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>POS ID:</th>
-                                            <td>
-                                                @if($setting->pos_id)
-                                                    <code>{{ $setting->pos_id }}</code>
-                                                @else
-                                                    <span class="text-muted">No especificado</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Retorno Auto:</th>
-                                            <td>
-                                                @if($setting->auto_return)
-                                                    <span class="badge badge-success">
-                                                        <i class="fas fa-check"></i> Habilitado
-                                                    </span>
-                                                @else
-                                                    <span class="badge badge-secondary">
-                                                        <i class="fas fa-times"></i> Deshabilitado
-                                                    </span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- URLs de Notificación -->
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-bell"></i> URLs de Notificación</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-borderless">
-                                        <tr>
-                                            <th width="30%">Webhook:</th>
-                                            <td>
-                                                @if($setting->webhook_url)
-                                                    <a href="{{ $setting->webhook_url }}" target="_blank" class="small">
-                                                        {{ Str::limit($setting->webhook_url, 30) }}
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">No configurado</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Éxito:</th>
-                                            <td>
-                                                @if($setting->success_url)
-                                                    <a href="{{ $setting->success_url }}" target="_blank" class="small">
-                                                        {{ Str::limit($setting->success_url, 30) }}
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">No configurado</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Error:</th>
-                                            <td>
-                                                @if($setting->failure_url)
-                                                    <a href="{{ $setting->failure_url }}" target="_blank" class="small">
-                                                        {{ Str::limit($setting->failure_url, 30) }}
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">No configurado</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Pendiente:</th>
-                                            <td>
-                                                @if($setting->pending_url)
-                                                    <a href="{{ $setting->pending_url }}" target="_blank" class="small">
-                                                        {{ Str::limit($setting->pending_url, 30) }}
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">No configurado</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if($setting->description)
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-comment"></i> Descripción</h5>
-                                </div>
-                                <div class="card-body">
-                                    <p class="mb-0">{{ $setting->description }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
-                    <!-- Acciones -->
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fas fa-tools"></i> Acciones de Prueba</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-primary" id="test-qr">
-                                            <i class="fas fa-qrcode"></i> Generar QR de Prueba
-                                        </button>
-                                        <button type="button" class="btn btn-info" id="test-payment">
-                                            <i class="fas fa-credit-card"></i> Crear Pago de Prueba
-                                        </button>
-                                        @if(!$setting->is_active)
-                                            <button type="button" class="btn btn-success" id="activate-setting">
-                                                <i class="fas fa-play"></i> Activar Configuración
-                                            </button>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+{{-- 1. Título de página estándar --}}
+@section('page-title')
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Detalles: {{ $setting->name }}</h1>
+        <p class="text-gray-400 text-sm">Información de la configuración de MercadoPago</p>
     </div>
-</div>
+@endsection
 
-<!-- Modal para QR Code -->
-<div class="modal fade" id="qrModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Código QR de Pago</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
+{{-- 2. Animación estándar --}}
+@section('styles')
+<style>
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    /* Estilo para las listas de detalles */
+    .detail-row {
+        @apply flex justify-between items-center py-3 px-4 border-b border-gray-100;
+    }
+    .detail-label {
+        @apply text-sm font-medium text-gray-500;
+    }
+    .detail-value {
+        @apply text-sm font-semibold text-gray-900 text-right;
+    }
+    .detail-badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+</style>
+@endsection
+
+@section('content')
+<div class="fade-in">
+    <div class="flex items-center justify-end space-x-3 mb-6">
+        <a href="{{ route('admin.mercadopago.edit', $setting) }}" class="btn-primary">
+            <i class="fas fa-edit mr-2"></i> Editar
+        </a>
+        <a href="{{ route('admin.mercadopago.index') }}" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Volver
+        </a>
+    </div>
+
+    @if(session('success'))
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
+            <i class="fas fa-check-circle mr-3 text-green-500"></i>
+            <span class="font-medium">{{ session('success') }}</span>
+        </div>
+    @endif
+    
+    @if(session('error'))
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center">
+            <i class="fas fa-exclamation-circle mr-3 text-red-500"></i>
+            <span class="font-medium">{{ session('error') }}</span>
+        </div>
+    @endif
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <div class="space-y-6">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-blue-600"></i>
+                        Información Básica
+                    </h3>
+                </div>
+                <dl>
+                    <div class="detail-row">
+                        <dt class="detail-label">Nombre:</dt>
+                        <dd class="detail-value">{{ $setting->name }}</dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Modo:</dt>
+                        <dd class="detail-value">
+                            @if($setting->is_sandbox)
+                                <span class="detail-badge bg-yellow-100 text-yellow-800">Sandbox (Pruebas)</span>
+                            @else
+                                <span class="detail-badge bg-green-100 text-green-800">Producción</span>
+                            @endif
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Estado:</dt>
+                        <dd class="detail-value">
+                            @if($setting->is_active)
+                                <span class="detail-badge bg-green-100 text-green-800"><i class="fas fa-check mr-1"></i> Activo</span>
+                            @else
+                                <span class="detail-badge bg-gray-100 text-gray-800"><i class="fas fa-pause mr-1"></i> Inactivo</span>
+                            @endif
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Creado:</dt>
+                        <dd class="detail-value">{{ $setting->created_at->format('d/m/Y H:i:s') }}</dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Actualizado:</dt>
+                        <dd class="detail-value">{{ $setting->updated_at->format('d/m/Y H:i:s') }}</dd>
+                    </div>
+                </dl>
             </div>
-            <div class="modal-body text-center">
-                <div id="qr-content">
-                    <!-- QR code will be loaded here -->
+
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-key mr-2 text-yellow-500"></i>
+                        Credenciales API
+                    </h3>
+                </div>
+                <dl>
+                    <div class="detail-row">
+                        <dt class="detail-label">Public Key:</dt>
+                        <dd class="detail-value font-mono">
+                            {{ Str::mask($setting->public_key, '*', 8, -8) }}
+                            <button class="ml-2 text-gray-400 hover:text-blue-600" onclick="copyToClipboard('{{ $setting->public_key }}')" title="Copiar">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Access Token:</dt>
+                        <dd class="detail-value font-mono">
+                            {{ Str::mask($setting->access_token, '*', 8, -8) }}
+                            <button class="ml-2 text-gray-400 hover:text-blue-600" onclick="copyToClipboard('{{ $setting->access_token }}')" title="Copiar">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Conexión:</dt>
+                        <dd class="detail-value">
+                            <span class="detail-badge bg-gray-100 text-gray-800" id="connection-status">
+                                <i class="fas fa-question mr-1"></i> Sin verificar
+                            </span>
+                        </dd>
+                    </div>
+                </dl>
+                <div class="p-4 bg-gray-50 border-t border-gray-200 text-right">
+                    <button class="btn-secondary" id="test-connection" data-id="{{ $setting->id }}">
+                        <i class="fas fa-wifi"></i> Probar Conexión
+                    </button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+            @if($setting->description)
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-comment mr-2 text-gray-500"></i>
+                            Descripción
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-gray-700">{{ $setting->description }}</p>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-terminal mr-2 text-gray-600"></i>
+                        Configuración Terminal
+                    </h3>
+                </div>
+                <dl>
+                    <div class="detail-row">
+                        <dt class="detail-label">Tipo:</dt>
+                        <dd class="detail-value">
+                            @if($setting->terminal_type)
+                                <span class="detail-badge bg-blue-100 text-blue-800">{{ ucfirst($setting->terminal_type) }}</span>
+                            @else
+                                <span class="text-gray-500">No especificado</span>
+                            @endif
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Terminal ID:</dt>
+                        <dd class="detail-value font-mono">
+                            {{ $setting->terminal_id ?: 'No especificado' }}
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">POS ID:</dt>
+                        <dd class="detail-value font-mono">
+                            {{ $setting->pos_id ?: 'No especificado' }}
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Retorno Automático:</dt>
+                        <dd class="detail-value">
+                            @if($setting->auto_return)
+                                <span class="detail-badge bg-green-100 text-green-800"><i class="fas fa-check mr-1"></i> Habilitado</span>
+                            @else
+                                <span class="detail-badge bg-gray-100 text-gray-800"><i class="fas fa-times mr-1"></i> Deshabilitado</span>
+                            @endif
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-bell mr-2 text-purple-500"></i>
+                        URLs de Notificación
+                    </h3>
+                </div>
+                <dl>
+                    <div class="detail-row">
+                        <dt class="detail-label">Webhook:</dt>
+                        <dd class="detail-value truncate" title="{{ $setting->webhook_url ?: 'No configurado' }}">
+                            {{ $setting->webhook_url ? Str::limit($setting->webhook_url, 30) : 'No configurado' }}
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Éxito:</dt>
+                        <dd class="detail-value truncate" title="{{ $setting->success_url ?: 'No configurado' }}">
+                            {{ $setting->success_url ? Str::limit($setting->success_url, 30) : 'No configurado' }}
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Error:</dt>
+                        <dd class="detail-value truncate" title="{{ $setting->failure_url ?: 'No configurado' }}">
+                            {{ $setting->failure_url ? Str::limit($setting->failure_url, 30) : 'No configurado' }}
+                        </dd>
+                    </div>
+                    <div class="detail-row">
+                        <dt class="detail-label">Pendiente:</dt>
+                        <dd class="detail-value truncate" title="{{ $setting->pending_url ?: 'No configurado' }}">
+                            {{ $setting->pending_url ? Str::limit($setting->pending_url, 30) : 'No configurado' }}
+                        </dd>
+                    </div>
+                </dl>
             </div>
         </div>
+
     </div>
 </div>
 @endsection
 
 @push('scripts')
+{{-- 7. Script actualizado a Vanilla JS --}}
 <script>
-$(document).ready(function() {
-    // Probar conexión
-    $('#test-connection').click(function() {
-        const button = $(this);
-        const statusBadge = $('#connection-status');
-        
-        button.prop('disabled', true);
-        statusBadge.html('<i class="fas fa-spinner fa-spin"></i> Probando...');
-        statusBadge.removeClass().addClass('badge badge-warning');
-        
-        $.post(`/admin/mercadopago/{{ $setting->id }}/test`)
-            .done(function(response) {
-                if(response.success) {
-                    statusBadge.html('<i class="fas fa-check"></i> Conectado');
-                    statusBadge.removeClass().addClass('badge badge-success');
-                    toastr.success('Conexión exitosa');
-                    
-                    if(response.account_info) {
-                        toastr.info(`Cuenta: ${response.account_info.email || 'N/A'}`);
-                    }
-                } else {
-                    statusBadge.html('<i class="fas fa-times"></i> Error');
-                    statusBadge.removeClass().addClass('badge badge-danger');
-                    toastr.error(response.message || 'Error de conexión');
-                }
-            })
-            .fail(function() {
-                statusBadge.html('<i class="fas fa-times"></i> Error');
-                statusBadge.removeClass().addClass('badge badge-danger');
-                toastr.error('Error al probar la conexión');
-            })
-            .always(function() {
-                button.prop('disabled', false);
-            });
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    const csrfToken = '{{ csrf_token() }}';
 
-    // Generar QR de prueba
-    $('#test-qr').click(function() {
-        const button = $(this);
-        button.prop('disabled', true);
-        
-        $.post(`/admin/mercadopago/{{ $setting->id }}/generate-test-qr`)
-            .done(function(response) {
-                if(response.success) {
-                    $('#qr-content').html(`
-                        <h6>Pago de Prueba - $${response.amount}</h6>
-                        <div class="mb-3">
-                            <img src="${response.qr_code}" alt="QR Code" class="img-fluid" style="max-width: 300px;">
-                        </div>
-                        <p class="small text-muted">ID: ${response.payment_id}</p>
-                        <p class="small">Escanea este código QR con la app de MercadoPago para probar el pago</p>
-                    `);
-                    $('#qrModal').modal('show');
-                } else {
-                    toastr.error(response.message || 'Error al generar QR');
-                }
-            })
-            .fail(function() {
-                toastr.error('Error al generar código QR');
-            })
-            .always(function() {
-                button.prop('disabled', false);
-            });
-    });
+    // 1. Probar conexión
+    const testButton = document.getElementById('test-connection');
+    if (testButton) {
+        testButton.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const statusBadge = document.getElementById('connection-status');
+            
+            testButton.disabled = true;
+            statusBadge.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Probando...';
+            statusBadge.className = 'detail-badge bg-yellow-100 text-yellow-800';
 
-    // Crear pago de prueba
-    $('#test-payment').click(function() {
-        const button = $(this);
-        button.prop('disabled', true);
-        
-        $.post(`/admin/mercadopago/{{ $setting->id }}/create-test-payment`)
-            .done(function(response) {
-                if(response.success) {
-                    toastr.success('Pago de prueba creado exitosamente');
-                    if(response.init_point) {
-                        if(confirm('¿Desea abrir el enlace de pago en una nueva ventana?')) {
-                            window.open(response.init_point, '_blank');
-                        }
-                    }
-                } else {
-                    toastr.error(response.message || 'Error al crear pago de prueba');
+            fetch(`/admin/mercadopago/${id}/test`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             })
-            .fail(function() {
-                toastr.error('Error al crear pago de prueba');
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    statusBadge.innerHTML = '<i class="fas fa-check mr-1"></i> Conectado';
+                    statusBadge.className = 'detail-badge bg-green-100 text-green-800';
+                    alert('Conexión exitosa');
+                } else {
+                    statusBadge.innerHTML = '<i class="fas fa-times mr-1"></i> Error';
+                    statusBadge.className = 'detail-badge bg-red-100 text-red-800';
+                    alert(data.message || 'Error de conexión');
+                }
             })
-            .always(function() {
-                button.prop('disabled', false);
+            .catch(() => {
+                statusBadge.innerHTML = '<i class="fas fa-times mr-1"></i> Error';
+                statusBadge.className = 'detail-badge bg-red-100 text-red-800';
+                alert('Error al probar la conexión');
+            })
+            .finally(() => {
+                testButton.disabled = false;
             });
-    });
+        });
+    }
 
-    // Activar configuración
-    $('#activate-setting').click(function() {
-        const button = $(this);
-        button.prop('disabled', true);
-        
-        $.post(`/admin/mercadopago/{{ $setting->id }}/activate`)
-            .done(function(response) {
-                if(response.success) {
-                    toastr.success('Configuración activada');
-                    location.reload();
-                } else {
-                    toastr.error(response.message || 'Error al activar');
-                    button.prop('disabled', false);
-                }
-            })
-            .fail(function() {
-                toastr.error('Error al activar la configuración');
-                button.prop('disabled', false);
-            });
-    });
+    // 2. Copiar al portapapeles
+    window.copyToClipboard = function(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            alert('Copiado al portapapeles');
+        }, function() {
+            alert('Error al copiar');
+        });
+    }
 });
-
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        toastr.success('Copiado al portapapeles');
-    }, function() {
-        toastr.error('Error al copiar');
-    });
-}
 </script>
 @endpush
