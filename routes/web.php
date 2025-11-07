@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('combos', ComboController::class);
         Route::patch('/combos/{combo}/toggle-status', [ComboController::class, 'toggleStatus'])->name('combos.toggle-status');
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
         Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
         Route::get('/reports/cash-cuts', [ReportController::class, 'cashCuts'])->name('reports.cash-cuts');
     });

@@ -1,30 +1,44 @@
 @extends('layouts.app')
 
 @section('title', 'Reportes - Sistema POS')
-@section('page-title', 'Reportes y Análisis')
+{{-- 1. Título de página corregido --}}
+@section('page-title')
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Reportes y Análisis</h1>
+        <p class="text-gray-400 text-sm">Analiza el rendimiento de tu punto de venta</p>
+    </div>
+@endsection
+
+{{-- 2. Animación (Añadida) --}}
+@section('styles')
+<style>
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+@endsection
 
 @section('content')
 <div class="fade-in">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="sm:flex sm:items-center sm:justify-between">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-900">Reportes y Análisis</h2>
-                <p class="mt-2 text-sm text-gray-600">
-                    Analiza el rendimiento de tu punto de venta con reportes detallados.
-                </p>
-            </div>
-            <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                <button onclick="exportReport()" class="btn-primary">
-                    <i class="fas fa-download mr-2"></i>
-                    Exportar Reporte
-                </button>
-            </div>
-        </div>
+    <div class="flex justify-end items-center mb-6">
+        <button onclick="exportReport()" class="btn-primary">
+            <i class="fas fa-download mr-2"></i>
+            Exportar Reporte
+        </button>
     </div>
 
-    <!-- Date Range Filter -->
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
+    @if(session('success'))
+        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
+            <i class="fas fa-check-circle mr-3 text-green-500"></i>
+            <span class="font-medium">{{ session('success') }}</span>
+        </div>
+    @endif
+
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-6">
         <form method="GET" action="{{ route('admin.reports.index') }}" class="space-y-4 md:space-y-0 md:flex md:items-end md:space-x-4">
             <div class="flex-1">
                 <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">
@@ -34,7 +48,7 @@
                        name="start_date" 
                        id="start_date"
                        value="{{ request('start_date', $startDate->format('Y-m-d')) }}"
-                       class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                       class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
 
             <div class="flex-1">
@@ -45,98 +59,77 @@
                        name="end_date" 
                        id="end_date"
                        value="{{ request('end_date', $endDate->format('Y-m-d')) }}"
-                       class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                       class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
 
             <div class="flex-shrink-0">
-                <button type="submit" class="btn-primary">
+                <button type="submit" class="btn-primary w-full">
                     <i class="fas fa-filter mr-2"></i>
                     Filtrar
                 </button>
             </div>
 
             <div class="flex-shrink-0">
-                <a href="{{ route('admin.reports.index') }}" class="btn-secondary">
-                    <i class="fas fa-refresh mr-2"></i>
+                <a href="{{ route('admin.reports.index') }}" class="btn-secondary w-full">
+                    <i class="fas fa-sync-alt mr-2"></i>
                     Limpiar
                 </a>
             </div>
         </form>
     </div>
 
-    <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center">
-                        <i class="fas fa-dollar-sign text-green-600"></i>
-                    </div>
+                <div class="p-3 bg-green-100 rounded-lg">
+                    <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
                 </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Ventas Totales</dt>
-                        <dd class="text-lg font-medium text-gray-900">${{ number_format($totalSales, 2) }}</dd>
-                    </dl>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Ventas Totales</p>
+                    <p class="text-2xl font-bold text-gray-900">${{ number_format($totalSales, 2) }}</p>
                 </div>
             </div>
         </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-blue-100 rounded-md flex items-center justify-center">
-                        <i class="fas fa-shopping-cart text-blue-600"></i>
-                    </div>
+                <div class="p-3 bg-blue-100 rounded-lg">
+                    <i class="fas fa-shopping-cart text-blue-600 text-xl"></i>
                 </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Transacciones</dt>
-                        <dd class="text-lg font-medium text-gray-900">{{ number_format($totalTransactions) }}</dd>
-                    </dl>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Transacciones</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ number_format($totalTransactions) }}</p>
                 </div>
             </div>
         </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center">
-                        <i class="fas fa-cube text-purple-600"></i>
-                    </div>
+                <div class="p-3 bg-purple-100 rounded-lg">
+                    <i class="fas fa-cube text-purple-600 text-xl"></i>
                 </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Platillos Vendidos</dt>
-                        <dd class="text-lg font-medium text-gray-900">{{ number_format($totalProductsSold) }}</dd>
-                    </dl>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Platillos Vendidos</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ number_format($totalProductsSold) }}</p>
                 </div>
             </div>
         </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
             <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
-                        <i class="fas fa-chart-line text-gray-600"></i>
-                    </div>
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <i class="fas fa-chart-line text-gray-600 text-xl"></i>
                 </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Promedio por Venta</dt>
-                        <dd class="text-lg font-medium text-gray-900">${{ number_format($averageSale, 2) }}</dd>
-                    </dl>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Promedio por Venta</p>
+                    <p class="text-2xl font-bold text-gray-900">${{ number_format($averageSale, 2) }}</p>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- Top Products -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">
-                    <i class="fas fa-star mr-2 text-yellow-600"></i>
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-star mr-2 text-yellow-500"></i>
                     Platillos Más Vendidos
                 </h3>
             </div>
@@ -179,10 +172,9 @@
             </div>
         </div>
 
-        <!-- Sales by Category -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                     <i class="fas fa-tags mr-2 text-blue-600"></i>
                     Ventas por Categoría
                 </h3>
@@ -221,10 +213,9 @@
         </div>
     </div>
 
-    <!-- Daily Sales Chart -->
-    <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                 <i class="fas fa-chart-area mr-2 text-green-600"></i>
                 Ventas Diarias
             </h3>
@@ -244,11 +235,14 @@
         </div>
     </div>
 
-    <!-- Payment Methods -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">
+    {{-- 
+      CAMBIO AQUÍ: 
+      Quité 'lg:grid-cols-2' para que la tarjeta de Métodos de Pago ocupe todo el ancho 
+    --}}
+    <div class="grid grid-cols-1 gap-6 mb-6">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                     <i class="fas fa-credit-card mr-2 text-purple-600"></i>
                     Métodos de Pago
                 </h3>
@@ -291,7 +285,7 @@
                                 <div class="text-right">
                                     <p class="text-lg font-bold text-gray-900">${{ number_format($method->total, 2) }}</p>
                                     <p class="text-sm text-gray-500">
-                                        {{ number_format(($method->total / $totalSales) * 100, 1) }}%
+                                        {{ $totalSales > 0 ? number_format(($method->total / $totalSales) * 100, 1) : 0 }}%
                                     </p>
                                 </div>
                             </div>
@@ -300,71 +294,23 @@
                 @else
                     <div class="text-center py-8">
                         <i class="fas fa-credit-card text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">No hay datos de métodos de pago para el período seleccionado.</p>
+                        <p class="text-gray-500">No hay datos de métodos de pago.</p>
                     </div>
                 @endif
             </div>
         </div>
 
-        <!-- Low Stock Alert -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">
-                    <i class="fas fa-exclamation-triangle mr-2 text-red-600"></i>
-                    Platillos con Stock Bajo
-                </h3>
-            </div>
-            
-            <div class="p-6">
-                @if($lowStockProducts->count() > 0)
-                    <div class="space-y-4">
-                        @foreach($lowStockProducts as $product)
-                            <div class="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
-                                <div class="flex items-center space-x-3">
-                                    <div class="flex-shrink-0">
-                                        @if($product->image)
-                                            <img src="{{ Storage::url($product->image) }}" 
-                                                 alt="{{ $product->name }}" 
-                                                 class="h-10 w-10 object-cover rounded-lg">
-                                        @else
-                                            <div class="h-10 w-10 bg-gray-200 rounded-lg flex items-center justify-center">
-                                                <i class="fas fa-box text-gray-400"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">{{ $product->name }}</p>
-                                        <p class="text-sm text-gray-500">{{ $product->category->name }}</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-bold text-red-600">{{ $product->stock }}</p>
-                                    <p class="text-sm text-gray-500">Min: {{ $product->min_stock }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <div class="mt-4">
-                        <a href="{{ route('admin.products.index', ['status' => '1']) }}" 
-                           class="text-sm text-blue-600 hover:text-blue-800">
-                            Ver todos los Platillos →
-                        </a>
-                    </div>
-                @else
-                    <div class="text-center py-8">
-                        <i class="fas fa-check-circle text-4xl text-green-300 mb-4"></i>
-                        <p class="text-green-600 font-medium">¡Excelente!</p>
-                        <p class="text-gray-500">Todos los Platillos tienen stock suficiente.</p>
-                    </div>
-                @endif
-            </div>
-        </div>
+        {{-- 
+          BLOQUE DE "STOCK BAJO" ELIMINADO 
+          
+          El 'div' que contenía la tarjeta de "Platillos con Stock Bajo" fue eliminado de aquí.
+        --}}
+        
     </div>
 
-    <!-- Recent Sales -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                 <i class="fas fa-clock mr-2 text-indigo-600"></i>
                 Ventas Recientes
             </h3>
@@ -373,29 +319,29 @@
         @if($recentSales->count() > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-gradient-to-r from-gray-100 to-gray-200">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Venta
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Cajero
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Fecha
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Artículos
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Método
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                                 Total
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-gray-100">
                         @foreach($recentSales as $sale)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -478,8 +424,34 @@ const dailySalesChart = new Chart(ctx, {
 @endif
 
 function exportReport() {
-    // Esta función puede implementar la exportación a PDF/Excel
-    alert('Función de exportación en desarrollo');
+    // Obtener los valores de fecha del formulario
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+    
+    // Construir URL con parámetros
+    const url = new URL('{{ route("admin.reports.export-pdf") }}', window.location.origin);
+    if (startDate) url.searchParams.set('start_date', startDate);
+    if (endDate) url.searchParams.set('end_date', endDate);
+    
+    // Mostrar mensaje de carga
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generando PDF...';
+    button.disabled = true;
+    
+    // Crear enlace temporal para descargar
+    const link = document.createElement('a');
+    link.href = url.toString();
+    link.download = '';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Restaurar botón después de un momento
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }, 2000);
 }
 </script>
 @endsection
